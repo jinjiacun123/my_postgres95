@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AROPT	mk/postgres.mk	/^AROPT = crs$/;"	m
+BIGOBJS	backend/Makefile	/^BIGOBJS=true$/;"	m
+BootstrapMain	backend/bootstrap/bootstrap.c	/^BootstrapMain(int argc, char *argv[])$/;"	f
+CURDIR	mk/postgres.mk	/^CURDIR:= $(shell pwd)$/;"	m
+ETAGS	Makefile	/^ETAGS = etags$/;"	m
+FIND	Makefile	/^FIND = find$/;"	m
+MKDIR	Makefile	/^MKDIR=.\/mk$/;"	m
+MKDIR	backend/Makefile	/^MKDIR=..\/mk$/;"	m
+OBJS	backend/Makefile	/^OBJS= BOOTSTRAP.o MAIN.o$/;"	m
+OBJS_BOOTSTRAP	backend/Makefile	/^OBJS_BOOTSTRAP:= $(SRCS_BOOTSTRAP:%.c=$(objdir)\/%.o)$/;"	m
+OBJS_MAIN	backend/Makefile	/^OBJS_MAIN:=$(SRCS_MAIN:%.c=$(objdir)\/%.o)$/;"	m
+PROG	backend/Makefile	/^PROG=postgres$/;"	m
+RANLIB	mk/postgres.mk	/^RANLIB= touch$/;"	m
+SPLIT	Makefile	/^SPLIT = split$/;"	m
+SRCS	backend/Makefile	/^SRCS:= $(SRCS_BOOTSTRAP) $(SRCS_MAIN)$/;"	m
+TAR	Makefile	/^TAR = tar$/;"	m
+VPATH	mk/postgres.mk	/^VPATH:= $(CURDIR)\/$(objdir)$/;"	m
+XARGS	Makefile	/^XARGS = xargs$/;"	m
+YFLAGS	mk/postgres.mk	/^YFLAGS= -d$/;"	m
+cc_inobjdir	mk/postgres.mk	/^define cc_inobjdir$/;"	m
+main	backend/main/main.c	/^main(int argc, char *argv[]){$/;"	f
+make_partial	mk/postgres.mk	/^define make_partial$/;"	m

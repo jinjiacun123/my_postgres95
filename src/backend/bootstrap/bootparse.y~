@@ -1,0 +1,46 @@
+%{
+
+#define DO_START {StartTransactionCommand();}
+
+
+
+%}
+
+%union {
+  int ival;
+}
+
+%type <ival> ident
+
+%token <ival> ID
+%token OPEN
+%%
+TopLevel:
+Queries
+|
+;
+
+Queries:
+Query
+| Queries Query
+;
+
+Query:
+OpenStmt
+;
+
+OpenStmt:
+OPEN ident
+{
+  printf("open stmt\n");
+  //DO_START;
+  //boot_openrel(LexIDStr($2));
+  //DO_END;
+}
+
+ident:
+ID {$$=yylval.ival;}
+;
+
+
+%%

@@ -1,0 +1,4 @@
+utilsdir=$(CURDIR)/utils
+VPATH:= $(VPATH):$(utilsdir):\
+        $(utilsdir)/error
+

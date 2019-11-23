@@ -1,0 +1,20 @@
+%{
+#include "bootstrap_token.h"
+
+YYSTYPE yylval;
+int yyline;
+%}
+
+%%
+
+%%
+
+yywrap(){
+return 1;
+}
+
+yyerror(str)
+char *str;
+{
+fprintf(stderr, "\tsyntax error %d:%s", yyline, str);
+}

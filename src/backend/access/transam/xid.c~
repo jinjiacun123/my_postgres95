@@ -1,0 +1,6 @@
+void
+TransactionIdStore(TransactionId transactionId,
+                   TransactionId *destination)
+{
+
+}

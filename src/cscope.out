@@ -1,0 +1,73 @@
+cscope 15 $HOME/source_code/database/my_postgre95/src -q 0000000009 0000000387
+	@backend/bootstrap/bootstrap.c
+
+2 
+	$BoÙ¡¿pMaš
+(
+¬gc
+, *
+¬gv
+[])
+
+4 
+	`IÁ_yy·r£
+();
+
+6 
+	}
+}
+
+	@backend/main/main.c
+
+3 
+	$maš
+(
+¬gc
+, *
+¬gv
+[]){
+
+4 
+Ën
+;
+
+6 
+Ën
+ = 
+	`¡¾’
+(
+¬gv
+[0]);
+
+7 if(
+¬gc
+ > 1
+
+8 && !
+	`¡rcmp
+(
+¬gv
+[0], "-boot") == 0){
+
+9 
+	`ex™
+(
+	`BoÙ¡¿pMaš
+(
+¬gc
+ -1, 
+¬gv
++1));
+
+11 
+	}
+}
+
+	@
+1
+.
+0
+2
+50
+backend/bootstrap/bootstrap.c
+backend/main/main.c

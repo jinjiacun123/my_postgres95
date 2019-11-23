@@ -1,0 +1,18 @@
+bootdir=$(CURDIR)/bootstrap
+VPATH:=$(VPATH):$(bootdir)
+
+BOOTYACCS=bootparse.c
+
+SRCS_BOOTSTRAP=bootstrap.c bootparse.c
+
+$(BOOTYACCS):bootparse.y
+	cd $(objdir); \
+    $(YACC) $(YFLAGS) $<; \
+    sed -f $(bootdir)/boot.sed < y.tab.c > bootparse.c; \
+    mv y.tab.h bootstrap_tokens.h; \
+    rm -f y.tab.c
+
+$(objdir)/bootparse.o:bootparse.c
+	$(cc_inobjdir)
+
+bootstrap.o:$(BOOTYACCS)

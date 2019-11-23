@@ -1,0 +1,5 @@
+void
+DiscardInvalid(){
+  elog(DEBUG, "Discardinvalid called");
+
+}

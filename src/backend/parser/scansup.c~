@@ -1,0 +1,14 @@
+char *
+scanstr(char *s)
+{
+  static char newStr[MAX_PARSE_BUFFER];
+  int len,i,start,j;
+  char delimiter;
+
+  if(s == NULL || s[0] == '\0')
+    return s;
+
+  len = strlen(s);
+  start = 0;
+
+}

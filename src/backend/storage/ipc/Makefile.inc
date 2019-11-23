@@ -1,0 +1,1 @@
+SUBSRCS+=sinval.c

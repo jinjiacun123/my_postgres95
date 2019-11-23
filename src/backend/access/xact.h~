@@ -1,0 +1,14 @@
+#ifndef XACT_H
+#define XACT_H
+
+typedef struct TransactionStateData{
+  TransactinId  transactionIdData;
+  CommandId     commandId;
+  AbsoluteTime  startTime;
+  int           state;
+  int           blockState;
+} TransactionStateData;
+
+
+typedef TransactionStateData *TransactionState;
+#endif

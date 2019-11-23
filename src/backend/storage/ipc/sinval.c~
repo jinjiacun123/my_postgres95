@@ -1,0 +1,6 @@
+void
+InvalidateSharedInvalid(void (*invalFunction)(),
+                        void (*resetFunction)())
+{
+
+}

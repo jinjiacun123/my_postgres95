@@ -1,0 +1,6 @@
+#ifndef NABSTIME_H
+#define NABSTIME_H
+
+typedef int32 AbsoluteTime;
+
+#endif

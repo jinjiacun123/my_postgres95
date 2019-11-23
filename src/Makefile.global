@@ -1,0 +1,14 @@
+PORTNAME=linux
+SRCDIR=/home/jim/source_code/database/my_postgre95/src
+POSTGRESDIR=/home/jim/source_code/database/my_postgre95
+POSTGRESLOGIN=postgres
+DATADIR=$(POSTGRESDIR)/data
+BINDIR=$(POSTGRESDIR)/bin
+LIBDIR=$(POSTGRESDIR)/lib
+HEADERDIR=$(POSTGRESDIR)/include
+POSTPORT=5432
+NAMEDATALEN=32
+OIDNAMELEN=36
+CFLAGS +=-g -g3 -m32 -gdwarf-2 -DNAMEDATALEN=$(NAMEDATALEN) -DOIDNAMELEN=$(OIDNAMELEN)
+srcdir=$(SRCDIR)
+objdir=obj

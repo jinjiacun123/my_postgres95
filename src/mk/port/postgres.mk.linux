@@ -1,0 +1,28 @@
+ifndef MK_PORT
+MK_PORT=linux
+LINUX_ELF=1
+
+ifndef LINUX_ELF
+RANLIB = ranlib
+SLSUFF = .o
+else
+RANLIB = ranlib
+SLSUFF = .so
+LDFLAGS = -rdynamic -m32
+endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+endif

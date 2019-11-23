@@ -1,0 +1,9 @@
+#ifndef BOOTSTRAP_H
+#define BOOTSTRAP_H
+
+typedef struct hashnode{
+  int strnum;
+  struct hashnode *next;
+} hashnode;
+
+#endif

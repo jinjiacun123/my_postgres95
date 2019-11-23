@@ -1,0 +1,47 @@
+BIGOBJS=true
+PROG=postgres
+
+MKDIR=../mk
+include $(MKDIR)/postgres.mk
+
+include $(CURDIR)/bootstrap/Makefile.inc
+include $(CURDIR)/main/Makefile.inc
+include $(CURDIR)/parser/Makefile.inc
+include $(CURDIR)/utils/Makefile.inc
+
+SRCS:= ${SRCS_BOOTSTRAP} ${SRCS_MAIN} ${SRCS_PARSER} ${SRCS_UTILS}
+
+ifeq ($(BIGOBJS), true)
+OBJS= BOOTSTRAP.o MAIN.o PARSER.o UTILS.o
+CLEANFILES += $(subst .s,.o,$(SRCS:.c=.o)) $(OBJS)
+endif
+
+postgres:$(POSTGRES_DEPEND) $(OBJS) $(EXPORTS)
+	$(CC) $(LDFLAGS) -o $(objdir)/$(@F) $(addprefix $(objdir)/, $(notdir $(OBJS))) $(LDADD)
+
+CFLAGS += -DPOSTGRESDIR='"$(POSTGRESDIR)"' \
+	-DPGDATADIR='"$(DATADIR)"' \
+	-I$(CURDIR)/. -I$(CURDIR)/$(objdir) \
+	-I$(CURDIR)/include \
+	-I$(CURDIR)/port/$(PORTNAME)
+
+#postgres:$(POSTGRES_DEPEND) $(OBJS)
+#	echo 'postgres'
+
+ifeq ($(BIGOBJS), true)
+OBJS_BOOTSTRAP:= $(SRCS_BOOTSTRAP:%.c=$(objdir)/%.o)
+OBJS_MAIN:=$(SRCS_MAIN:%.c=$(objdir)/%.o)
+OBJS_PARSER:=$(SRCS_PARSER:%.c=$(objdir)/%.o)
+OBJS_UTILS:=$(SRCS_UTILS:%.c=$(objdir)/%.o)
+
+#BOOTSTRAP.o:$(OBJS_BOOTSTRAP)
+#	$(make_partial)
+BOOTSTRAP.o:$(OBJS_BOOTSTRAP)
+	$(make_partial)
+MAIN.o:$(OBJS_MAIN)
+	$(make_partial)
+PARSER.o:$(OBJS_PARSER)
+	$(make_partial)
+UTILS.o:$(OBJS_UTILS)
+	$(make_partial)
+endif

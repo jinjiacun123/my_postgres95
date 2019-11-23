@@ -1,0 +1,2 @@
+accdir=$(CURDIR)/access
+VPATH:=$(VPATH):$(accdir):\

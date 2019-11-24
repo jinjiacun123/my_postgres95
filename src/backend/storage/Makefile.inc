@@ -7,4 +7,4 @@ include $(stordir)/ipc/Makefile.inc
 
 SRCS_STORAGE:= $(SUBSRCS)
 
-HEADERS+=
+HEADERS+=backend.h sinval.h sinvaladt.h

@@ -66,7 +66,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 268 of yacc.c  */
-#line 1 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 1 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
 #include "access/xact.h"
 
@@ -120,7 +120,7 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 10 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 10 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
   int ival;
 
@@ -1349,7 +1349,7 @@ Int_yyreduce:
         case 7:
 
 /* Line 1806 of yacc.c  */
-#line 35 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 35 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {
   DO_START;
   //boot_openrel(LexIDStr($2));
@@ -1360,7 +1360,7 @@ Int_yyreduce:
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 42 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 42 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {(Int_yyval.ival)=Int_yylval.ival;}
     break;
 
@@ -1598,6 +1598,6 @@ Int_yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 46 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 46 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
 

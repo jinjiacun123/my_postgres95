@@ -5,7 +5,7 @@
 static void
 ResetSystemCaches(){
   ResetSystemCache();
-  RelationCacheInvalidate(false);
+  //RelationCacheInvalidate(false);
 }
 
 static void
@@ -18,5 +18,5 @@ CacheInvalidate(Index       cacheId,
 
 void
 DiscardInvalid(){
-  InvalidateShareInvalid(CacheInvalidate, ResetSystemCaches);
+  //InvalidateShareInvalid(CacheInvalidate, ResetSystemCaches);
 }

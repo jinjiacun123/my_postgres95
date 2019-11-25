@@ -11,6 +11,7 @@ ResetSystemCache(){
   MemoryContext   oldcxt;
   struct catcache *cache;
 
+  /*
   CACHE1_elog(DEBUG, "ResetSystemCache called");
   if(DisableCache){
     elog(WARN, "ResetSystemCache: Called while cache disabled");
@@ -37,4 +38,5 @@ ResetSystemCache(){
 
   CACHE1_elog();
   MemoryContextSwitchTo(oldcxt);
+  */
 }

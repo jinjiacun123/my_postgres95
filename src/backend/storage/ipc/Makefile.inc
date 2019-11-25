@@ -1,1 +1,1 @@
-SUBSRCS+=sinval.c ipc.c spin.c sinvaladt.c
+SUBSRCS+=sinval.c ipc.c spin.c sinvaladt.c s_lock.c

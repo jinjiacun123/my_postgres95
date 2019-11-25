@@ -1,0 +1,6 @@
+void
+S_LOCK(slock_t *lock)
+{
+  while(tas(lock))
+    ;
+}

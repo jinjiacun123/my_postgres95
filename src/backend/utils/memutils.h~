@@ -1,0 +1,6 @@
+#ifndef MEMUTILS_H
+#define MEMUTILS_H
+typedef struct AllocSetData{
+  OrderedSetData setData;
+} AllocSetData;
+#endif

@@ -53,7 +53,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 10 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 10 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
 
   int ival;
 

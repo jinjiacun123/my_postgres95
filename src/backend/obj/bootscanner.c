@@ -462,8 +462,8 @@ int Int_yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *Int_yytext;
-#line 1 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
-#line 2 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 1 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
+#line 2 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 #include "bootstrap_token.h"
 
 YYSTYPE Int_yylval;
@@ -655,7 +655,7 @@ YY_DECL
 	register char *Int_yy_cp, *Int_yy_bp;
 	register int Int_yy_act;
     
-#line 11 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 11 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 
 #line 661 "lex.Int_yy.c"
 
@@ -742,12 +742,12 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 12 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 12 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 {return(OPEN);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 14 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 14 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 {
 Int_yylval.ival = EnterString(scanstr((char *)Int_yytext));
 return (ID);
@@ -755,7 +755,7 @@ return (ID);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 18 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 18 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 ECHO;
 	YY_BREAK
 #line 762 "lex.Int_yy.c"
@@ -1756,7 +1756,7 @@ void Int_yyfree (void * ptr )
 
 #define YYTABLES_NAME "Int_yytables"
 
-#line 18 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootscanner.l"
+#line 18 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootscanner.l"
 
 
 

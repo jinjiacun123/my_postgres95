@@ -6,12 +6,14 @@ include $(MKDIR)/postgres.mk
 
 include $(CURDIR)/access/Makefile.inc
 include $(CURDIR)/bootstrap/Makefile.inc
+include $(CURDIR)/lib/Makefile.inc
 include $(CURDIR)/main/Makefile.inc
+include $(CURDIR)/nodes/Makefile.inc
 include $(CURDIR)/parser/Makefile.inc
 include $(CURDIR)/storage/Makefile.inc
 include $(CURDIR)/utils/Makefile.inc
 
-SRCS:=${SRCS_ACCESS} ${SRCS_BOOTSTRAP} ${SRCS_MAIN} ${SRCS_PARSER} ${SRCS_UTILS}
+SRCS:=${SRCS_ACCESS} ${SRCS_BOOTSTRAP} ${SRCS_LIB} ${SRCS_MAIN} ${SRCS_PARSER} ${SRCS_UTILS}
 
 ifeq ($(BIGOBJS), true)
 OBJS= ACCESS.o BOOTSTRAP.o MAIN.o PARSER.o STORAGE.o UTILS.o
@@ -30,6 +32,7 @@ CFLAGS += -DPOSTGRESDIR='"$(POSTGRESDIR)"' \
 ifeq ($(BIGOBJS), true)
 OBJS_ACCESS:= $(SRCS_ACCESS:%.c=$(objdir)/%.o)
 OBJS_BOOTSTRAP:= $(SRCS_BOOTSTRAP:%.c=$(objdir)/%.o)
+#OBJS_LIB:=$(SRCS_LIB:%.c=$(objdir)/%.o)
 OBJS_MAIN:=$(SRCS_MAIN:%.c=$(objdir)/%.o)
 OBJS_PARSER:=$(SRCS_PARSER:%.c=$(objdir)/%.o)
 OBJS_STORAGE:=$(SRCS_STORAGE:%.c=$(objdir)/%.o)
@@ -39,6 +42,8 @@ ACCESS.o:$(OBJS_ACCESS)
 	$(make_partial)
 BOOTSTRAP.o:$(OBJS_BOOTSTRAP)
 	$(make_partial)
+#LIB.o:$(OBJS_LIB)
+#	$(make_partial)
 MAIN.o:$(OBJS_MAIN)
 	$(make_partial)
 PARSER.o:$(OBJS_PARSER)

@@ -1,0 +1,3 @@
+VPATH:=$(VPATH):$(CURDIR)/nodes
+
+SRCS_NODES= nodes.c

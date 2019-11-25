@@ -27,4 +27,6 @@ typedef struct SISeg{
 
 extern SISeg *shmInvalBuffer;
 
+extern void SIReadEntryData(SISeg *segP,int backendId,void (*invalFunction)(),void (*resetFunction)());
+extern void SIDelDataEntry(SISeg *segP);
 #endif

@@ -1,0 +1,10 @@
+void
+ExclusiveLock(int lockid)
+{
+  SLock *slckP;
+  slckP = &(SLockArray[lockid]);
+
+
+
+
+}

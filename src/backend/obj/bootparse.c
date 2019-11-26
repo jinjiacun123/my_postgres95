@@ -66,18 +66,22 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 268 of yacc.c  */
-#line 1 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 1 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
 
 #include "access/xact.h"
+#include "bootstrap/bootstrap.h"
 
 #define DO_START {StartTransactionCommand();}
 
-
+#define DO_END {CommitTransactionCommand();\
+  if(!Quiet){ EMITPROMPT}\
+  fflush(stdout);\
+ }
 
 
 
 /* Line 268 of yacc.c  */
-#line 81 "y.tab.c"
+#line 85 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -120,14 +124,14 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 10 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 14 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
 
   int ival;
 
 
 
 /* Line 293 of yacc.c  */
-#line 131 "y.tab.c"
+#line 135 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define Int_yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -139,7 +143,7 @@ typedef union YYSTYPE
 
 
 /* Line 343 of yacc.c  */
-#line 143 "y.tab.c"
+#line 147 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -425,7 +429,7 @@ static const Int_yytype_int8 Int_yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const Int_yytype_uint8 Int_yyrline[] =
 {
-       0,    20,    20,    21,    25,    26,    30,    34,    42
+       0,    24,    24,    25,    29,    30,    34,    38,    46
 };
 #endif
 
@@ -1349,25 +1353,25 @@ Int_yyreduce:
         case 7:
 
 /* Line 1806 of yacc.c  */
-#line 35 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 39 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
     {
   DO_START;
-  //boot_openrel(LexIDStr($2));
-  //DO_END;
+  boot_openrel(LexIDStr((Int_yyvsp[(2) - (2)].ival)));
+  DO_END;
 }
     break;
 
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 42 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 46 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
     {(Int_yyval.ival)=Int_yylval.ival;}
     break;
 
 
 
 /* Line 1806 of yacc.c  */
-#line 1371 "y.tab.c"
+#line 1375 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter Int_yychar, and that requires
@@ -1598,6 +1602,6 @@ Int_yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 46 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
+#line 50 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
 
 

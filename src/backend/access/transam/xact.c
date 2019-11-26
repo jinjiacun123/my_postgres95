@@ -52,3 +52,8 @@ void
 AtStart_Cache(){
   DiscardInvalid();
 }
+
+void
+CommitTransactionCommand(){
+
+}

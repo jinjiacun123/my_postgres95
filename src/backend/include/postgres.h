@@ -18,6 +18,14 @@ typedef struct nameData {
   char data[NAMEDATALEN];
 } NameData;
 
+struct varlena {
+  int32 vl_len;
+  char  vl_dat[1];
+};
+
+typedef struct varlena text;
+
+typedef Oid regproc;
 typedef Oid RegProcedure;
 typedef char * ((*func_ptr)());
 

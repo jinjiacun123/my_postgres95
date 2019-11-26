@@ -2,3 +2,5 @@
 #include "storage/sinvaladt.h"
 
 BackendId MyBackendId;
+
+int Quiet = 1;

@@ -1,5 +1,6 @@
 #include<string.h>
 #include "bootstrap/bootstrap.h"
+#include "catalog/pg_type.h"
 
 #define STRTABLESIZE  10000
 #define HASHTABLESIZE 503
@@ -11,6 +12,29 @@ static   int strtable_end = -1;
 #define NUM     23
 #define NUMSQR  529
 #define NUMCUBE 12167
+
+struct typmap {
+  Oid               am_oid;
+  TypeTupleFormData am_typ;
+};
+
+static char *relname;
+
+struct typinfo {
+  char  name[NAMEDATALEN];
+  Oid   oid;
+  Oid   elem;
+  int16 len;
+  Oid   inproc;
+  Oid   outproc;
+};
+
+static struct typinfo Procid[] = {
+  {"bool", 16, 0, 1, F_BOOLIN, F_BOOLOUT}
+}
+
+static int n_types = sizeof(Procid)/ sizeof(struct typinfo);
+
 
 int
 BootstrapMain(int argc, char *argv[])
@@ -98,4 +122,61 @@ CompHash(char *str, int len)
   result = (NUM * str[0] + NUMSQR * str[len-1] + NUMCUBE * str[(len -1)/2]);
 
   return (result % HASHTABLESIZE);
+}
+
+void
+boot_openrel(char *relname)
+{
+  int i;
+  struct typmap **app;
+  Relation      rdesc;
+  HeapScanDesc  sdesc;
+
+  if(strlen(relname) > 15)
+    relname[15] = '\000';
+}
+
+char *
+LexIDStr(int ident_num)
+{
+  return (strtable[ident_num]);
+}
+
+void
+DefindAttr(char *name, char *type, int attnum)
+{
+  int attlen;
+  int t;
+
+  if(reldesc != NULL){
+    fputs("Warning: no open relations allowed with 't' command.\n", stderr);
+    closerel(relname);
+  }
+
+  t = gettype(type);
+}
+
+void
+closerel(char *name){
+
+}
+
+int
+gettype(char *type)
+{
+  int           i;
+  Relation      rdesc;
+  HeapScanDesc  sdesc;
+  HeapTuple     tup;
+  struct typmap **app;
+
+  if(Typ != (struct typmap *)NULL){
+
+  }
+  else
+   {
+     for(i = 0; i <= n_types; i++){
+
+     }
+   }
 }

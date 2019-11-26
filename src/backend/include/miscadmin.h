@@ -4,4 +4,6 @@
 
 #define MAX_PARSER_BUFFER 8192
 
+extern int Quiet;
+
 #endif

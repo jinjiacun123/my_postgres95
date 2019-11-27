@@ -9,4 +9,11 @@ include $(utilsdir)/init/Makefile.inc
 include $(utilsdir)/cache/Makefile.inc
 SRCS_UTILS:= $(SUBSRCS)
 
-HEADERS+=elog.h
+GENFMGRTAB= $(utilsdir)/Gen_fmgrtab.sh
+GENFMGRTABFILES= fmgrtab.c
+
+$(GENFMGRTABFILES): $(GENFMGRTAB) $(catdir)/pg_proc.h
+	cd $(objdir); \
+    sh $(SHOPTS) $(GENFMGRTAB) $(
+
+HEADERS+=elog.h 

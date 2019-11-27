@@ -17,7 +17,6 @@ CATALOG(pg_type) BOOTSTRAP {
   regproc  receive;
   regproc  typsend;
   char     typalign;
-  text     typdefault;
 } TypeTupleFormData;
 
 #endif

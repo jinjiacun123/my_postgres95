@@ -1,6 +1,6 @@
 PORTNAME=linux
-SRCDIR=/home/jim/source_code/database/my_postgre95/src
-POSTGRESDIR=/home/jim/source_code/database/my_postgre95
+SRCDIR=/home/jim/source_code/database/my_postgres95/src
+POSTGRESDIR=/home/jim/source_code/database/my_postgres95
 POSTGRESLOGIN=postgres
 DATADIR=$(POSTGRESDIR)/data
 BINDIR=$(POSTGRESDIR)/bin

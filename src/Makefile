@@ -3,7 +3,7 @@ MKDIR=./mk
 
 FIND = find
 TAR = tar
-SPLIT = split
+xSPLIT = split
 
 ETAGS = etags
 XARGS = xargs

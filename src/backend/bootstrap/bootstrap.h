@@ -7,10 +7,15 @@
 #include "utils/elog.h"
 #include "utils/rel.h"
 
+#define MAXATTR 40
+
 typedef struct hashnode{
   int strnum;
   struct hashnode *next;
 } hashnode;
+
+extern AttributeTupleForm attrtypes[MAXATTR];
+extern int numattr;
 
 #define EMITPROMPT printf("> ");
 

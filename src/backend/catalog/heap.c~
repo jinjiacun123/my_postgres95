@@ -1,0 +1,7 @@
+Relation
+heap_creatr(char      *name,
+            unsigned  smgr,
+            TupleDesc tupDesc)
+{
+
+}

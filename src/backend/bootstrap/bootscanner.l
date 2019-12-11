@@ -9,8 +9,13 @@ D [0-9]
 oct \\{D}{D}{D}
 id ([A-Za-z_]|{oct}|\-)+
 %%
-open {return(OPEN);}
+open      { return(OPEN); }
+create    { return(XCREATE); }
+bootstrap { return(XBOOTSTRAP); }
 
+"="       { return(EQUALS); }
+"("       { return(LPAREN); }
+")"       { return(RPAREN); }
 {id} {
 yylval.ival = EnterString(scanstr((char *)yytext));
 return (ID);
@@ -24,5 +29,5 @@ return 1;
 yyerror(str)
 char *str;
 {
-fprintf(stderr, "\tsyntax error %d:%s", yyline, str);
+fprintf(stderr, "\tsyntax error %d:%s\n", yyline, str);
 }

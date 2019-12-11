@@ -1,5 +1,6 @@
 #include<string.h>
 #include "bootstrap/bootstrap.h"
+#include "fmgr.h"
 #include "catalog/pg_type.h"
 
 #define STRTABLESIZE  10000
@@ -18,6 +19,13 @@ struct typmap {
   TypeTupleFormData am_typ;
 };
 
+static struct typmap **Typ = (struct typmap **)NULL;
+
+AttributeTupleForm   attrtypes[MAXATTR];
+int                  numattr;
+
+
+Relation    reldesc;
 static char *relname;
 
 struct typinfo {
@@ -31,7 +39,7 @@ struct typinfo {
 
 static struct typinfo Procid[] = {
   {"bool", 16, 0, 1, F_BOOLIN, F_BOOLOUT}
-}
+};
 
 static int n_types = sizeof(Procid)/ sizeof(struct typinfo);
 
@@ -143,7 +151,7 @@ LexIDStr(int ident_num)
 }
 
 void
-DefindAttr(char *name, char *type, int attnum)
+DefineAttr(char *name, char *type, int attnum)
 {
   int attlen;
   int t;

@@ -30,5 +30,8 @@ typedef unsigned long Datum;
 
 #define CppConcat(x,y) x##y
 
+#define AssertArg(condition);
+
+typedef unsigned int Size;
 
 #endif

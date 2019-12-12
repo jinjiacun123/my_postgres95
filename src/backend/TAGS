@@ -1,0 +1,1051 @@
+
+access/skey.h,362
+#define SKEY_HSKEY_H2,15
+typedef struct ScanKeyData {ScanKeyData6,80
+  bits16       sk_flags;sk_flags7,109
+  AttrNumber   sk_attno;sk_attno8,134
+  RegProcedure sk_procedure;sk_procedure9,159
+  func_ptr     sk_func;sk_func10,188
+  int32        sk_nargs;sk_nargs11,212
+  Datum        sk_argument;sk_argument12,237
+} ScanKeyData;ScanKeyData13,265
+
+access/relscan.h,189
+#define RELSCAN_HRELSCAN_H2,18
+typedef struct HeapScanDescData {HeapScanDescData4,37
+} HeapScanDescData;HeapScanDescData6,72
+typedef HeapScanDescData *HeapScanDesc;HeapScanDesc8,93
+
+access/transam/xid.c,72
+TransactionIdStore(TransactionId transactionId,TransactionIdStore4,28
+
+access/transam/xact.c,433
+bool AMI_OVERRIDE = false;AMI_OVERRIDE4,48
+TransactionStateData CurrentTransactionStateData = {CurrentTransactionStateData6,76
+TransactionState CurrentTransactionState = &CurrentTransactionStateData;CurrentTransactionState13,196
+StartTransactionCommand()StartTransactionCommand16,275
+StartTransaction()StartTransaction27,436
+AtStart_Cache(){AtStart_Cache52,864
+CommitTransactionCommand(){CommitTransactionCommand57,909
+
+access/transam/varsup.c,65
+GetNewTransactionId(TransactionId *xid)GetNewTransactionId5,56
+
+access/transam/transam.c,75
+TransactionId AmiTransactionId = (TransactionId)512;AmiTransactionId4,51
+
+access/common/tupdesc.c,76
+CreateTupleDesc(int natts, AttributeTupleForm *attrs){CreateTupleDesc5,61
+
+access/htup.h,862
+#define HTOP_HHTOP_H2,15
+#define MinHeapTupleBitmapSize MinHeapTupleBitmapSize6,88
+typedef struct HeapTupleData {HeapTupleData8,123
+  unsigned int    t_len;t_len9,154
+  ItemPointerData t_ctid;t_ctid10,179
+  ItemPointerData t_chain;t_chain11,205
+  Oid             t_oid;t_oid13,233
+  CommandId       t_cmin;t_cmin15,259
+  CommandId       t_cmax;t_cmax16,285
+  TransactionId   t_xmin;t_xmin18,312
+  TransactionId   t_xmax;t_xmax19,338
+  AbsoluteTime    t_tmin;t_tmin21,365
+  AbsoluteTime    t_tmax;t_tmax22,391
+  int16           t_natts;t_natts24,418
+  char            t_vtype;t_vtype25,445
+  char            t_infomask;t_infomask27,473
+  uint8           t_hoff;t_hoff29,504
+  bits8           t_bits[MinHeapTupleBitmapSize/8];t_bits30,530
+} HeapTupleData;HeapTupleData31,582
+typedef HeapTupleData *HeapTuple;HeapTuple33,600
+
+access/xact.h,672
+#define XACT_HXACT_H2,15
+typedef struct TransactionStateData{TransactionStateData6,82
+  TransactionId  transactionIdData;transactionIdData7,119
+  CommandId      commandId;commandId8,155
+  AbsoluteTime   startTime;startTime9,183
+  int            state;state10,211
+  int            blockState;blockState11,235
+} TransactionStateData;TransactionStateData12,264
+#define TRANS_DEFAULT TRANS_DEFAULT14,289
+#define TRANS_START TRANS_START15,316
+#define TRANS_INPROGRESS TRANS_INPROGRESS16,343
+#define TRANS_DISABLED TRANS_DISABLED17,370
+#define TBLOCK_DEFAULT TBLOCK_DEFAULT19,398
+typedef TransactionStateData *TransactionState;TransactionState21,424
+
+access/attnum.h,73
+#define ATTNUM_HATTNUM_H2,17
+typedef int16 AttrNumber;AttrNumber5,50
+
+access/tupdesc.h,185
+#define TUPDESC_HTUPDESC_H2,18
+typedef struct tupleDesc {tupleDesc4,70
+  int                natts;natts5,97
+  AttributeTupleForm *attrs;attrs6,125
+} *TupleDesc;TupleDesc7,154
+
+access/transam.h,33
+#define TRANSAM_HTRANSAM_H2,18
+
+obj/bootstrap_token.h,1007
+# define YYTOKENTYPEYYTOKENTYPE36,1566
+   enum yytokentype {yytokentype39,1690
+     ID = 258,ID40,1712
+     OPEN = 259,OPEN41,1727
+     XCLOSE = 260,XCLOSE42,1744
+     XCREATE = 261,XCREATE43,1763
+     COMMA = 262,COMMA44,1783
+     EQUALS = 263,EQUALS45,1801
+     LPAREN = 264,LPAREN46,1820
+     RPAREN = 265,RPAREN47,1839
+     XBOOTSTRAP = 266,XBOOTSTRAP48,1858
+     low = 267,low49,1881
+     high = 268high50,1897
+#define ID ID54,1941
+#define OPEN OPEN55,1956
+#define XCLOSE XCLOSE56,1973
+#define XCREATE XCREATE57,1992
+#define COMMA COMMA58,2012
+#define EQUALS EQUALS59,2030
+#define LPAREN LPAREN60,2049
+#define RPAREN RPAREN61,2068
+#define XBOOTSTRAP XBOOTSTRAP62,2087
+#define low low63,2110
+#define high high64,2126
+typedef union YYSTYPEYYSTYPE70,2202
+  int ival;ival76,2336
+} YYSTYPE;YYSTYPE82,2397
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL83,2408
+# define yystype yystype84,2438
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED85,2500
+
+obj/fmgr.h,370
+#define FMGR_HFMGR_H22,658
+#define	MAXFMGRARGS	MAXFMGRARGS33,979
+    char *data[MAXFMGRARGS];data36,1019
+} FmgrValues;FmgrValues37,1048
+#define	FMGR_PTR2(FMGR_PTR265,1903
+#define	FMGR_PTR2(FMGR_PTR267,1982
+#define	SEL_CONSTANT SEL_CONSTANT73,2157
+#define	SEL_RIGHT	SEL_RIGHT74,2228
+#define F_BOOLIN F_BOOLIN76,2294
+#define F_BOOLOUT F_BOOLOUT77,2314
+
+obj/bootparse.c,7713
+#define YYBISON YYBISON44,2057
+#define YYBISON_VERSION YYBISON_VERSION47,2098
+#define YYSKELETON_NAME YYSKELETON_NAME50,2151
+#define YYPURE YYPURE53,2206
+#define YYPUSH YYPUSH56,2245
+#define YYPULL YYPULL59,2284
+#define YYLSP_NEEDED YYLSP_NEEDED62,2326
+#define DO_START DO_START76,2622
+#define DO_END DO_END78,2669
+# define YYDEBUG YYDEBUG90,2852
+# undef YYERROR_VERBOSEYYERROR_VERBOSE95,2942
+# define YYERROR_VERBOSE YYERROR_VERBOSE96,2966
+# define YYERROR_VERBOSE YYERROR_VERBOSE98,2999
+# define YYTOKEN_TABLE YYTOKEN_TABLE103,3089
+# define YYTOKENTYPEYYTOKENTYPE109,3158
+   enum Int_yytokentype {Int_yytokentype112,3282
+     ID = 258,ID113,3308
+     OPEN = 259,OPEN114,3323
+     XCLOSE = 260,XCLOSE115,3340
+     XCREATE = 261,XCREATE116,3359
+     COMMA = 262,COMMA117,3379
+     EQUALS = 263,EQUALS118,3397
+     LPAREN = 264,LPAREN119,3416
+     RPAREN = 265,RPAREN120,3435
+     XBOOTSTRAP = 266,XBOOTSTRAP121,3454
+     low = 267,low122,3477
+     high = 268high123,3493
+#define ID ID127,3537
+#define OPEN OPEN128,3552
+#define XCLOSE XCLOSE129,3569
+#define XCREATE XCREATE130,3588
+#define COMMA COMMA131,3608
+#define EQUALS EQUALS132,3626
+#define LPAREN LPAREN133,3645
+#define RPAREN RPAREN134,3664
+#define XBOOTSTRAP XBOOTSTRAP135,3683
+#define low low136,3706
+#define high high137,3722
+typedef union YYSTYPEYYSTYPE143,3798
+  int ival;ival149,3931
+} YYSTYPE;YYSTYPE155,3992
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL156,4003
+# define Int_yystype Int_yystype157,4033
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED158,4099
+# undef shortshort169,4251
+typedef YYTYPE_UINT8 Int_yytype_uint8;Int_yytype_uint8173,4293
+typedef unsigned char Int_yytype_uint8;Int_yytype_uint8175,4338
+typedef YYTYPE_INT8 Int_yytype_int8;Int_yytype_int8179,4405
+typedef signed char Int_yytype_int8;Int_yytype_int8182,4542
+typedef short int Int_yytype_int8;Int_yytype_int8184,4585
+typedef YYTYPE_UINT16 Int_yytype_uint16;Int_yytype_uint16188,4649
+typedef unsigned short int Int_yytype_uint16;Int_yytype_uint16190,4696
+typedef YYTYPE_INT16 Int_yytype_int16;Int_yytype_int16194,4770
+typedef short int Int_yytype_int16;Int_yytype_int16196,4815
+#  define YYSIZE_T YYSIZE_T201,4898
+#  define YYSIZE_T YYSIZE_T203,4953
+#  define YYSIZE_T YYSIZE_T207,5159
+#  define YYSIZE_T YYSIZE_T209,5192
+#define YYSIZE_MAXIMUM YYSIZE_MAXIMUM213,5240
+#   define YY_(YY_219,5410
+#  define YY_(YY_223,5496
+# define YYUSE(YYUSE229,5633
+# define YYUSE(YYUSE231,5670
+# define YYID(YYID236,5800
+YYID (int Int_yyi)YYID241,5936
+#    define YYSTACK_ALLOC YYSTACK_ALLOC259,6236
+#    define YYSTACK_ALLOC YYSTACK_ALLOC263,6399
+#    define alloca alloca266,6519
+#    define YYSTACK_ALLOC YYSTACK_ALLOC268,6555
+#      define EXIT_SUCCESS EXIT_SUCCESS273,6825
+#  define YYSTACK_FREE(YYSTACK_FREE282,6975
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM288,7372
+#  define YYSTACK_ALLOC YYSTACK_ALLOC291,7454
+#  define YYSTACK_FREE YYSTACK_FREE292,7487
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM294,7549
+#    define EXIT_SUCCESS EXIT_SUCCESS301,7839
+#   define YYMALLOC YYMALLOC305,7904
+#   define YYFREE YYFREE312,8174
+union Int_yyallocInt_yyalloc327,8668
+  Int_yytype_int16 Int_yyss_alloc;Int_yyss_alloc329,8688
+  YYSTYPE Int_yyvs_alloc;Int_yyvs_alloc330,8723
+# define YYSTACK_GAP_MAXIMUM YYSTACK_GAP_MAXIMUM334,8828
+# define YYSTACK_BYTES(YYSTACK_BYTES338,8980
+# define YYCOPY_NEEDED YYCOPY_NEEDED342,9099
+# define YYSTACK_RELOCATE(YYSTACK_RELOCATE349,9408
+#   define YYCOPY(YYCOPY367,9995
+#   define YYCOPY(YYCOPY370,10102
+#define YYFINAL YYFINAL383,10419
+#define YYLAST YYLAST385,10478
+#define YYNTOKENS YYNTOKENS388,10540
+#define YYNNTS YYNNTS390,10603
+#define YYNRULES YYNRULES392,10658
+#define YYNSTATES YYNSTATES394,10716
+#define YYUNDEFTOK YYUNDEFTOK397,10812
+#define YYMAXUTOK YYMAXUTOK398,10834
+#define YYTRANSLATE(YYTRANSLATE400,10859
+static const Int_yytype_uint8 Int_yytranslate[] =Int_yytranslate404,11039
+static const Int_yytype_uint8 Int_yyprhs[] =Int_yyprhs438,13154
+static const Int_yytype_int8 Int_yyrhs[] =Int_yyrhs445,13379
+static const Int_yytype_uint8 Int_yyrline[] =Int_yyrline454,13782
+static const char *const Int_yytname[] =Int_yytname464,14142
+static const Int_yytype_uint16 Int_yytoknum[] =Int_yytoknum476,14566
+static const Int_yytype_uint8 Int_yyr1[] =Int_yyr1484,14798
+static const Int_yytype_uint8 Int_yyr2[] =Int_yyr2491,15041
+static const Int_yytype_uint8 Int_yydefact[] =Int_yydefact500,15387
+static const Int_yytype_int8 Int_yydefgoto[] =Int_yydefgoto508,15638
+#define YYPACT_NINF YYPACT_NINF516,15858
+static const Int_yytype_int8 Int_yypact[] =Int_yypact517,15882
+static const Int_yytype_int8 Int_yypgoto[] =Int_yypgoto525,16128
+#define YYTABLE_NINF YYTABLE_NINF534,16458
+static const Int_yytype_uint8 Int_yytable[] =Int_yytable535,16482
+#define Int_yypact_value_is_default(Int_yypact_value_is_default541,16630
+#define Int_yytable_value_is_error(Int_yytable_value_is_error544,16709
+static const Int_yytype_int8 Int_yycheck[] =Int_yycheck547,16777
+static const Int_yytype_uint8 Int_yystos[] =Int_yystos555,17021
+#define Int_yyerrok	Int_yyerrok562,17241
+#define Int_yyclearin	Int_yyclearin563,17284
+#define YYEMPTY	YYEMPTY564,17329
+#define YYEOF	YYEOF565,17351
+#define YYACCEPT	YYACCEPT567,17369
+#define YYABORT	YYABORT568,17407
+#define YYERROR	YYERROR569,17444
+#define YYFAIL	YYFAIL579,17851
+#define YYRECOVERING(YYRECOVERING587,18175
+#define YYBACKUP(YYBACKUP589,18220
+#define YYTERROR	YYTERROR606,18629
+#define YYERRCODE	YYERRCODE607,18648
+#define YYRHSLOC(YYRHSLOC614,18854
+# define YYLLOC_DEFAULT(YYLLOC_DEFAULT616,18913
+# define YY_LOCATION_PRINT(YY_LOCATION_PRINT639,19664
+# define YYLEX YYLEX646,19804
+# define YYLEX YYLEX648,19849
+#  define YYFPRINTF YYFPRINTF656,20011
+# define YYDPRINTF(YYDPRINTF659,20048
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT665,20159
+Int_yy_symbol_value_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_value_print685,20709
+Int_yy_symbol_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_print717,21453
+Int_yy_stack_print (Int_yytype_int16 *Int_yybottom, Int_yytype_int16 *Int_yytop)Int_yy_stack_print743,22395
+# define YY_STACK_PRINT(YY_STACK_PRINT760,22828
+Int_yy_reduce_print (YYSTYPE *Int_yyvsp, int Int_yyrule)Int_yy_reduce_print774,23246
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT798,23970
+int Int_yydebug;Int_yydebug806,24211
+# define YYDPRINTF(YYDPRINTF808,24249
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT809,24274
+# define YY_STACK_PRINT(YY_STACK_PRINT810,24329
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT811,24366
+# define YYINITDEPTH YYINITDEPTH817,24500
+# define YYMAXDEPTH YYMAXDEPTH828,24856
+#   define Int_yystrlen Int_yystrlen836,24979
+Int_yystrlen (const char *Int_yystr)Int_yystrlen842,25167
+#   define Int_yystpcpy Int_yystpcpy859,25510
+Int_yystpcpy (char *Int_yydest, const char *Int_yysrc)Int_yystpcpy866,25750
+Int_yytnamerr (char *Int_yyres, const char *Int_yystr)Int_yytnamerr894,26563
+Int_yysyntax_error (YYSIZE_T *Int_yymsg_alloc, char **Int_yymsg,Int_yysyntax_error942,27692
+# define YYCASE_(YYCASE_1021,31537
+# undef YYCASE_YYCASE_1031,32092
+Int_yydestruct (const char *Int_yymsg, int Int_yytype, YYSTYPE *Int_yyvaluep)Int_yydestruct1078,33438
+int Int_yychar;Int_yychar1119,34255
+YYSTYPE Int_yylval;Int_yylval1122,34323
+int Int_yynerrs;Int_yynerrs1125,34383
+Int_yyparse (void *YYPARSE_PARAM)Int_yyparse1136,34572
+#define YYPOPSTACK(YYPOPSTACK1192,35949
+
+obj/bootscanner.c,10143
+#define  YY_INT_ALIGNED YY_INT_ALIGNED4,25
+#define FLEX_SCANNERFLEX_SCANNER8,103
+#define YY_FLEX_MAJOR_VERSION YY_FLEX_MAJOR_VERSION9,124
+#define YY_FLEX_MINOR_VERSION YY_FLEX_MINOR_VERSION10,156
+#define YY_FLEX_SUBMINOR_VERSION YY_FLEX_SUBMINOR_VERSION11,188
+#define FLEX_BETAFLEX_BETA13,257
+#define FLEXINT_HFLEXINT_H29,555
+#define __STDC_LIMIT_MACROS __STDC_LIMIT_MACROS39,866
+typedef int8_t flex_int8_t;flex_int8_t43,926
+typedef uint8_t flex_uint8_t;flex_uint8_t44,954
+typedef int16_t flex_int16_t;flex_int16_t45,984
+typedef uint16_t flex_uint16_t;flex_uint16_t46,1014
+typedef int32_t flex_int32_t;flex_int32_t47,1046
+typedef uint32_t flex_uint32_t;flex_uint32_t48,1076
+typedef signed char flex_int8_t;flex_int8_t50,1114
+typedef short int flex_int16_t;flex_int16_t51,1147
+typedef int flex_int32_t;flex_int32_t52,1179
+typedef unsigned char flex_uint8_t; flex_uint8_t53,1205
+typedef unsigned short int flex_uint16_t;flex_uint16_t54,1242
+typedef unsigned int flex_uint32_t;flex_uint32_t55,1284
+#define INT8_MIN INT8_MIN59,1370
+#define INT16_MIN INT16_MIN62,1433
+#define INT32_MIN INT32_MIN65,1500
+#define INT8_MAX INT8_MAX68,1571
+#define INT16_MAX INT16_MAX71,1633
+#define INT32_MAX INT32_MAX74,1697
+#define UINT8_MAX UINT8_MAX77,1766
+#define UINT16_MAX UINT16_MAX80,1830
+#define UINT32_MAX UINT32_MAX83,1896
+#define YY_USE_CONSTYY_USE_CONST93,2066
+#define YY_USE_CONSTYY_USE_CONST100,2187
+#define Int_yyconst Int_yyconst106,2289
+#define Int_yyconstInt_yyconst108,2321
+#define YY_NULL YY_NULL112,2382
+#define YY_SC_TO_UI(YY_SC_TO_UI119,2629
+#define BEGIN BEGIN125,2860
+#define YY_START YY_START131,3063
+#define YYSTATE YYSTATE132,3107
+#define YY_STATE_EOF(YY_STATE_EOF135,3190
+#define YY_NEW_FILE YY_NEW_FILE138,3310
+#define YY_END_OF_BUFFER_CHAR YY_END_OF_BUFFER_CHAR140,3357
+#define YY_BUF_SIZE YY_BUF_SIZE149,3623
+#define YY_BUF_SIZE YY_BUF_SIZE151,3655
+#define YY_STATE_BUF_SIZE YY_STATE_BUF_SIZE157,3805
+#define YY_TYPEDEF_YY_BUFFER_STATEYY_TYPEDEF_YY_BUFFER_STATE160,3917
+typedef struct Int_yy_buffer_state *YY_BUFFER_STATE;YY_BUFFER_STATE161,3952
+#define EOB_ACT_CONTINUE_SCAN EOB_ACT_CONTINUE_SCAN168,4073
+#define EOB_ACT_END_OF_FILE EOB_ACT_END_OF_FILE169,4105
+#define EOB_ACT_LAST_MATCH EOB_ACT_LAST_MATCH170,4135
+    #define YY_LESS_LINENO(YY_LESS_LINENO172,4165
+#define Int_yyless(Int_yyless175,4280
+#define unput(unput188,4679
+#define YY_TYPEDEF_YY_SIZE_TYY_TYPEDEF_YY_SIZE_T191,4762
+typedef size_t Int_yy_size_t;Int_yy_size_t192,4791
+#define YY_STRUCT_YY_BUFFER_STATEYY_STRUCT_YY_BUFFER_STATE196,4863
+struct Int_yy_buffer_stateInt_yy_buffer_state197,4897
+	FILE *Int_yy_input_file;Int_yy_input_file199,4927
+	char *Int_yy_ch_buf;		/* input buffer */Int_yy_ch_buf201,4954
+	char *Int_yy_buf_pos;		/* current position in input buffer */Int_yy_buf_pos202,4996
+	Int_yy_size_t Int_yy_buf_size;Int_yy_buf_size207,5143
+	int Int_yy_n_chars;Int_yy_n_chars212,5265
+	int Int_yy_is_our_buffer;Int_yy_is_our_buffer218,5431
+	int Int_yy_is_interactive;Int_yy_is_interactive225,5673
+	int Int_yy_at_bol;Int_yy_at_bol231,5844
+    int Int_yy_bs_lineno; /**< The line count. */Int_yy_bs_lineno233,5865
+    int Int_yy_bs_column; /**< The column count. */Int_yy_bs_column234,5915
+	int Int_yy_fill_buffer;Int_yy_fill_buffer239,6054
+	int Int_yy_buffer_status;Int_yy_buffer_status241,6080
+#define YY_BUFFER_NEW YY_BUFFER_NEW243,6108
+#define YY_BUFFER_NORMAL YY_BUFFER_NORMAL244,6132
+#define YY_BUFFER_EOF_PENDING YY_BUFFER_EOF_PENDING255,6638
+static size_t Int_yy_buffer_stack_top = 0; /**< index of top of stack. */Int_yy_buffer_stack_top261,6746
+static size_t Int_yy_buffer_stack_max = 0; /**< capacity of stack. */Int_yy_buffer_stack_max262,6820
+static YY_BUFFER_STATE * Int_yy_buffer_stack = 0; /**< Stack as an array. */Int_yy_buffer_stack263,6890
+#define YY_CURRENT_BUFFER YY_CURRENT_BUFFER271,7162
+#define YY_CURRENT_BUFFER_LVALUE YY_CURRENT_BUFFER_LVALUE278,7470
+static char Int_yy_hold_char;Int_yy_hold_char281,7628
+static int Int_yy_n_chars;		/* number of characters read into Int_yy_ch_buf */Int_yy_n_chars282,7658
+int Int_yyleng;Int_yyleng283,7737
+static char *Int_yy_c_buf_p = (char *) 0;Int_yy_c_buf_p286,7799
+static int Int_yy_init = 0;		/* whether we need to initialize */Int_yy_init287,7841
+static int Int_yy_start = 0;	/* start state number */Int_yy_start288,7906
+static int Int_yy_did_buffer_switch_on_eof;Int_yy_did_buffer_switch_on_eof293,8097
+#define YY_FLUSH_BUFFER YY_FLUSH_BUFFER307,8661
+#define Int_yy_new_buffer Int_yy_new_buffer317,9049
+#define Int_yy_set_interactive(Int_yy_set_interactive319,9097
+#define Int_yy_set_bol(Int_yy_set_bol329,9393
+#define YY_AT_BOL(YY_AT_BOL339,9656
+typedef unsigned char YY_CHAR;YY_CHAR343,9743
+FILE *Int_yyin = (FILE *) 0, *Int_yyout = (FILE *) 0;Int_yyin345,9775
+FILE *Int_yyin = (FILE *) 0, *Int_yyout = (FILE *) 0;Int_yyout345,9775
+typedef int Int_yy_state_type;Int_yy_state_type347,9830
+int Int_yylineno = 1;Int_yylineno351,9888
+#define Int_yytext_ptr Int_yytext_ptr354,9936
+#define YY_DO_BEFORE_ACTION YY_DO_BEFORE_ACTION364,10333
+#define YY_NUM_RULES YY_NUM_RULES371,10536
+#define YY_END_OF_BUFFER YY_END_OF_BUFFER372,10559
+struct Int_yy_trans_infoInt_yy_trans_info375,10668
+	flex_int32_t Int_yy_verify;Int_yy_verify377,10696
+	flex_int32_t Int_yy_nxt;Int_yy_nxt378,10725
+static Int_yyconst flex_int16_t Int_yy_accept[35] =Int_yy_accept380,10755
+static Int_yyconst flex_int32_t Int_yy_ec[256] =Int_yy_ec388,11050
+static Int_yyconst flex_int32_t Int_yy_meta[20] =Int_yy_meta420,12780
+static Int_yyconst flex_int16_t Int_yy_base[36] =Int_yy_base426,12973
+static Int_yyconst flex_int16_t Int_yy_def[36] =Int_yy_def434,13272
+static Int_yyconst flex_int16_t Int_yy_nxt[83] =Int_yy_nxt442,13570
+static Int_yyconst flex_int16_t Int_yy_chk[83] =Int_yy_chk455,14175
+static Int_yy_state_type Int_yy_last_accepting_state;Int_yy_last_accepting_state468,14780
+static char *Int_yy_last_accepting_cpos;Int_yy_last_accepting_cpos469,14834
+int Int_yy_flex_debug = 0;Int_yy_flex_debug472,14906
+#define REJECT REJECT477,15036
+#define Int_yymore(Int_yymore478,15080
+#define YY_MORE_ADJ YY_MORE_ADJ479,15134
+#define YY_RESTORE_YY_MORE_OFFSETYY_RESTORE_YY_MORE_OFFSET480,15156
+char *Int_yytext;Int_yytext481,15190
+YYSTYPE Int_yylval;Int_yylval486,15402
+int Int_yyline;Int_yyline487,15422
+#define INITIAL INITIAL490,15464
+#define YY_EXTRA_TYPE YY_EXTRA_TYPE501,15766
+#define YY_READ_BUF_SIZE YY_READ_BUF_SIZE571,17137
+#define YY_READ_BUF_SIZE YY_READ_BUF_SIZE573,17174
+#define ECHO ECHO582,17414
+#define YY_INPUT(YY_INPUT589,17636
+#define Int_yyterminate(Int_yyterminate626,18582
+#define YY_START_STACK_INCR YY_START_STACK_INCR631,18721
+#define YY_FATAL_ERROR(YY_FATAL_ERROR636,18811
+#define YY_DECL_IS_OURS YY_DECL_IS_OURS645,19048
+#define YY_DECL YY_DECL649,19105
+#define YY_USER_ACTIONYY_USER_ACTION656,19293
+#define YY_BREAK YY_BREAK661,19386
+#define YY_RULE_SETUP YY_RULE_SETUP664,19418
+static int Int_yy_get_next_buffer (void)Int_yy_get_next_buffer948,27286
+    static Int_yy_state_type Int_yy_get_previous_state (void)Int_yy_get_previous_state1082,31115
+    static Int_yy_state_type Int_yy_try_NUL_trans  (Int_yy_state_type Int_yy_current_state )Int_yy_try_NUL_trans1114,32184
+    static void Int_yyunput (int c, register char * Int_yy_bp )Int_yyunput1137,32994
+    static int Int_yyinput (void)Int_yyinput1176,34170
+    void Int_yyrestart  (FILE * input_file )Int_yyrestart1253,36035
+    void Int_yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )Int_yy_switch_to_buffer1270,36420
+static void Int_yy_load_buffer_state  (void)Int_yy_load_buffer_state1301,37319
+    YY_BUFFER_STATE Int_yy_create_buffer  (FILE * file, int  size )Int_yy_create_buffer1315,37832
+    void Int_yy_delete_buffer (YY_BUFFER_STATE  b )Int_yy_delete_buffer1343,38579
+    static void Int_yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file )Int_yy_init_buffer1366,39128
+    void Int_yy_flush_buffer (YY_BUFFER_STATE  b )Int_yy_flush_buffer1394,39901
+void Int_yypush_buffer_state (YY_BUFFER_STATE new_buffer )Int_yypush_buffer_state1423,40623
+void Int_yypop_buffer_state (void)Int_yypop_buffer_state1453,41440
+static void Int_yyensure_buffer_stack (void)Int_yyensure_buffer_stack1472,41859
+YY_BUFFER_STATE Int_yy_scan_buffer  (char * base, Int_yy_size_t  size )Int_yy_scan_buffer1521,43579
+YY_BUFFER_STATE Int_yy_scan_string (Int_yyconst char * Int_yystr )Int_yy_scan_string1558,44732
+YY_BUFFER_STATE Int_yy_scan_bytes  (Int_yyconst char * Int_yybytes, int  _yybytes_len )Int_yy_scan_bytes1571,45181
+#define YY_EXIT_FAILURE YY_EXIT_FAILURE1602,45944
+static void Int_yy_fatal_error (Int_yyconst char* msg )Int_yy_fatal_error1605,45978
+#undef Int_yylessInt_yyless1613,46169
+#define Int_yyless(Int_yyless1614,46187
+int Int_yyget_lineno  (void)Int_yyget_lineno1633,46706
+FILE *Int_yyget_in  (void)Int_yyget_in1642,46808
+FILE *Int_yyget_out  (void)Int_yyget_out1650,46900
+int Int_yyget_leng  (void)Int_yyget_leng1658,47008
+char *Int_yyget_text  (void)Int_yyget_text1667,47103
+void Int_yyset_lineno (int  line_number )Int_yyset_lineno1676,47227
+void Int_yyset_in (FILE *  in_str )Int_yyset_in1688,47464
+void Int_yyset_out (FILE *  out_str )Int_yyset_out1693,47533
+int Int_yyget_debug  (void)Int_yyget_debug1698,47606
+void Int_yyset_debug (int  bdebug )Int_yyset_debug1703,47673
+static int Int_yy_init_globals (void)Int_yy_init_globals1708,47751
+int Int_yylex_destroy  (void)Int_yylex_destroy1737,48489
+static void Int_yy_flex_strncpy (char* s1, Int_yyconst char * s2, int n )Int_yy_flex_strncpy1763,49079
+static int Int_yy_flex_strlen (Int_yyconst char * s )Int_yy_flex_strlen1772,49248
+void *Int_yyalloc (Int_yy_size_t  size )Int_yyalloc1782,49373
+void *Int_yyrealloc  (void * ptr, Int_yy_size_t  size )Int_yyrealloc1787,49452
+void Int_yyfree (void * ptr )Int_yyfree1799,49916
+#define YYTABLES_NAME YYTABLES_NAME1804,50018
+Int_yywrap(){Int_yywrap1810,50142
+Int_yyerror(str)Int_yyerror1814,50169
+
+obj/fmgrtab.c,310
+# define MAXINT	MAXINT32,1082
+static FmgrCall fmgr_builtins[] = {fmgr_builtins43,1287
+static int fmgr_nbuiltins = (sizeof(fmgr_builtins) / sizeof(FmgrCall)) - 1;fmgr_nbuiltins54,1529
+FmgrCall *fmgr_isbuiltin(Oid id)fmgr_isbuiltin56,1606
+func_ptr fmgr_lookupByName(char *name)fmgr_lookupByName78,2040
+
+obj/bootstrap_tokens.h,185
+typedef int YYSTYPE;YYSTYPE39,1590
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL40,1611
+# define yystype yystype41,1641
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED42,1703
+
+main/main.c,39
+main(int argc, char *argv[]){main3,5
+
+lib/dllist.h,388
+#define DLLIST_HDLLIST_H2,17
+typedef struct Dlelem {Dlelem4,35
+  struct Dlelem *dle_next;dle_next5,59
+  struct Dlelem *dle_prev;dle_prev6,86
+  void          *dle_val;dle_val7,113
+  struct Dllist *dle_list;dle_list8,139
+} Dlelem;Dlelem9,166
+typedef struct Dllist {Dllist11,177
+  Dlelem *dll_head;dll_head12,201
+  Dlelem *dll_tail;dll_tail13,221
+} Dllist;Dllist14,241
+
+catalog/pg_proc.c,0
+
+catalog/heap.c,46
+heap_creatr(char      *name,heap_creatr7,82
+
+catalog/pg_proc.h,33
+#define PG_PROC_HPG_PROC_H2,18
+
+catalog/pg_attribute.h,120
+#define PG_ATTRIBUTE_HPG_ATTRIBUTE_H2,23
+typedef FormData_pg_attribute *AttributeTupleForm;AttributeTupleForm25,471
+
+catalog/pg_type.h,33
+#define PG_TYPE_HPG_TYPE_H2,18
+
+y.tab.c,7168
+#define YYBISON YYBISON44,2053
+#define YYBISON_VERSION YYBISON_VERSION47,2094
+#define YYSKELETON_NAME YYSKELETON_NAME50,2147
+#define YYPURE YYPURE53,2202
+#define YYPUSH YYPUSH56,2241
+#define YYPULL YYPULL59,2280
+#define YYLSP_NEEDED YYLSP_NEEDED62,2322
+#define DO_START DO_START74,2564
+#define DO_END DO_END76,2611
+# define YYDEBUG YYDEBUG88,2794
+# undef YYERROR_VERBOSEYYERROR_VERBOSE93,2884
+# define YYERROR_VERBOSE YYERROR_VERBOSE94,2908
+# define YYERROR_VERBOSE YYERROR_VERBOSE96,2941
+# define YYTOKEN_TABLE YYTOKEN_TABLE101,3031
+# define YYTOKENTYPEYYTOKENTYPE107,3100
+   enum yytokentype {yytokentype110,3224
+     ID = 258,ID111,3246
+     OPEN = 259,OPEN112,3261
+     XCLOSE = 260,XCLOSE113,3278
+     XCREATE = 261,XCREATE114,3297
+     COMMA = 262,COMMA115,3317
+     EQUALS = 263,EQUALS116,3335
+     LPAREN = 264,LPAREN117,3354
+     RPAREN = 265,RPAREN118,3373
+     XBOOTSTRAP = 266,XBOOTSTRAP119,3392
+     low = 267,low120,3415
+     high = 268high121,3431
+#define ID ID125,3475
+#define OPEN OPEN126,3490
+#define XCLOSE XCLOSE127,3507
+#define XCREATE XCREATE128,3526
+#define COMMA COMMA129,3546
+#define EQUALS EQUALS130,3564
+#define LPAREN LPAREN131,3583
+#define RPAREN RPAREN132,3602
+#define XBOOTSTRAP XBOOTSTRAP133,3621
+#define low low134,3644
+#define high high135,3660
+typedef union YYSTYPEYYSTYPE141,3736
+  int ival;ival147,3869
+} YYSTYPE;YYSTYPE153,3930
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL154,3941
+# define yystype yystype155,3971
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED156,4033
+# undef shortshort167,4185
+typedef YYTYPE_UINT8 yytype_uint8;yytype_uint8171,4227
+typedef unsigned char yytype_uint8;yytype_uint8173,4268
+typedef YYTYPE_INT8 yytype_int8;yytype_int8177,4331
+typedef signed char yytype_int8;yytype_int8180,4464
+typedef short int yytype_int8;yytype_int8182,4503
+typedef YYTYPE_UINT16 yytype_uint16;yytype_uint16186,4563
+typedef unsigned short int yytype_uint16;yytype_uint16188,4606
+typedef YYTYPE_INT16 yytype_int16;yytype_int16192,4676
+typedef short int yytype_int16;yytype_int16194,4717
+#  define YYSIZE_T YYSIZE_T199,4796
+#  define YYSIZE_T YYSIZE_T201,4851
+#  define YYSIZE_T YYSIZE_T205,5057
+#  define YYSIZE_T YYSIZE_T207,5090
+#define YYSIZE_MAXIMUM YYSIZE_MAXIMUM211,5138
+#   define YY_(YY_217,5308
+#  define YY_(YY_221,5394
+# define YYUSE(YYUSE227,5531
+# define YYUSE(YYUSE229,5568
+# define YYID(YYID234,5698
+YYID (int yyi)YYID239,5834
+#    define YYSTACK_ALLOC YYSTACK_ALLOC257,6114
+#    define YYSTACK_ALLOC YYSTACK_ALLOC261,6277
+#    define alloca alloca264,6397
+#    define YYSTACK_ALLOC YYSTACK_ALLOC266,6433
+#      define EXIT_SUCCESS EXIT_SUCCESS271,6703
+#  define YYSTACK_FREE(YYSTACK_FREE280,6853
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM286,7250
+#  define YYSTACK_ALLOC YYSTACK_ALLOC289,7332
+#  define YYSTACK_FREE YYSTACK_FREE290,7365
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM292,7427
+#    define EXIT_SUCCESS EXIT_SUCCESS299,7717
+#   define YYMALLOC YYMALLOC303,7782
+#   define YYFREE YYFREE310,8052
+union yyallocyyalloc325,8538
+  yytype_int16 yyss_alloc;yyss_alloc327,8554
+  YYSTYPE yyvs_alloc;yyvs_alloc328,8581
+# define YYSTACK_GAP_MAXIMUM YYSTACK_GAP_MAXIMUM332,8682
+# define YYSTACK_BYTES(YYSTACK_BYTES336,8830
+# define YYCOPY_NEEDED YYCOPY_NEEDED340,8945
+# define YYSTACK_RELOCATE(YYSTACK_RELOCATE347,9254
+#   define YYCOPY(YYCOPY365,9805
+#   define YYCOPY(YYCOPY368,9912
+#define YYFINAL YYFINAL381,10205
+#define YYLAST YYLAST383,10265
+#define YYNTOKENS YYNTOKENS386,10327
+#define YYNNTS YYNNTS388,10390
+#define YYNRULES YYNRULES390,10445
+#define YYNSTATES YYNSTATES392,10503
+#define YYUNDEFTOK YYUNDEFTOK395,10599
+#define YYMAXUTOK YYMAXUTOK396,10621
+#define YYTRANSLATE(YYTRANSLATE398,10646
+static const yytype_uint8 yytranslate[] =yytranslate402,10822
+static const yytype_uint8 yyprhs[] =yyprhs436,12929
+static const yytype_int8 yyrhs[] =yyrhs444,13184
+static const yytype_uint8 yyrline[] =yyrline455,13669
+static const char *const yytname[] =yytname466,14059
+static const yytype_uint16 yytoknum[] =yytoknum479,14506
+static const yytype_uint8 yyr1[] =yyr1487,14730
+static const yytype_uint8 yyr2[] =yyr2495,15003
+static const yytype_uint8 yydefact[] =yydefact505,15379
+static const yytype_int8 yydefgoto[] =yydefgoto513,15664
+#define YYPACT_NINF YYPACT_NINF521,15890
+static const yytype_int8 yypact[] =yypact522,15914
+static const yytype_int8 yypgoto[] =yypgoto530,16194
+#define YYTABLE_NINF YYTABLE_NINF539,16530
+static const yytype_uint8 yytable[] =yytable540,16554
+#define yypact_value_is_default(yypact_value_is_default547,16781
+#define yytable_value_is_error(yytable_value_is_error550,16848
+static const yytype_int8 yycheck[] =yycheck553,16908
+static const yytype_uint8 yystos[] =yystos562,17231
+#define yyerrok	yyerrok569,17485
+#define yyclearin	yyclearin570,17520
+#define YYEMPTY	YYEMPTY571,17557
+#define YYEOF	YYEOF572,17579
+#define YYACCEPT	YYACCEPT574,17597
+#define YYABORT	YYABORT575,17631
+#define YYERROR	YYERROR576,17664
+#define YYFAIL	YYFAIL586,18063
+#define YYRECOVERING(YYRECOVERING594,18383
+#define YYBACKUP(YYBACKUP596,18424
+#define YYTERROR	YYTERROR613,18809
+#define YYERRCODE	YYERRCODE614,18828
+#define YYRHSLOC(YYRHSLOC621,19034
+# define YYLLOC_DEFAULT(YYLLOC_DEFAULT623,19093
+# define YY_LOCATION_PRINT(YY_LOCATION_PRINT646,19844
+# define YYLEX YYLEX653,19980
+# define YYLEX YYLEX655,20021
+#  define YYFPRINTF YYFPRINTF663,20179
+# define YYDPRINTF(YYDPRINTF666,20216
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT672,20323
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)yy_symbol_value_print692,20865
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)yy_symbol_print724,21533
+yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)yy_stack_print750,22379
+# define YY_STACK_PRINT(YY_STACK_PRINT767,22740
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule)yy_reduce_print781,23150
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT805,23754
+int yydebug;yydebug813,23983
+# define YYDPRINTF(YYDPRINTF815,24017
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT816,24042
+# define YY_STACK_PRINT(YY_STACK_PRINT817,24097
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT818,24134
+# define YYINITDEPTH YYINITDEPTH824,24268
+# define YYMAXDEPTH YYMAXDEPTH835,24624
+#   define yystrlen yystrlen843,24743
+yystrlen (const char *yystr)yystrlen849,24927
+#   define yystpcpy yystpcpy866,25222
+yystpcpy (char *yydest, const char *yysrc)yystpcpy873,25458
+yytnamerr (char *yyres, const char *yystr)yytnamerr901,26199
+yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,yysyntax_error949,27228
+# define YYCASE_(YYCASE_1028,30781
+# undef YYCASE_YYCASE_1038,31332
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)yydestruct1085,32542
+int yychar;yychar1126,33267
+YYSTYPE yylval;yylval1129,33331
+int yynerrs;yynerrs1132,33387
+yyparse (void *YYPARSE_PARAM)yyparse1143,33568
+#define YYPOPSTACK(YYPOPSTACK1199,34833
+
+parser/scansup.c,62
+serror(char *str)serror6,75
+scanstr(char *s)scanstr12,151
+
+bootstrap/bootstrap.c,1519
+#define STRTABLESIZE STRTABLESIZE6,100
+#define HASHTABLESIZE HASHTABLESIZE7,128
+char     *strtable[STRTABLESIZE];strtable9,155
+hashnode *hashtable[HASHTABLESIZE];hashtable10,189
+static   int strtable_end = -1;strtable_end11,225
+#define NUM NUM13,258
+#define NUMSQR NUMSQR14,277
+#define NUMCUBE NUMCUBE15,297
+struct typmap {typmap17,320
+  Oid               am_oid;am_oid18,336
+  TypeTupleFormData am_typ;am_typ19,364
+static struct typmap **Typ = (struct typmap **)NULL;Typ22,396
+AttributeTupleForm   attrtypes[MAXATTR];attrtypes24,450
+int                  numattr;numattr25,491
+Relation    reldesc;reldesc28,523
+static char *relname;relname29,544
+struct typinfo {typinfo31,567
+  char  name[NAMEDATALEN];name32,584
+  Oid   oid;oid33,611
+  Oid   elem;elem34,624
+  int16 len;len35,638
+  Oid   inproc;inproc36,651
+  Oid   outproc;outproc37,667
+static struct typinfo Procid[] = {Procid40,688
+static int n_types = sizeof(Procid)/ sizeof(struct typinfo);n_types44,769
+BootstrapMain(int argc, char *argv[])BootstrapMain48,836
+EnterString(char *str)EnterString55,910
+FindStr(char *str, int length, hashnode *mderef)FindStr74,1164
+AddStr(char *str, int strlength, int mderef)AddStr90,1446
+CompHash(char *str, int len)CompHash127,2310
+boot_openrel(char *relname)boot_openrel136,2485
+LexIDStr(int ident_num)LexIDStr148,2657
+DefineAttr(char *name, char *type, int attnum)DefineAttr154,2723
+closerel(char *name){closerel168,2953
+gettype(char *type)gettype173,2983
+
+bootstrap/bootstrap.h,241
+#define BOOTSTRAP_HBOOTSTRAP_H2,20
+#define MAXATTR MAXATTR10,160
+typedef struct hashnode{hashnode12,180
+  int strnum;strnum13,205
+  struct hashnode *next;next14,219
+} hashnode;hashnode15,244
+#define EMITPROMPT EMITPROMPT20,324
+
+utils/mcxt.h,27
+#define MCXT_HMCXT_H2,15
+
+utils/catcache.h,917
+#define CATCACHE_HCATCACHE_H2,19
+#define NCCBUCK NCCBUCK13,224
+typedef struct catcache {catcache15,245
+  Oid             relationId;relationId16,271
+  Oid             indexId;indexId17,301
+  char            *cc_relname;cc_relname18,328
+  char            *cc_indname;cc_indname19,359
+  HeapTuple       (*cc_iscanfunc)();cc_iscanfunc20,390
+  TupleDesc       cc_tupdess;cc_tupdess21,427
+  int             id;id22,457
+  short           cc_ntup;cc_ntup23,479
+  short           cc_maxtup;cc_maxtup24,506
+  short           cc_nkeys;cc_nkeys25,535
+  short           cc_size;cc_size26,563
+  short           cc_key[4];cc_key27,590
+  short           cc_klen[4];cc_klen28,619
+  ScanKeyData     cc_skey[4];cc_skey29,649
+  struct catcache *cc_next;cc_next30,679
+  Dllist          *cc_lrulist;cc_lrulist31,707
+  Dllist          *cc_cache[NCCBUCK+1];cc_cache32,738
+} CatCache;CatCache33,778
+
+utils/rel.h,154
+#define REL_HREL_H2,14
+typedef struct RelationData {RelationData5,57
+} RelationData;RelationData7,88
+typedef RelationData *Relation;Relation9,105
+
+utils/error/elog.c,148
+static int Debugfile = -1;Debugfile6,79
+static int ElogDebugIndentLevel = 0;ElogDebugIndentLevel7,106
+elog(int lev, char *fmt, ...)elog10,149
+
+utils/memutils.h,836
+#define MEMUTILS_HMEMUTILS_H2,19
+typedef struct OrderedElemData OrderedElemData;OrderedElemData5,54
+typedef OrderedElemData       *OrderedElem;OrderedElem6,102
+typedef struct OrderedSetData OrderedSetData;OrderedSetData8,147
+typedef OrderedSetData        *OrderedSet;OrderedSet9,193
+struct OrderedElemData {OrderedElemData11,237
+  OrderedElem next;next12,262
+  OrderedElem prev;prev13,282
+  OrderedSet  set;set14,302
+struct OrderedSetData{OrderedSetData17,325
+  OrderedElem head;head18,348
+  OrderedElem dumy;dumy19,368
+  OrderedElem tail;tail20,388
+  Offset      offset;offset21,408
+typedef struct AllocSetData{AllocSetData24,434
+  OrderedSetData setData;setData25,463
+} AllocSetData;AllocSetData26,489
+typedef Pointer AllocPointer;AllocPointer28,506
+typedef AllocSetData *AllocSet;AllocSet30,537
+
+utils/cache/catcache.c,167
+static int DisableCache;DisableCache5,77
+CatCache     *Caches = NULL;Caches6,102
+GlobalMemory CacheCxt;CacheCxt7,131
+ResetSystemCache(){ResetSystemCache10,160
+
+utils/cache/inval.c,144
+ResetSystemCaches(){ResetSystemCaches6,91
+CacheInvalidate(Index       cacheId,CacheInvalidate12,185
+DiscardInvalid(){DiscardInvalid20,309
+
+utils/mmgr/palloc.c,31
+palloc(Size size){palloc3,28
+
+utils/mmgr/mcxt.c,671
+static struct MemoryContextMethodsData GlobalContextMethodsData = {GlobalContextMethodsData12,441
+static struct GlobalMemory TopGlobalMemoryData = {TopGlobalMemoryData19,618
+MemoryContext TopMemoryContext = (MemoryContext)&TopGlobalMemoryData;TopMemoryContext27,750
+CreateGlobalMemory(char *name){CreateGlobalMemory30,834
+MemoryContextSwitchTo(MemoryContext context){MemoryContextSwitchTo42,1046
+GlobalMemoryAlloc(GlobalMemory this, Size size){GlobalMemoryAlloc55,1316
+GlobalMemoryFree(GlobalMemory this,GlobalMemoryFree60,1428
+GlobalMemoryGetName(GlobalMemory this)GlobalMemoryGetName66,1562
+GlobalMemoryDump(GlobalMemory this){GlobalMemoryDump72,1641
+
+utils/mmgr/oset.c,141
+OrderedElemGetPredecessor(OrderedElem elem){OrderedElemGetPredecessor8,107
+OrderedElemGetBase(OrderedElem elem){OrderedElemGetBase18,270
+
+utils/mmgr/aset.c,275
+typedef struct AllocElemData {AllocElemData4,53
+  OrderedElemData elemData;elemData5,84
+  Size            size;size6,112
+} AllocElemData;AllocElemData7,136
+typedef AllocElemData *AllocElem;AllocElem8,153
+AllocSetAlloc(AllocSet set, Size size){AllocSetAlloc11,201
+
+utils/elog.h,198
+#define ELOG_HELOG_H2,15
+#define NOTICE NOTICE4,31
+#define WARN WARN5,48
+#define FATAL FATAL6,66
+#define DEBUG DEBUG7,83
+#define NOIND NOIND8,101
+#define ELOG_MAXLEN ELOG_MAXLEN11,121
+
+utils/inval.h,29
+#define INVAL_HINVAL_H2,16
+
+utils/init/globals.c,66
+BackendId MyBackendId;MyBackendId4,60
+int Quiet = 1;Quiet6,84
+
+utils/nabstime.h,186
+#define NABSTIME_HNABSTIME_H2,19
+typedef int32 AbsoluteTime;AbsoluteTime6,79
+#define GetCurrentAbsoluteTime(GetCurrentAbsoluteTime8,108
+#define getSystemTime(getSystemTime11,179
+
+include/miscadmin.h,87
+#define MISCADMIN_HMISCADMIN_H2,20
+#define MAX_PARSER_BUFFER MAX_PARSER_BUFFER5,63
+
+include/postgres.h,660
+#define POSTGRES_HPOSTGRES_H3,20
+#define FirstCommandId FirstCommandId6,55
+typedef uint32 TransactionId;TransactionId8,81
+typedef uint16 CommandId;CommandId9,111
+typedef uint32 Oid;Oid10,137
+typedef int32  int4;int411,157
+typedef int16  int2;int212,178
+#define BOOTSTRAPBOOTSTRAP14,200
+#define CATALOG(CATALOG15,218
+typedef struct nameData {nameData17,277
+  char data[NAMEDATALEN];data18,303
+} NameData;NameData19,329
+struct varlena {varlena21,342
+  int32 vl_len;vl_len22,359
+  char  vl_dat[1];vl_dat23,375
+typedef struct varlena text;text26,398
+typedef Oid regproc;regproc28,428
+typedef Oid RegProcedure;RegProcedure29,449
+
+include/c.h,735
+#define C_HC_H2,12
+#define NULL NULL5,38
+typedef unsigned int Index;Index8,61
+#define false false10,90
+#define true true11,115
+typedef char bool;bool13,140
+typedef signed   short int16;int1615,160
+typedef signed   int   int32;int3216,190
+typedef unsigned char  uint8;uint818,221
+typedef unsigned short uint16;uint1619,251
+typedef unsigned int   uint32;uint3220,282
+typedef signed   int Offset;Offset22,314
+typedef char *Pointer;Pointer24,344
+typedef uint8   bits8;bits826,368
+typedef uint16  bits16;bits1627,391
+typedef unsigned long Datum;Datum29,416
+#define CppConcat(CppConcat31,446
+#define AssertArg(AssertArg33,475
+#define AssertState(AssertState34,505
+typedef unsigned int Size;Size36,538
+
+nodes/memnodes.h,827
+#define MEMNODES_HMEMNODES_H2,19
+typedef struct MemoryContextMethodsData{MemoryContextMethodsData7,107
+  Pointer (*alloc)();alloc8,148
+  void    (*free_p)();free_p9,170
+  Pointer (*realloc)();realloc10,193
+  char*   (*getName)();getName11,217
+  void    (*dump)();dump12,241
+} *MemoryContextMethods;MemoryContextMethods13,262
+typedef struct MemoryContext{MemoryContext15,288
+  NodeTag              type;type16,318
+  MemoryContextMethods method;method17,347
+} *MemoryContext;MemoryContext18,378
+typedef struct GlobalMemory{GlobalMemory20,397
+  NodeTag              type;type21,426
+  MemoryContextMethods method;method22,455
+  AllocSetData         setData;setData23,486
+  char                 *name;name24,518
+  OrderedElemData      elemData;elemData25,548
+} *GlobalMemory;GlobalMemory26,581
+
+nodes/nodes.h,206
+#define NODES_HNODES_H2,16
+typedef enum NodeTag{NodeTag5,48
+  T_Invalid = 0,T_Invalid6,70
+  T_MemoryContext = 400,T_MemoryContext8,88
+  T_GlobalMemoryT_GlobalMemory9,113
+} NodeTag;NodeTag10,130
+
+y.tab.h,1007
+# define YYTOKENTYPEYYTOKENTYPE36,1566
+   enum yytokentype {yytokentype39,1690
+     ID = 258,ID40,1712
+     OPEN = 259,OPEN41,1727
+     XCLOSE = 260,XCLOSE42,1744
+     XCREATE = 261,XCREATE43,1763
+     COMMA = 262,COMMA44,1783
+     EQUALS = 263,EQUALS45,1801
+     LPAREN = 264,LPAREN46,1820
+     RPAREN = 265,RPAREN47,1839
+     XBOOTSTRAP = 266,XBOOTSTRAP48,1858
+     low = 267,low49,1881
+     high = 268high50,1897
+#define ID ID54,1941
+#define OPEN OPEN55,1956
+#define XCLOSE XCLOSE56,1973
+#define XCREATE XCREATE57,1992
+#define COMMA COMMA58,2012
+#define EQUALS EQUALS59,2030
+#define LPAREN LPAREN60,2049
+#define RPAREN RPAREN61,2068
+#define XBOOTSTRAP XBOOTSTRAP62,2087
+#define low low63,2110
+#define high high64,2126
+typedef union YYSTYPEYYSTYPE70,2202
+  int ival;ival76,2336
+} YYSTYPE;YYSTYPE82,2397
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL83,2408
+# define yystype yystype84,2438
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED85,2500
+
+storage/itemptr.h,264
+#define ITEMPTR_HITEMPTR_H2,18
+typedef struct ItemPointerData{ItemPointerData6,89
+  BlockIdData  ip_blkid;ip_blkid7,121
+  OffsetNumber ip_posid;ip_posid8,146
+} ItemPointerData;ItemPointerData9,171
+typedef ItemPointerData *ItemPointer;ItemPointer11,191
+
+storage/sinval.h,31
+#define SIGVAL_HSIGVAL_H2,17
+
+storage/ipc.h,555
+#define IPC_HIPC_H2,14
+typedef int IpcSemaphoreId;IpcSemaphoreId6,45
+typedef unsigned char slock_t;slock_t8,74
+typedef struct slock{slock10,106
+  slock_t       locklock;locklock11,128
+  unsigned char flag;flag12,154
+  short         nshlocks;nshlocks13,176
+  slock_t       shlock;shlock14,202
+  slock_t       exlock;exlock15,226
+  slock_t       comlock;comlock16,250
+  struct slock  *next;next17,275
+} SLock;SLock18,298
+#define NOLOCK NOLOCK20,308
+#define SHAREDLOCK SHAREDLOCK21,332
+#define EXCLUSIVELOCK EXCLUSIVELOCK22,356
+
+storage/ipc/sinval.c,134
+SPINLOCK SInvalLock = (SPINLOCK)NULL;SInvalLock6,108
+InvalidateSharedInvalid(void (*invalFunction)(),InvalidateSharedInvalid9,152
+
+storage/ipc/ipc.c,94
+static SLock *SLockArray = NULL;SLockArray3,26
+ExclusiveLock(int lockid)ExclusiveLock6,65
+
+storage/ipc/spin.c,90
+SpinAcquire(SPINLOCK lock)SpinAcquire5,57
+SpinRelease(SPINLOCK lock)SpinRelease12,144
+
+storage/ipc/sinvaladt.c,161
+SISeg *shmInvalBuffer;shmInvalBuffer3,32
+SIReadEntryData(SISeg *segP,SIReadEntryData7,62
+SIDelExpiredDataEntries(SISeg *segP)SIDelExpiredDataEntries16,219
+
+storage/ipc/s_lock.c,101
+tas(slock_t *m)tas4,30
+S_LOCK(slock_t *lock)S_LOCK12,140
+S_UNLOCK(slock_t *lock)S_UNLOCK19,197
+
+storage/off.h,72
+#define OFF_HOFF_H2,14
+typedef uint16 OffsetNumber;OffsetNumber4,29
+
+storage/lmgr.h,27
+#define LMGR_HLMGR_H2,15
+
+storage/spin.h,63
+#define SPIN_HSPIN_H2,15
+typedef int SPINLOCK;SPINLOCK3,30
+
+storage/sinvaladt.h,818
+#define SINVALADT_HSINVALADT_H2,20
+#define MaxBackendId MaxBackendId7,89
+typedef struct ProcState{ProcState9,115
+  int  limit;limit10,141
+  bool resetState;resetState11,155
+  int  tag;tag12,174
+} ProcState;ProcState13,186
+typedef struct SISeg{SISeg15,200
+  IpcSemaphoreId criticalSectionSemaphoreId;criticalSectionSemaphoreId16,222
+  IpcSemaphoreId generalSemaphoreId;generalSemaphoreId17,267
+  Offset         startEntrySection;startEntrySection18,304
+  Offset         endEntrySection;endEntrySection19,340
+  Offset         startFreeSpace;startFreeSpace20,374
+  Offset         startEntryChain;startEntryChain21,407
+  Offset         endEntryChain;endEntryChain22,441
+  int            numEntries;numEntries23,473
+  int            maxNumEntries;maxNumEntries24,502
+} SISeg;SISeg26,580
+
+storage/backendid.h,77
+#define BACKENDID_HBACKENDID_H2,20
+typedef int16 BackendId;BackendId4,41
+
+storage/smgr.h,67
+#define SMGR_HSMGR_H2,15
+#define DEFAULT_SMGR DEFAULT_SMGR4,31
+
+storage/block.h,161
+#define BLOCK_HBLOCK_H2,16
+typedef struct BlockIdData{BlockIdData5,48
+  uint16 bi_hi;bi_hi6,76
+  uint16 bi_lo;bi_lo7,92
+} BlockIdData;BlockIdData8,108

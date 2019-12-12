@@ -1,0 +1,9 @@
+Pointer
+OrderedElemGetPredecessor(OrderedElem elem){
+  elem = elem->prev;
+  if(elem->prev){
+    return (OrderedElemGetBase(elem));
+  }
+
+  return (NULL);
+}

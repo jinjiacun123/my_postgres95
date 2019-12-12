@@ -1,1 +1,1 @@
-SUBSRCS+=palloc.c
+SUBSRCS+=palloc.c mcxt.c aset.c oset.c

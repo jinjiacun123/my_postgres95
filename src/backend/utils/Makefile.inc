@@ -21,4 +21,4 @@ POSTGRES_DEPEND+= ${GENFMGRTABFILES}
 
 
 
-HEADERS+=elog.h 
+HEADERS+=elog.h mcxt.h

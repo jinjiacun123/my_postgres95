@@ -20,7 +20,6 @@ typedef unsigned short uint16;
 typedef unsigned int   uint32;
 
 typedef signed   int Offset;
-
 typedef char *Pointer;
 
 typedef uint8   bits8;
@@ -31,7 +30,10 @@ typedef unsigned long Datum;
 #define CppConcat(x,y) x##y
 
 #define AssertArg(condition);
+#define AssertState(condition);
 
 typedef unsigned int Size;
+
+#define PointerIsValid(pointer) (bool)((void*)(pointer) != NULL)
 
 #endif

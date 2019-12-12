@@ -1,0 +1,4 @@
+GlobalMemory
+CreateGlobalMemory(char *name){
+
+}

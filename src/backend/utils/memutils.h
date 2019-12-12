@@ -24,4 +24,11 @@ struct OrderedSetData{
 typedef struct AllocSetData{
   OrderedSetData setData;
 } AllocSetData;
+
+typedef Pointer AllocPointer;
+
+typedef AllocSetData *AllocSet;
+
+extern void AllocPointerDump(AllocPointer pointer);
+extern void AllocSetDump(AllocSet set);
 #endif

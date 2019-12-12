@@ -16,6 +16,7 @@ bootstrap { return(XBOOTSTRAP); }
 "="       { return(EQUALS); }
 "("       { return(LPAREN); }
 ")"       { return(RPAREN); }
+","       { return(COMMA);  }
 {id} {
 yylval.ival = EnterString(scanstr((char *)yytext));
 return (ID);

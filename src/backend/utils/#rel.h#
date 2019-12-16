@@ -5,7 +5,7 @@
 #include "storage/fd.h"
 #include "catalog/pg_class.h"
 
-#define RelationIsValid(relation) PointerIsValid(relation)
+#define RelationIsValid(relation) PointerIsValid(relatio)
 
 typedef struct RelationData {
   File          rd_fd;

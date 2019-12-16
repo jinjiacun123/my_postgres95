@@ -1,0 +1,4 @@
+Buffer
+ReadBuffer(Relation reln, BlockNumber blockNum){
+  return ReadBufferWithBufferLock(reln, blockNum, false);
+}

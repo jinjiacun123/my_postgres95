@@ -1,6 +1,6 @@
 catdir=$(CURDIR)/catalog
 VPATH:=$(VPATH):$(catdir)
 
-SRCS_CATALOG=pg_proc.c heap.c
+SRCS_CATALOG=pg_proc.c heap.c catalog.c
 
 HEADERS+= pg_attribute.h pg_proc.h pg_type.h

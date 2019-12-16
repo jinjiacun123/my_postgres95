@@ -2,6 +2,8 @@
 #define MEMUTILS_H
 #include "c.h"
 
+#define AllocPointerIsValid(pointer) PointerIsValid(pointer)
+
 typedef struct OrderedElemData OrderedElemData;
 typedef OrderedElemData       *OrderedElem;
 
@@ -31,4 +33,8 @@ typedef AllocSetData *AllocSet;
 
 extern void AllocPointerDump(AllocPointer pointer);
 extern void AllocSetDump(AllocSet set);
+extern Pointer OrderedSetGetHead(OrderedSet set);
+extern AllocPointer AllocSetRealloc(AllocSet set,
+                                    AllocPointer pointer,
+                                    Size size);
 #endif

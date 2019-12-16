@@ -59,3 +59,15 @@ elem->prev = (OrderedElem)&elem->set->head;
 elem->next->prev = elem;
 elem->prev->next = elem;
 }
+
+Pointer
+OrderedSetGetHead(OrderedSet set){
+  register OrderedElem elem;
+
+  elem = set->head;
+  if(elem->next){
+    return (OrderedElemGetBase(elem));
+  }
+
+  return (NULL);
+}

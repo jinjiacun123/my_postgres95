@@ -14,6 +14,9 @@ typedef int16  int2;
 #define BOOTSTRAP
 #define CATALOG(x)  typedef struct CppConcat(FormData_,x)
 
+#define InvalidOid           0
+#define OidIsValid(objectId) ((bool) (objectId != InvalidOid))
+
 typedef struct nameData {
   char data[NAMEDATALEN];
 } NameData;
@@ -28,5 +31,9 @@ typedef struct varlena text;
 typedef Oid regproc;
 typedef Oid RegProcedure;
 typedef char * ((*func_ptr)());
+
+#define STATUS_OK    (0)
+#define STATUS_ERROR (-1)
+
 
 #endif

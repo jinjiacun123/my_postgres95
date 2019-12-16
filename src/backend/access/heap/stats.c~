@@ -1,0 +1,1 @@
+HeapAccessStatistics heap_access_stats = (HeapAccessStatistics)NULL;

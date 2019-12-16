@@ -1,0 +1,6 @@
+Relation
+heap_openr(char *relationName){
+  Relation r;
+
+  return r;
+}

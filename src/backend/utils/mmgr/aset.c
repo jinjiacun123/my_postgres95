@@ -8,6 +8,8 @@ typedef struct AllocElemData {
 typedef AllocElemData *AllocElem;
 #define AllocPointerGetAllocElem(pointer) (&((AllocElem)(pointer))[-1])
 #define AllocElemGetAllocPointer(alloc) ((AllocPointer)&(alloc)[1])
+#define AllocElemIsValid(alloc) PointerIsValid(alloc)
+#define AllocElemGetAllocPointer(alloc) ((AllocPointer)&(alloc)[1])
 
 static AllocPointer AllocSetGetFirst(AllocSet set);
 static AllocPointer AllocPointerGetNext(AllocPointer pointer);
@@ -105,5 +107,22 @@ AllocPointerGetNext(AllocPointer pointer){
     return (NULL);
   }
 
-  return (AllocElemAllocPointer(alloc));
+  return (AllocElemGetAllocPointer(alloc));
+}
+
+AllocPointer
+AllocSetRealloc(AllocSet     set,
+                AllocPointer pointer,
+                Size         size){
+  AllocPointer newPointer;
+  AllocElem    alloc;
+
+  AssertArg(AllocSetContains(set, pointer));
+
+  alloc      = AllocPointerGetAllocElem(pointer);
+  newPointer = AllocSetAlloc(set, size);
+  memmove(newPointer, pointer, (alloc->size < size)?alloc->size:size);
+  AllocSetFree(set, pointer);
+
+  return (newPointer);
 }

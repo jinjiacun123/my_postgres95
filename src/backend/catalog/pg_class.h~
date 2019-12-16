@@ -1,0 +1,10 @@
+#ifndef PG_CLASS_H
+#define PG_CLASS_H
+
+#define RelOid_pg_type      71
+#define RelOid_pg_attribute 75
+#define RelOid_pg_proc      81
+#define RelOid_pg_class     83
+
+
+#endif

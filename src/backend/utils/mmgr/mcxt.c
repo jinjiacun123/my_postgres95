@@ -91,3 +91,10 @@ bool
 OrderedSetContains(OrderedSet set, OrderedElem elem){
   return ((bool)(elem->set == set && (elem->next || elem->prev)));
 }
+
+static Pointer
+GlobalMemoryRealloc(GlobalMemory this,
+                    Pointer      pointer,
+                    Size         size){
+  return (AllocSetRealloc(&this->setData, pointer, size));
+}

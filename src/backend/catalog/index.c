@@ -1,7 +1,10 @@
 #include "postgres.h"
 #include "access/relscan.h"
+#include "access/skey.h"
 #include "utils/tqual.h"
 #include "bootstrap/bootstrap.h"
+#include "catalog/catname.h"
+#include "catalog/pg_proc.h"
 
 Form_pg_am
 AccessMethodObjectIdGetAccessMethodTupleForm(Oid accessMethodObjectId){
@@ -13,11 +16,11 @@ AccessMethodObjectIdGetAccessMethodTupleForm(Oid accessMethodObjectId){
 
   ScanKeyEntryInitialize(&key,
                          0,
-                         OjbectIdAttributeNumber,
+                         ObjectIdAttributeNumber,
                          ObjectIdEqualRegProcedure,
                          ObjectIdGetDatum(accessMethodObjectId));
   pg_am_desc  = heap_openr(AccessMethodRelationName);
-  pg_am_scan  = heap_beginscan(pg_am_desc, 0, NowTimeDual, 1, &key);
+  pg_am_scan  = heap_beginscan(pg_am_desc, 0, NowTimeQual, 1, &key);
   pg_am_tuple = heap_getnext(pg_am_scan, 0, (Buffer *)NULL);
 
   if(! HeapTupleIsValid(pg_am_tuple)){

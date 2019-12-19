@@ -3,6 +3,8 @@
 #include "storage/itemptr.h"
 #include "utils/nabstime.h"
 
+#define ObjectIdAttributeNumber  (-2)
+
 #define MinHeapTupleBitmapSize 32
 
 typedef struct HeapTupleData {

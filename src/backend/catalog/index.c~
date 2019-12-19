@@ -1,0 +1,4 @@
+Form_pg_am
+AccessmethodObjectIdGetAccessMethodTupleForm(Oid accessMethodObjectId){
+
+}

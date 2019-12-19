@@ -4,6 +4,15 @@
 #include "catalog/catname.h"
 #include "catalog/pg_class.h"
 
+typedef struct tempRelList{
+  Relation *rels;
+  int       num;
+  int       size;
+} TempRelList;
+
+#define TEMP_REL_LIST_SIZE 32
+static TempRelList *tempRels = NULL;
+
 Relation
 heap_creatr(char      *name,
             unsigned  smgr,
@@ -88,4 +97,17 @@ heap_creatr(char      *name,
     AddToTempRelList(rdesc);
 
   return (rdesc);
+}
+
+void
+AddToTempRelList(Relation r){
+  if(!tempRels)
+    return;
+
+  if(tempRels->num == tempRels->size){
+    tempRels->size += TEMP_REL_LIST_SIZE;
+    tempRels->rels = realloc(tempRels->rels, tempRels->size);
+  }
+  tempRels->rels[tempRels->num] = r;
+  tempRels->num++;
 }

@@ -31,4 +31,7 @@ typedef struct HeapTupleData {
 } HeapTupleData;
 
 typedef HeapTupleData *HeapTuple;
+
+#define GETSTRUCT(TUP) (((char*)(TUP)) + ((HeapTuple)(TUP))->t_hoff)
+
 #endif

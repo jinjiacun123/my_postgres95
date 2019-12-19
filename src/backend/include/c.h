@@ -10,6 +10,14 @@ typedef unsigned int Index;
 #define false ((char) 0)
 #define true ((char) 1)
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 typedef char bool;
 
 typedef signed   short int16;
@@ -29,11 +37,16 @@ typedef unsigned long Datum;
 
 #define CppConcat(x,y) x##y
 
-#define AssertArg(condition);
-#define AssertState(condition);
+#define Assert(condition)
+#define AssertArg(condition)
+#define AssertState(condition)
 
 typedef unsigned int Size;
 
 #define PointerIsValid(pointer) (bool)((void*)(pointer) != NULL)
+
+#ifndef offsetof
+#define offsetof(type, field) ((long) ((type *)0)->field)
+#endif
 
 #endif

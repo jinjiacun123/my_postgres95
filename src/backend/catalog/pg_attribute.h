@@ -23,4 +23,8 @@ CATALOG(pg_attribute) BOOTSTRAP {
 
 
 typedef FormData_pg_attribute *AttributeTupleForm;
+
+#define ATTRIBUTE_TUPLE_SIZE \
+  (offsetof(FormData_pg_attribute, attalign) + sizeof(char))
+
 #endif

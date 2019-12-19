@@ -1,0 +1,7 @@
+#ifndef HSEARCH_H
+#define HSEARCH_H
+typedef enum {
+  HASH_FIND
+} HASHACTION;
+
+#endif

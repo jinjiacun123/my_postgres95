@@ -20,5 +20,7 @@ typedef struct TransactionStateData{
 
 typedef TransactionStateData *TransactionState;
 
-extern void StartTransaction();
+extern void          StartTransaction();
+extern void          StorageInvalidTransactionId(TransactionId *destination);
+extern TransactionId GetCurrentTransactionId(void);
 #endif

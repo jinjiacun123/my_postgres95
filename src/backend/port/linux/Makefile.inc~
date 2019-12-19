@@ -1,0 +1,13 @@
+BIGOBJS = false
+
+ifdef LINUX_ELF
+CC=gcc
+LDADD+= -ldl
+CFLAGS+= -DLINUX_ELF
+
+else
+LDADD+= -ldld
+SUBSRCS+= dynloader.c
+end
+
+HEADERS+= machine.h 

@@ -1,0 +1,87 @@
+#include "access/tupdesc.h"
+#include "utils/elog.h"
+#include "utils/mcxt.h"
+#include "utils/rel.h"
+#include "utils/hsearch.h"
+
+GlobalMemory CacheCxt;
+static List *newlyCreatedRelns = NULL;
+
+HTAB *RelationNameCache;
+HTAB *RelationIdCache;
+
+typedef struct relidcacheent {
+  Oid      reloid;
+  Relation reldesc;
+} RelIdCacheEnt;
+
+typedef struct relnamecacheent {
+  NameData relname;
+  Relation reldesc;
+} RelNameCacheEnt;
+
+#define RelationCacheInsert(RELATION) \
+  { RelIdCacheEnt *idhentry; RelNameCacheEnt *namehentry;\
+  char *relname; Oid reloid;bool found;\
+  relname = (RELATION->rd_rel->relname).data;\
+  namehentry = (RelNameCacheEnt*)hash_search(RelationNameCache,    \
+                                              relname,              \
+                                              HASH_ENTER,           \
+                                              &found);              \
+  if(namehentry == NULL){                                               \
+   elog(FATAL, "can't insert into relation desciptor cache");           \
+  }                                                                     \
+  if(found && *IsBootstrapProcessingNode()){                            \
+    ;\
+  }\
+  namehentry->reldesc = RELATION;\
+  reloid = RELATION->rd_id;\
+  idhentry = (RelIdCacheEnt*)hash_search(RelationIdCache,\
+                                         (char *)&reloid,\
+                                         HASH_ENTER,\
+                                         &found);\
+  if(idhentry == NULL){                                         \
+    elog(FATAL, "can't insert into relation descriptor cache"); \
+  }                                                             \
+  if(found && *IsBootstrapProcessingNode()){ \
+                                            ;\
+  }                                          \
+  idhentry->reldesc = RELATION;\
+  }
+
+
+#define RelationNameCacheLookup(NAME, RELATION) \
+  { RelNameCacheEnt *hentry; bool found;                              \
+    hentry = (RelNameCacheEnt*)hash_search(RelationNameCache,         \
+                                           (char *)NAME, HASH_FIND,   \
+                                           &found);                   \
+    if(hentry == NULL) {                                              \
+      elog(FATAL, "error in CACHE");                                  \
+    }                                                                 \
+    if(found) {                                                       \
+      RELATION = hentry->reldesc;                                     \
+    } else {                                                          \
+      RELATION = NULL;                                                \
+    }                                                                 \
+  }
+
+void
+RelationRegisterRelation(Relation relation){
+  MemoryContext oldcxt;
+  Relation      tmpRelation;
+  char          tmpName[32] = "pg_proc";
+
+  oldcxt = MemoryContextSwitchTo((MemoryContext)CacheCxt);
+  if(oldcxt != (MemoryContext)CacheCxt)
+    elog(NOIND, "RelationRegisterRelation:WARING: Context != CacheCxt");
+
+  RelationCacheInsert(relation);
+  RelationNameCacheLookup(tmpName, tmpRelation);
+
+  RelationInitLockInfo(relation);
+
+  relation->rd_islocal = TRUE;
+  newlyCreatedRelns    = lcons(relation, newlyCreatedRelns);
+
+  MemoryContextSwitchTo(oldcxt);
+}

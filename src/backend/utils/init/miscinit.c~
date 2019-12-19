@@ -1,0 +1,4 @@
+bool
+IsBootstrapProcessingMode(){
+  return ((bool)(Mode == BootstrapProcessing));
+}

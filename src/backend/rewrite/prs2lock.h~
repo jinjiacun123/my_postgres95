@@ -1,0 +1,4 @@
+typedef struct RuleLock {
+  int numLocks;
+  RewriteRule **rules;
+} RuleLock;

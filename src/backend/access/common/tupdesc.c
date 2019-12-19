@@ -13,3 +13,20 @@ CreateTupleDesc(int natts, AttributeTupleForm *attrs){
 
   return (desc);
 }
+
+TupleDesc
+CreateTupleDescCopy(TupleDesc tupdesc){
+  TupleDesc desc;
+  int i, size;
+
+  desc        = (TupleDesc)palloc(sizeof(struct tupleDesc));
+  desc->natts = tupdesc->natts;
+  size        = desc->natts * sizeof(AttributeTupleForm);
+  desc->attrs = (AttributeTupleForm*)palloc(size);
+  for(i = 0; i < desc->natts; i++){
+    desc->attrs[i] = (AttributeTupleForm)palloc(ATTRIBUTE_TUPLE_SIZE);
+    memmove(desc->attrs[i], tupdesc->attrs[i], ATTRIBUTE_TUPLE_SIZE);
+  }
+
+  return desc;
+}

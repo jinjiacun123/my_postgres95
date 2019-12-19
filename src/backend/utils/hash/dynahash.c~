@@ -1,0 +1,8 @@
+long *
+hash_search(HTAB       *hashp,
+            char       *keyPtr,
+            HASHACTION action,
+            bool       *foundPtr){
+
+
+}

@@ -1,0 +1,12 @@
+#ifndef PG_LIST_H
+#define PG_LIST_H
+
+#include "nodes/nodes.h"
+
+typedef struct List {
+  NodeTag     type;
+  void        *elem;
+  struct List *next;
+} List;
+
+#endif

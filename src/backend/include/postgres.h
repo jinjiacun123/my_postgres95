@@ -20,6 +20,7 @@ typedef int16  int2;
 typedef struct nameData {
   char data[NAMEDATALEN];
 } NameData;
+typedef NameData *Name;
 
 struct varlena {
   int32 vl_len;

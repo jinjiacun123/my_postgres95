@@ -1,0 +1,4 @@
+List*
+lcons(void *datum, List *list){
+
+}

@@ -53,21 +53,3 @@ ResetSystemCache(){
   */
 }
 
-Relation
-RelationNameGetRelation(char *relationName){
-  Relation              rd;
-  RelationBuildDescInfo buildinfo;
-
-  IncrHeapAccessStat(local_RelationNameGetRelation);
-  IncrHeapAccessStat(global_RelationNameGetRelation);
-
-  rd = RelationNameCacheGetRelation(relationName);
-  if(RelationIsValid(rd))
-    return rd;
-
-  buildinfo.infotype    = INFO_RELNAME;
-  buildinfo.i.info_name = relationName;
-
-  rd = RelationBuildDesc(buildinfo);
-  return rd;
-}

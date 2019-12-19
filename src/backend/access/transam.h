@@ -12,6 +12,7 @@ typedef struct VariableRelationContentsData {
 typedef VariableRelationContentsData * VariableRelationContents;
 
 extern bool AMI_OVERRIDE;
+extern TransactionId NullTransactionId;
 extern TransactionId AmiTransactionId;
 extern Relation VariableRelation;
 

@@ -1,7 +1,9 @@
 #include "access/xact.h"
 #include "postgres.h"
 
-bool AMI_OVERRIDE = false;
+TransactionId DisabledTransactionId = (TransactionId)-1;
+bool          AMI_OVERRIDE = false;
+
 
 TransactionStateData CurrentTransactionStateData = {
   0,
@@ -56,4 +58,13 @@ AtStart_Cache(){
 void
 CommitTransactionCommand(){
 
+}
+
+TransactionId
+GetCurrentTransactionId(){
+  TransactionState s = CurrentTransactionState;
+
+  if(s->state == TRANS_DISABLED)
+    return (TransactionId)DisabledTransactionId;
+  return (TransactionId)s->transactionIdData;
 }

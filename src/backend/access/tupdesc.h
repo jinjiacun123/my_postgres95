@@ -1,5 +1,6 @@
 #ifndef TUPDESC_H
 #define TUPDESC_H
+#include "nodes/pg_list.h"
 #include "catalog/pg_attribute.h"
 typedef struct tupleDesc {
   int                natts;
@@ -7,4 +8,5 @@ typedef struct tupleDesc {
 } *TupleDesc;
 
 extern TupleDesc CreateTupleDesc(int natts, AttributeTupleForm *attrs);
+extern TupleDesc CreateTupleDescCopy(TupleDesc tupdesc);
 #endif

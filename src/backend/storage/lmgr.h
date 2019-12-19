@@ -8,4 +8,13 @@ typedef struct LRelId {
   Oid relId;
   Oid dbId;
 } LRelId;
+
+typedef struct LockInfoData {
+  bool          initialized;
+  LRelId        lRelId;
+  TransactionId transactionIdData;
+  uint16        flags;
+} LockInfoData;
+typedef LockInfoData *LockInfo;
+
 #endif

@@ -1,1 +1,1 @@
-SUBSRCS+= globals.c
+SUBSRCS+= globals.c miscinit.c

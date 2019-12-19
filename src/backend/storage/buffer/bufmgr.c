@@ -1,10 +1,18 @@
 #include "storage/buf.h"
 #include "storage/buf_internals.h"
 #include "storage/bufmgr.h"
+#include "storage/smgr.h"
 #include "utils/rel.h"
 #include "storage/fd.h"
+#include "utils/elog.h"
 
 extern int LateWrite;
+extern int ReadBufferCount;
+extern int BufferHitCount;
+
+static Buffer ReadBufferWithBufferLock(Relation relation,
+                                       BlockNumber blockNum,
+                                       bool bufferLockHeld);
 
 Buffer
 ReadBuffer(Relation reln, BlockNumber blockNum){
@@ -23,7 +31,7 @@ BufferIsValid(Buffer bufnum){
 
 Block
 BufferGetBlock(Buffer buffer){
-  Assert(bufferIsValid(buffer));
+  Assert(BufferIsValid(buffer));
 
   if(BufferIsLocal(buffer))
     return ((Block)MAKE_PTR(LocalBufferDescriptors[-buffer-1].data));
@@ -83,4 +91,71 @@ WriteBuffer(Buffer buffer){
     SpinRelease(BufMgrLock);
   }
   return (TRUE);
+}
+
+static Buffer
+ReadBufferWithBufferLock(Relation    reln,
+                         BlockNumber blockNum,
+                         bool        bufferLockHeld){
+  BufferDesc *bufHdr;
+  int        extend;
+  int        status;
+  bool       found;
+  bool       isLocalBuf;
+
+  extend     = (blockNum == P_NEW);
+  isLocalBuf = reln->rd_islocal;
+
+  if(isLocalBuf){
+    bufHdr = LocalBufferAlloc(reln, blockNum, &found);
+  } else {
+    ReadBufferCount++;
+    bufHdr = BufferAlloc(reln, blockNum, &found, bufferLockHeld);
+    if(found)
+      BufferHitCount++;
+  }
+
+  if(!bufHdr){
+    return (InvalidBuffer);
+  }
+
+  if(found){
+    if(extend){
+      memset((char *)MAKE_PTR(bufHdr->data), 0, BLCKSZ);
+      (void)smgrextend(bufHdr->bufsmgr, reln, (char *)MAKE_PTR(bufHdr->data));
+    }
+    return (BufferDescriptorGetBuffer(bufHdr));
+  }
+
+  if(extend){
+    (void)memset((char *)MAKE_PTR(bufHdr->data), 0, BLCKSZ);
+    status = smgrextend(bufHdr->bufsmgr, reln, (char *)MAKE_PTR(bufHdr->data));
+  } else {
+    status = smgrread(bufHdr->bufsmgr, reln, blockNum,(char *)MAKE_PTR(bufHdr->data));
+  }
+
+  if(isLocalBuf)
+    return (BufferDescriptorGetBuffer(bufHdr));
+
+  SpinAcquire(BufMgrLock);
+
+  if(status == SM_FAIL){
+    if(! BufTableDelete(bufHdr)){
+      SpinRelease(BufMgrLock);
+      elog(FATAL, "BufRead: buffer table broken after IO error\n");
+    }
+    UnpinBuffer(bufHdr);
+
+    bufHdr->flags |= BM_IO_ERROR;
+    bufHdr->flags &= ~BM_IO_IN_PROGRESS;
+  } else {
+    bufHdr->flags &= ~(BM_IO_ERROR | BM_IO_IN_PROGRESS);
+  }
+
+  SpinRelease(BufMgrLock);
+
+  if(status == SM_FAIL)
+    return (InvalidBuffer);
+
+  return (BufferDescriptorGetBuffer(bufHdr));
 }

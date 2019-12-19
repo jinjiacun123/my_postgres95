@@ -9,12 +9,20 @@ struct sbufdesc {
   SHMEM_OFFSET data;
   BufFlags     flags;
   unsigned     refcount;
+  int16        bufsmgr;
 } ;
 
-#define BM_FREE (1 << 4)
+#define BM_DIRTY          (1 << 0)
+#define BM_FREE           (1 << 4)
+#define BM_IO_IN_PROGRESS (1 << 5)
+#define BM_IO_ERROR       (1 << 6)
 
 typedef struct sbufdesc BufferDesc;
 typedef struct buftag   BufferTag;
+
+extern int NBuffers;
+
+#define BAD_BUFFER_ID(bid) ((bid<1) || (bid >(NBuffers)))
 
 struct buftag {
   LRelId      relId;

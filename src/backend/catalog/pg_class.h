@@ -15,6 +15,7 @@ CATALOG(pg_class) BOOTSTRAP {
   char     relkind;  //
   int2     relnatts; //属性个数
   int2     relsmgr;
+  bool     relhasrules;
 } FormData_pg_class;
 
 typedef FormData_pg_class *Form_pg_class;

@@ -1,14 +1,17 @@
 #include "access/tupdesc.h"
 #include "access/heapam.h"
+#include "access/htup.h"
 #include "utils/elog.h"
 #include "utils/mcxt.h"
 #include "utils/rel.h"
 #include "utils/hsearch.h"
+#include "utils/relcache.h"
+#include "utils/palloc.h"
 #include "miscadmin.h"
+#include "storage/smgr.h"
 
 GlobalMemory CacheCxt;
 static List *newlyCreatedRelns = NULL;
-static Relation RelationBuildDesc(RelationBuildDescInfo buildinfo);
 
 HTAB *RelationNameCache;
 HTAB *RelationIdCache;
@@ -23,6 +26,8 @@ typedef struct RelationBuildDescInfo {
   } i;
 
 } RelationBuildDescInfo;
+
+static Relation RelationBuildDesc(RelationBuildDescInfo buildinfo);
 
 typedef struct relidcacheent {
   Oid      reloid;

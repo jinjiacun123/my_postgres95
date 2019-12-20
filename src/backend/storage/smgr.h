@@ -8,5 +8,6 @@
 #define DEFAULT_SMGR 0
 
 extern int smgrcreate(int16 which, Relation reln);
+extern int smgropen(int16 which, Relation reln);
 
 #endif

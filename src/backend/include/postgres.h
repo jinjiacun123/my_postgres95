@@ -11,8 +11,14 @@ typedef uint32 Oid;
 typedef int32  int4;
 typedef int16  int2;
 
+#ifndef NAMEDATALEN
+#define NAMEDATALEN 16
+#endif
+
 #define BOOTSTRAP
 #define CATALOG(x)  typedef struct CppConcat(FormData_,x)
+
+#define DATA(x) extern int errno
 
 #define InvalidOid           0
 #define OidIsValid(objectId) ((bool) (objectId != InvalidOid))

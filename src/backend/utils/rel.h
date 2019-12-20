@@ -13,6 +13,7 @@ typedef struct RelationData {
   File          rd_fd;
   uint16        rd_refcnt;//引用计数
   bool          rd_islocal;
+  Form_pg_am    rd_am;    //relation access method
   Form_pg_class rd_rel;   //关系结构指针
   Oid           rd_id;    //关系id
   Pointer       lockInfo;

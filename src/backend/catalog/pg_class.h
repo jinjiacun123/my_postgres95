@@ -10,8 +10,9 @@
 #define RELKIND_UNCATALOGED 'u'
 
 CATALOG(pg_class) BOOTSTRAP {
-  NameData relname;  //关系名称
-  Oid      reltype;  //关系类型
+  NameData relname;  //relation name
+  Oid      reltype;  //relation type
+  Oid      relam;    //relation access method
   char     relkind;  //
   int2     relnatts; //属性个数
   int2     relsmgr;

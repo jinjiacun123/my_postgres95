@@ -66,7 +66,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 268 of yacc.c  */
-#line 1 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 1 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
 #include "access/xact.h"
 #include "access/tupdesc.h"
@@ -144,7 +144,7 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 16 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 16 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
   int ival;
 
@@ -1393,7 +1393,7 @@ Int_yyreduce:
         case 7:
 
 /* Line 1806 of yacc.c  */
-#line 78 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 78 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {
   DO_START;
   numattr = (int)0;
@@ -1403,7 +1403,7 @@ Int_yyreduce:
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 83 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 83 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {
   DO_END;
 }
@@ -1412,7 +1412,7 @@ Int_yyreduce:
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 87 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 87 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {
   DO_START;
   if((Int_yyvsp[(2) - (8)].ival)) {
@@ -1434,7 +1434,7 @@ Int_yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 112 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 112 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {
   if(++numattr > MAXATTR)
     elog(FATAL, "Too many attributes\n");
@@ -1445,21 +1445,21 @@ Int_yyreduce:
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 120 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 120 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {(Int_yyval.ival) = 1;}
     break;
 
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 121 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 121 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     { (Int_yyval.ival) = 0;}
     break;
 
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 125 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 125 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
     {(Int_yyval.ival)=Int_yylval.ival;}
     break;
 
@@ -1697,6 +1697,6 @@ Int_yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 129 "/home/jim/source_code/my_postgres95/src/backend/bootstrap/bootparse.y"
+#line 129 "/home/jim/source_code/my_postgre95/src/backend/bootstrap/bootparse.y"
 
 

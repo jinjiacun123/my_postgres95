@@ -1,6 +1,7 @@
 #include "postgres.h"
 #include "utils/elog.h"
 #include "utils/rel.h"
+#include "storage/smgr.h"
 
 typedef struct f_smgr {
   int (*smgr_init)();
@@ -20,8 +21,8 @@ typedef struct f_smgr {
 } f_smgr;
 
 static f_smgr smgrsw[] = {
-  {mdinit, NULL,    mdreate, mdunlink,  mdextend,  mdopen,   mdclose,
-   mdread, mdwrite, mdflush, mkbindwrt, mdnblocks, mkcommit, mdabort },
+  {mdinit, NULL,    mdcreate, mdunlink,   mdextend,  mdopen,   mdclose,
+   mdread, mdwrite, mdflush,  mdblindwrt, mdnblocks, mdxcommit, mdabort },
 };
 
 int

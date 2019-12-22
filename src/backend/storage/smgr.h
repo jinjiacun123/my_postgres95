@@ -10,4 +10,18 @@
 extern int smgrcreate(int16 which, Relation reln);
 extern int smgropen(int16 which, Relation reln);
 
+/*in md.c*/
+extern int mdinit(void);
+extern int mdcreate(Relation reln);
+extern int mdunlink(Relation reln);
+extern int mdextend(Relation reln, char *buffer);
+extern int mdopen(Relation reln);
+extern int mdclose(Relation reln);
+extern int mdread(Relation reln, BlockNumber blocknum, char *buffer);
+extern int mdwrite(Relation reln, BlockNumber blocknum, char *buffer);
+extern int mdflush(Relation reln, BlockNumber blocknum, char *buffer);
+extern int mdblindwrt(char *dbstr, char *relstr, Oid dbid, Oid relid, BlockNumber blkno, char *buffer);
+extern int mdnblocks(Relation reln);
+extern int mdcommit(void);
+extern int mdabort(void);
 #endif

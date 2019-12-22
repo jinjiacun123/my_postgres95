@@ -42,7 +42,7 @@ mdcreate(Relation reln){
     if(_fdvec_ext() == SM_FAIL)
       return (-1);
   }
-
+3
   Md_fdvec[CurFd].mdfd_vfd = fd;
   Md_fdvec[CurFd].mdfd_flags    = (uint16)0;
   Md_fdvec[CurFd].mdfd_chain    = MdfdVec *()NULL;
@@ -296,8 +296,144 @@ mdnblocks(Relation reln){
 
   segno = 0;
   for(;;){
+    if(v->mdfd_lstbcnt == RELSEG_SIZE
+       || (nblock = _mdnblock(v->mdfd_vfd, BLCKSZ)) == RELSEG_SIZE){
+      v->mdfd_lstbcnt = RELSEG_SIZE;
+      v->mdfd_lstbcnt = RELSEG_SIZE;
+      segno++;
+      
+      v->mkfd_chain = _mdfd_openseg(reln, segno, O_CREAT);
+      if((v->mdfd_chain == (MdfdVec *)NULL)
+	 elog(WARN, "cannot count blocks for %.166s -- open failed", RelationGetRelationName(reln));
+    }
+      v = v->mdfd_chain;
+    } else {
+      return ((segno * RELSEG_SIZE) + nblocks);
+    }
 
   }
+}
 
+int
+mdcommit(){
+  int i;
+  MdfdVec *v;
 
+  for(i = 0; i < CurFd; i++){
+    for(v = &Md_fdvec[i]; v != ()NULL; v == v->mdfd_chain){
+      if(v->mdfd_flags & MDFD_DIRTY){
+	if(FileSync(v->mdfd_vfd) < 0)
+	  return (SM_FAIL);
+	v->mdfd_flags &= ~MDFD_DIRTY;
+      }
+    }
+  }
+
+  return (SM_SUCCESS);
+}
+
+int
+mdabort(){
+  int     i;
+  MdfdVec *v;
+  
+  for( i = 0; i < CurFd; i++){
+    for(v = &Md_fdvec[i]; v != (MdfdVec *)NULL; v = v->mdfd_chain){
+      v->mdfd_flags &= ~MDFD_DIRTY;
+    }
+  }
+    
+}
+
+static int
+_fd_vec_ext(){
+  MdfdVec *nvec;
+  MemoryContext oldcxt;
+
+  Mfds *= 2;
+  
+  oldcxt = MemoryContextSwitchTo(MdCxt);
+  nvec   = (MdfdVec *)palloc(NFds * sizeof(MdffdVec));
+  memset(nvec, 0, Nfds * sizeof(MdffdVec));
+  memmove(nvec, (char *)Md_fdvec, (Nfds/2) * sizeof(MdfdVec));
+  pfree(Md_fdvec);
+  (void) MemoryContextSwitchTo(oldcxt);
+  
+  Md_fdvec = nvec;
+  
+  return (SM_SUCCESS);
+}
+
+static MdfdVec *
+_mdfd_openseg(Relation reln, int segno, int oflags){
+  MemoryContext oldcxt;
+  MdfdVec       *v;
+  int           fd;
+  bool          dofree;
+  char          *path, *fullpath;
+
+  path = relpath(RelationGetRelationName(reln)->data);
+  dofree = false;
+  if(segno > 0){
+    dofree = true;
+    fullpath = (char*)palloc(strlen(path) + 12);
+    sprintf(fullpath, "%s.%d", path, segno);    
+  } else
+    fullpath = path;
+
+  fd = PathNameOpenFile(fullpath, O_RDWR|oflags, 0600);
+
+  if(dofree)
+    pfree(fullpath);
+
+  if(fd < 0)
+    return((MdfdVec *)NULL);
+  
+  oldcxt = MemoryContextSwitchTo(MdCxt);
+  v = (MdfdVec *)palloc(sizeof(MdfdVec));
+  (void)MemoryContextSwitchTo(oldcxt);
+
+  v->mdfd_vfd     = fd;
+  v->mdfd_flags   = (uint16)0;
+  v->mdfd_charin  = (MdfdVec *)NULL;
+  v->mdfd_lstbcnt = _mdnblocks(fd, BLCKSZ);
+
+  return (v);
+}
+
+static MdfdVec *
+_mdfd_getseg(Relation reln, int blkno, int oflag){
+  MdfdVec *v;
+  int     segno;
+  int     fd;
+  int     i;
+
+  fd = RelationGetFile(reln);
+  if(fd < 0){
+    if((fd = mdopen(reln)) <0)
+      elog(WARN, "cannot open relation %.16s", RelationGetRelationName(reln));
+    reln->rd_fd = fd;
+  }
+
+  for(v = &Md_fdvec[fd], segno = blkno /RELSEG_SIZE,i=1;
+      segno >0;
+      i++, segno--){
+    if(v->mdfd_chain == (MdfdVec *)NULL){
+      v->mdfd_chain = _mdfd_openseg(reln, i, oflag);
+      if(v->mdfd_chain == (MdfdVec *)NULL)
+	elog(WARN, "cannot open segment %d of relation %.16s",i, RelationGetRelationName(reln));
+    }
+    v = v->mdfd_chain;
+  }
+
+  return (v);
+}
+
+static BlockNumber
+_mdnblocks(File file, Size blcksz){
+  long len;
+
+  len = FileSeek(file, 0L, SEEK_END) -1;
+  
+  return ((BlockNumber)((len < 0)?0:1+len/blcksz));
 }

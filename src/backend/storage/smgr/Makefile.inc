@@ -1,1 +1,1 @@
-SUBSRCS+= smgr.c
+SUBSRCS+= smgr.c md.c

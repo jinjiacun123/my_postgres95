@@ -11,6 +11,9 @@ typedef uint32 Oid;
 typedef int32  int4;
 typedef int16  int2;
 
+typedef int2 int28[8];
+typedef Oid  oid8[8];
+
 #ifndef NAMEDATALEN
 #define NAMEDATALEN 16
 #endif

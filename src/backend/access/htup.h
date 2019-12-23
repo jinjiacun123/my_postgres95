@@ -36,4 +36,6 @@ typedef HeapTupleData *HeapTuple;
 
 #define GETSTRUCT(TUP) (((char*)(TUP)) + ((HeapTuple)(TUP))->t_hoff)
 
+#define HeapTupleIsValid(tuple) PointerIsValid(tuple)
+
 #endif

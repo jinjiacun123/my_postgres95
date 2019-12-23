@@ -3,4 +3,5 @@
 
 BackendId MyBackendId;
 
-int Quiet = 1;
+int       Quiet = 1;
+char *    DataDir;

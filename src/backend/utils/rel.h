@@ -6,6 +6,7 @@
 #include "catalog/pg_am.h"
 #include "catalog/pg_class.h"
 #include "rewrite/prs2lock.h"
+#include "access/strat.h"
 
 #define RelationIsValid(relation) PointerIsValid(relation)
 
@@ -20,9 +21,15 @@ typedef struct RelationData {
   TupleDesc     rd_att;   //元组属性
   bool          rd_isnailed;
   RuleLock      *rd_rules;
+  IndexStrategy rd_istrat;
+  RegProcedure* rd_support;
 } RelationData;
 
 typedef RelationData *Relation;
 
 #define RelationSetReferenceCount(relation,count) ((relation)->rd_refcnt == count)
+
+#define RelationGetRelationName(relation) (&(relation)->rd_rel->relname)
+
+extern void RelationSetIndexSupport(Relation relation, IndexStrategy strategy, RegProcedure *support);
 #endif

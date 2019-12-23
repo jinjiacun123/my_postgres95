@@ -1,0 +1,4 @@
+long
+FileSeek(File file, long offset, int whence){
+
+}

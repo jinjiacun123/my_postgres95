@@ -14,6 +14,8 @@ typedef enum ProcessingMode {
   NomalProcessing
 } ProcessingMode;
 
+extern char *DataDir;
+
 extern bool IsBootstrapProcessingMode(void);
 
 #endif

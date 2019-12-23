@@ -9,6 +9,8 @@
 #include "utils/palloc.h"
 #include "miscadmin.h"
 #include "storage/smgr.h"
+#include "access/strat.h"
+#include "utils/palloc.h"
 
 GlobalMemory CacheCxt;
 static List *newlyCreatedRelns = NULL;
@@ -28,6 +30,15 @@ typedef struct RelationBuildDescInfo {
 } RelationBuildDescInfo;
 
 static Relation RelationBuildDesc(RelationBuildDescInfo buildinfo);
+static void     IndexedAccessMethodInitialize(Relation relation);
+static void     RelationBuildRuleLock(Relation relation);
+static void     RelationBuildTupleDesc(RelationBuildDescInfo buildinfo,
+                                       Relation              relation,
+                                       AttributeTupleForm    attp,
+                                       u_int                 natts);
+static Relation  AllocateRelationDesc(u_int natts, Form_pg_class relp);
+static HeapTuple ScanPgRelation(RelationBuildDescInfo buildinfo);
+
 
 typedef struct relidcacheent {
   Oid      reloid;
@@ -83,6 +94,8 @@ typedef struct relnamecacheent {
       RELATION = NULL;                                                \
     }                                                                 \
   }
+
+static void IndexedAccessMethodInitialize(Relation relation);
 
 void
 RelationRegisterRelation(Relation relation){
@@ -164,7 +177,7 @@ RelationBuildDesc(RelationBuildDescInfo buildinfo){
   }
 
   if(OidIsValid(relam)){
-    IndexedAccessmethodInitalize(relation);
+    IndexedAccessMethodInitalize(relation);
   }
 
   RelationInitLockInfo(relation);
@@ -178,4 +191,162 @@ RelationBuildDesc(RelationBuildDescInfo buildinfo){
   pfree(pg_class_tuple);
   MemoryContextSwitchTo(oldcxt);
   return relation;
+}
+
+static void
+IndexedAccessMethodInitialize(Relation relation){
+  IndexStrategy strategy;
+  RegProcedure  *support;
+  int           natts;
+  Size          stratSize;
+  Size          supportSize;
+  uint16        relamstrategies;
+  uint16        relamsupport;
+
+  natts           = relation->rd_rel->relnatts;
+  relamstrategies = relation->rd_am->amstrategies;
+  stratSize       = AttributeNumberGetIndexStrategySize(natts, relamstrategies);
+  strategy        = (IndexStrategy) palloc(stratSize);
+  relamsupport    = relation->rd_am->amsupport;
+
+  if(relamsupport > 0){
+    supportSize = natts * (relamsupport * sizeof(RegProcedure));
+    support     = (RegProcedure *) palloc(supportSize);
+  } else {
+    support = (RegProcedure *) NULL;
+  }
+
+  IndexSupportInitialize(strategy,
+                         support,
+                         relation->rd_att->attrs[0]->attrelid,
+                         relation->rd_rel->relam,
+                         relamstrategies,
+                         relamsupport,
+                         natts);
+  RelationSetIndexSupport(relation, strategy, support);
+}
+
+static void
+RelationBuildRuleLock(Relation relation){
+  HeapTuple    pg_rewrite_tuple;
+  Relation     pg_rewrite_desc;
+  TupleDesc    pg_rewrite_tupdesc;
+  HeapScanDesc pg_rewrite_scan;
+  ScanKeyData  key;
+  RuleLock     *rulelock;
+  int          numlocks;
+  RewriteRule  **rules;
+  int          maxlocks;
+
+  maxlocks = 4;
+  rules    = (RewriteRule **)palloc(sizeof(RewriteRule*)maxlocks);
+  numlocks = 0;
+
+  ScanKeyEntryInitialize(&key,
+                         0,
+                         ObjectIdEqualRegProcedure,
+                         ObjectIdGetDatum(relation->rd_id));
+  pg_rewrite_desc = heap_openr(RewriteRelationName);
+  pg_rewrite_scan = heap_beginscan(pg_rewrite_desc,
+                                   0,
+                                   NowTimeQual,
+                                   1,
+                                   &key);
+  pg_rewrite_tupdesc = RelationGetTupleDescriptor(pg_rewrite_desc);
+  while(pg_rewrite_tuple = heap_getnext(pg_rewrite_scan, 0, (Buffer *)NULL)){
+    bool        isnull;
+    char        *ruleaction = NULL;
+    char        *rule_evqual_string;
+    RewriteRule *rule;
+
+    rule = (RewriteRule *)palloc(sizeof(RewriteRule));
+    rule->ruleId = pg_rewrite_tuple->t_oid;
+    rule->event =  (CmdType)((char)heap_getattr(pg_rewrite_tuple,
+                                InvalidBuffer,
+                                Anum_pg_rewrite_ev_type,
+                                pg_rewrite_tupdesc,
+                                       &isnull)-48);
+    rule->attrno = (AttrNumber)heap_getattr(pg_rewrite_tuple, &isnull);
+    ruleaction = heap_getattr(pg_rewrite_tuple,
+                              InvalidBuffer,
+                              Anum_pg_rewrite_action,
+                              pg_rewrite_tupdesc,
+                              &isnull);
+    rule_evqual_string = heap_getattr(pg_rewrite_tuple,
+                                      InvalidBuffer,
+                                      Anum_pg_rewrite_ev_qual,
+                                      pg_rewrite_tupdesc,
+                                      &isnull);
+    ruleaction = textout((struct varlena *)ruleaction);
+    rule_evqual_string = textout((struct varlena *)rule_evqual_string);
+    rule->actions = (List*)stringToNode(ruleaction);
+    rule->qual = (Node*)stringToNode(rule_evqual_string);
+
+    rules[numlocks++] = rule;
+    if(numlocks == maxlocks){
+      maxlocks *= 2;
+      rules = (RewriteRule **)repalloc(rules, sizeof(RewriteRul) * maxlocks);
+    }
+  }
+  heap_endscan(pg_rewrite_scan);
+  heap_close(pg_rewrite_desc);
+  rulelock = (RuleLock *)palloc(sizeof(RuleLock));
+  rulelock->numLocks = numlocks;
+  rulelock->rules    = rules;
+
+  relation->rd_rules = rulelock;
+  return;
+}
+
+static void
+RelationBuildTupleDsec(RelationBuildDescInfo buildinfo,
+                       Relation              relation,
+                       AttributeTupleForm    attp,
+                       u_int                 natts){
+  if(IsBootstrapProcessingMode())
+    build_tupdesc_seq(buildinfo, relation, attp, natts);
+}
+
+static Relation
+AllocateRelationDesc(u_int natts, Form_pg_class relp){
+  Relation      relation;
+  Size          len;
+  Form_pg_class relationTupleForm;
+
+  relationTupleForm = (Form_pg_class)palloc(sizeof(FormData_pg_class));
+  memmove((char *)relatoinTupleform, (char *)relp, CLASS_TUPLE_SIZE);
+  len = sizeof(RelationData) + 10;
+  relation = (Relation) palloc(len);
+  memset((char *)relation, 0, len);
+  relation->rd_att = CreateTemplatetupleDesc(natts);
+  relation->rd_rel = relationTupleForm;
+  return relation;
+}
+
+static HeapTuple
+ScanPgRelation(RelationBuildDescInfo buildinfo){
+  if(IsBootstrapProcessingMode())
+    return (scan_pg_rel_seq(buildinfo));
+}
+
+Relation
+RelationNameCacheGetRelation(char *relationName){
+  Relation rd;
+  NameData name;
+
+  memset(&name, 0, NAMEDATALEN);
+  namestrcpy(&name, relationName);
+  RelationNameCacheLookup(name.data, rd);
+
+  if(RelationIsValid(rd)){
+    if(rd->rd_fd == -1){
+      rd->rd_fd = smgropen(rd->rd_rel->relsmgr, rd);
+      Assert(rd->rd_fd != -1);
+    }
+
+    RelationIncrementReferenceCount(rd);
+    RelationSetLockForDescriptorOpen(rd);
+  }
+
+  return (rd);
 }

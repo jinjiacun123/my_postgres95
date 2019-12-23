@@ -22,7 +22,7 @@ typedef struct f_smgr {
 
 static f_smgr smgrsw[] = {
   {mdinit, NULL,    mdcreate, mdunlink,   mdextend,  mdopen,   mdclose,
-   mdread, mdwrite, mdflush,  mdblindwrt, mdnblocks, mdxcommit, mdabort },
+   mdread, mdwrite, mdflush,  mdblindwrt, mdnblocks, mdcommit, mdabort },
 };
 
 int

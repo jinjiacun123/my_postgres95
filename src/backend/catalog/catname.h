@@ -3,6 +3,7 @@
 
 #define AccessMethodRelationName          "pg_am"
 #define RelationRelationName              "pg_class"
+#define RewriteRelationName               "pg_rewrite"
 #define AttributeRelationName             "pg_attribute"
 #define ProcedureRelationName             "pg_proc"
 #define TypeRelationName                  "pg_type"

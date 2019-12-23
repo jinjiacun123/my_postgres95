@@ -11,6 +11,14 @@
 #include "storage/smgr.h"
 #include "access/strat.h"
 #include "utils/palloc.h"
+#include "catalog/pg_rewrite.h"
+#include "catalog/pg_class.h"
+#include "catalog/catname.h"
+#include "catalog/pg_proc.h"
+#include "rewrite/prs2lock.h"
+#include "storage/buf.h"
+#include "utils/tqual.h"
+#include "access/relscan.h"
 
 GlobalMemory CacheCxt;
 static List *newlyCreatedRelns = NULL;
@@ -239,7 +247,7 @@ RelationBuildRuleLock(Relation relation){
   int          maxlocks;
 
   maxlocks = 4;
-  rules    = (RewriteRule **)palloc(sizeof(RewriteRule*)maxlocks);
+  rules    = (RewriteRule **)palloc(sizeof(RewriteRule*) * maxlocks);
   numlocks = 0;
 
   ScanKeyEntryInitialize(&key,
@@ -262,10 +270,10 @@ RelationBuildRuleLock(Relation relation){
     rule = (RewriteRule *)palloc(sizeof(RewriteRule));
     rule->ruleId = pg_rewrite_tuple->t_oid;
     rule->event =  (CmdType)((char)heap_getattr(pg_rewrite_tuple,
-                                InvalidBuffer,
-                                Anum_pg_rewrite_ev_type,
-                                pg_rewrite_tupdesc,
-                                       &isnull)-48);
+						InvalidBuffer,
+						Anum_pg_rewrite_ev_type,
+						pg_rewrite_tupdesc,
+						&isnull)-48);
     rule->attrno = (AttrNumber)heap_getattr(pg_rewrite_tuple, &isnull);
     ruleaction = heap_getattr(pg_rewrite_tuple,
                               InvalidBuffer,
@@ -285,7 +293,7 @@ RelationBuildRuleLock(Relation relation){
     rules[numlocks++] = rule;
     if(numlocks == maxlocks){
       maxlocks *= 2;
-      rules = (RewriteRule **)repalloc(rules, sizeof(RewriteRul) * maxlocks);
+      rules = (RewriteRule **)repalloc(rules, sizeof(RewriteRule) * maxlocks);
     }
   }
   heap_endscan(pg_rewrite_scan);
@@ -314,7 +322,7 @@ AllocateRelationDesc(u_int natts, Form_pg_class relp){
   Form_pg_class relationTupleForm;
 
   relationTupleForm = (Form_pg_class)palloc(sizeof(FormData_pg_class));
-  memmove((char *)relatoinTupleform, (char *)relp, CLASS_TUPLE_SIZE);
+  memmove((char *)relationTupleForm, (char *)relp, CLASS_TUPLE_SIZE);
   len = sizeof(RelationData) + 10;
   relation = (Relation) palloc(len);
   memset((char *)relation, 0, len);

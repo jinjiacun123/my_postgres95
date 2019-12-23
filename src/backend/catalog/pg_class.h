@@ -21,4 +21,7 @@ CATALOG(pg_class) BOOTSTRAP {
 
 typedef FormData_pg_class *Form_pg_class;
 
+#define CLASS_TUPLE_SIZE \
+  (offsetof(FormData_pg_class, relhasrules) + sizeof(bool))
+
 #endif

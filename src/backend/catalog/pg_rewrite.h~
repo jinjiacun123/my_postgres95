@@ -1,0 +1,5 @@
+#ifndef PG_REWRITE_H
+#define PG_REWRITE_H
+
+#define Anum_pg_rewrite_ev_qual 6
+#endif

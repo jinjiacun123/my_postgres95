@@ -49,4 +49,10 @@ typedef unsigned int Size;
 #define offsetof(type, field) ((long) ((type *)0)->field)
 #endif
 
+#define SET_4_BYTES(value) (((Datum) (value)) & 0xffffffff)
+
+#define NameGetDatum(X) PointerGetDatum((Pointer) X)
+#define PointerGetDatum(X) ((Datum)X)
+#define ObjectIdGetDatum(X) ((Datum) SET_4_BYTES(X))
+
 #endif

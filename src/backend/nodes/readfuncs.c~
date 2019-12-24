@@ -1,0 +1,13 @@
+Node *
+parsePlanString(){
+  char *token;
+  int  length;
+  void *return_value;
+
+  token = lsptok(NULL, &length);
+
+  if(!strncmp(token, "PLAN", 4)){
+    return_value = readPlan();
+  }
+
+}

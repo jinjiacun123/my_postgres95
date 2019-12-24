@@ -1,0 +1,7 @@
+void
+ScanKeyEntryInitialize(ScanKey    entry,
+                       bits16     flags,
+                       AttrNumber attributeNumber,
+                       ){
+
+}

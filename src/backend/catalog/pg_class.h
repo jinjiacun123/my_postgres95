@@ -24,4 +24,6 @@ typedef FormData_pg_class *Form_pg_class;
 #define CLASS_TUPLE_SIZE \
   (offsetof(FormData_pg_class, relhasrules) + sizeof(bool))
 
+#define Anum_pg_class_relname 1
+
 #endif

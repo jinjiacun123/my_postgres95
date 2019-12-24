@@ -12,4 +12,17 @@ typedef struct List {
 #define lfirst(l) ((l)->elem)
 #define lnext(l)  ((l)->next)
 
+typedef struct Value {
+  NodeTag type;
+  union ValueUnion {
+    char   *str;
+    long   ival;
+    double dval;
+  } val;
+} Value;
+
+extern Value *makeString(char *str);
+extern Value *makeFloat(double d);
+extern Value *makeInteger(long i);
+
 #endif

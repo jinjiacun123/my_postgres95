@@ -17,5 +17,6 @@ typedef enum ProcessingMode {
 extern char *DataDir;
 
 extern bool IsBootstrapProcessingMode(void);
+extern bool IsInitProcessingMode(void);
 
 #endif

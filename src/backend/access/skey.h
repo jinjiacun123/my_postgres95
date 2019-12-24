@@ -14,4 +14,10 @@ typedef struct ScanKeyData {
 
 typedef ScanKeyData* ScanKey;
 
+extern void ScanKeyEntryInitialize(ScanKey      entry,
+                                   bits16       flags,
+                                   AttrNumber   attributeNumber,
+                                   RegProcedure procedure,
+                                   Datum        argument);1
+
 #endif

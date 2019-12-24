@@ -19,5 +19,7 @@ typedef struct LockInfoData {
 typedef LockInfoData *LockInfo;
 
 extern void RelationSetLockForDescriptorOpen(Relation relation);
+extern void RelationUnsetLockForRead(Relation relation);
+extern void RelationSetLockForRead(Relation relation);
 
 #endif

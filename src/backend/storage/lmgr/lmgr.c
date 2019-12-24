@@ -1,10 +1,15 @@
 #include "postgres.h"
 #include "access/xact.h"
 #include "storage/lmgr.h"
+#include "storage/multilev.h"
 #include "utils/rel.h"
+#include "utils/elog.h"
 #include "catalog/catname.h"
 
 #define LOCKDEBUGALL_30
+#define LOCKDEBUG_40
+
+#define ReadRelationLock 0x0200
 
 void
 RelationSetLockForDescriptorOpen(Relation relation){
@@ -64,3 +69,38 @@ RelationInitLockInfo(Relation relation){
   info->initialized  = (bool)true;
   relation->lockInfo = (Pointer)info;
  }
+
+void
+RelationUnsetLockForRead(Relation relation){
+  LockInfo linfo;
+  Assert(RelationIsValid(relation));
+  if(LockingDisabled())
+    return;
+  linfo = (LockInfo) relation->lockInfo;
+  if(!LockInfoIsValid(linfo)){
+    elog(WARN, "Releasing a lock on %s with invalid lock infomation", RelationGetRelationName(relation));
+  }
+
+  MultiReleaseReln(linfo, READ_LOCK);
+}
+
+void
+RelationSetLockForRead(Relation relation){
+  LockInfo linfo;
+  Assert(RelationIsValid(relation));
+  if(LockingDisabled())
+    return;
+
+  LOCKDEBUG_40;
+
+  if(!LockInfoIsValid(relation->lockInfo)){
+    RelationInitLockInfo(relation);
+    linfo = (LockInfo) relation->lockInfo;
+    linfo->flags |= ReadRelationLock;
+    MultiLockReln(linfo, READ_LOCK);
+    return;
+  } else
+    linfo = (LockInfo) relation->lockInfo;
+
+  MultiLockReln(linfo, READ_LOCK);
+}

@@ -5,5 +5,6 @@
 extern void  pfree(void *pointer);
 extern void* palloc(Size size);
 extern void* repalloc(void *pointer, Size size);
+extern char* pstrdup(char* pointer);
 
 #endif

@@ -1,1 +1,1 @@
-SUBSRCS+=tupdesc.c
+SUBSRCS+=tupdesc.c scankey.c

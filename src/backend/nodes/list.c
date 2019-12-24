@@ -8,3 +8,27 @@ lcons(void *datum, List *list){
   lnext(l)  = list;
   return l;
 }
+
+Value *
+makeString(char *str){
+  Value *v   = makeNode(Value);
+  v->type    = T_String;
+  v->val.str = str;
+  return v;
+}
+
+Value *
+makeInteger(long i){
+  Value *v    = makeNode(Value);
+  v->type     = T_Integer;
+  v->val.ival = i;
+  return v;
+}
+
+Value *
+makeFloat(double d){
+  Value *v    = makeNode(Value);
+  v->type     = T_Float;
+  v->val.dval = d;
+  return v;
+}

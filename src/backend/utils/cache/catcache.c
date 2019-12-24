@@ -3,6 +3,7 @@
 #include "lib/dllist.h"
 #include "utils/rel.h"
 #include "access/heapam.h"
+#include "nodes/nodes.h"
 
 static int DisableCache;
 CatCache     *Caches = NULL;

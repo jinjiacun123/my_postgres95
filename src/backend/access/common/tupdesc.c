@@ -30,3 +30,20 @@ CreateTupleDescCopy(TupleDesc tupdesc){
 
   return desc;
 }
+
+TupleDesc
+CreateTemplateTupleDesc(int natts){
+  uint32    size;
+  TupleDesc desc;
+
+  AssertArg(natts >= 1);
+
+  size = natts * sizeof(AttributeTupleForm);
+  desc = (TupleDesc) palloc(sizeof(struct tupleDesc));
+  desc->attrs = (AttributeTupleForm*) palloc(size);
+  memset(desc->attrs, 0, size);
+
+  desc->natts = natts;
+
+  return (desc);
+}

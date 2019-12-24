@@ -4,6 +4,17 @@
 #include "utils/rel.h"
 #include "catalog/catname.h"
 
+#define LOCKDEBUGALL_30
+
+void
+RelationSetLockForDescriptorOpen(Relation relation){
+  Assert(RelationIsValid(relation));
+  if(LockingDisabled())
+    return;
+
+  LOCKDEBUGALL_30;
+}
+
 void
 RelationInitLockInfo(Relation relation){
   LockInfo            info;

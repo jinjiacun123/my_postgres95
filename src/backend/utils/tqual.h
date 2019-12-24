@@ -4,5 +4,6 @@
 typedef Pointer TimeQual;
 #define NowTimeQual ((TimeQual)NULL)
 
+extern TimeQual SelfTimeQual;
 
 #endif

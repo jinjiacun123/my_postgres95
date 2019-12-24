@@ -1,0 +1,8 @@
+char *
+heap_getattr(HeapTuple tup,
+             Buffer    b,
+             int       attnum,
+             TupleDesc tupleDesc,
+             bool      *isnull){
+
+}

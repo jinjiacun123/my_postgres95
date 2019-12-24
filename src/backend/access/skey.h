@@ -12,4 +12,6 @@ typedef struct ScanKeyData {
   Datum        sk_argument;
 } ScanKeyData;
 
+typedef ScanKeyData* ScanKey;
+
 #endif

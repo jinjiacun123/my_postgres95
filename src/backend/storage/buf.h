@@ -1,6 +1,7 @@
 #ifndef BUF_H
 #define BUF_H
 
+#define UnknownBuffer (-99999)
 #define InvalidBuffer (0)
 
 typedef long Buffer;

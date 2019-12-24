@@ -12,6 +12,7 @@
 
 typedef struct RelationData {
   File          rd_fd;
+  int           rd_nblocks;
   uint16        rd_refcnt;//引用计数
   bool          rd_islocal;
   Form_pg_am    rd_am;    //relation access method
@@ -28,8 +29,10 @@ typedef struct RelationData {
 typedef RelationData *Relation;
 
 #define RelationSetReferenceCount(relation,count) ((relation)->rd_refcnt == count)
+#define RelationIncrementReferenceCount(relation) ((relation)->rd_refcnt += 1);
 
 #define RelationGetRelationName(relation) (&(relation)->rd_rel->relname)
+#define RelationGetTupleDescriptor(relation) ((relation)->rd_att)
 
 extern void RelationSetIndexSupport(Relation relation, IndexStrategy strategy, RegProcedure *support);
 #endif

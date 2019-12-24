@@ -7,6 +7,7 @@ typedef struct tupleDesc {
   AttributeTupleForm *attrs;
 } *TupleDesc;
 
+extern TupleDesc CreateTemplateTupleDesc(int natts);
 extern TupleDesc CreateTupleDesc(int natts, AttributeTupleForm *attrs);
 extern TupleDesc CreateTupleDescCopy(TupleDesc tupdesc);
 #endif

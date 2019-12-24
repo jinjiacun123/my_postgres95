@@ -1,4 +1,8 @@
 
+backend/access/itup.h,89
+#define ITUP_HITUP_H2,15
+#define MaxIndexAttributeNumber MaxIndexAttributeNumber4,31
+
 backend/access/skey.h,362
 #define SKEY_HSKEY_H2,15
 typedef struct ScanKeyData {ScanKeyData6,80
@@ -47,32 +51,42 @@ TransactionId NullTransactionId = (TransactionId) 0;NullTransactionId5,74
 TransactionId AmiTransactionId  = (TransactionId)512;AmiTransactionId6,127
 Relation VariableRelation = (Relation)NULL;VariableRelation8,182
 
-backend/access/common/tupdesc.c,143
+backend/access/common/heaptuple.c,45
+heap_getattr(HeapTuple tup,heap_getattr2,7
+
+backend/access/common/tupdesc.c,210
 CreateTupleDesc(int natts, AttributeTupleForm *attrs){CreateTupleDesc5,61
 CreateTupleDescCopy(TupleDesc tupdesc){CreateTupleDescCopy18,299
+CreateTemplateTupleDesc(int natts){CreateTemplateTupleDesc35,785
 
-backend/access/htup.h,898
+backend/access/index/istrat.c,199
+IndexSupportInitialize(IndexStrategy  indexStrategy,IndexSupportInitialize18,409
+AttributeNumberGetIndexStrategySize(AttrNumber     maxAttributeNumber,AttributeNumberGetIndexStrategySize156,5445
+
+backend/access/htup.h,1013
 #define HTOP_HHTOP_H2,15
-#define MinHeapTupleBitmapSize MinHeapTupleBitmapSize6,88
-typedef struct HeapTupleData {HeapTupleData8,123
-  unsigned int    t_len;t_len9,154
-  ItemPointerData t_ctid;t_ctid10,179
-  ItemPointerData t_chain;t_chain11,205
-  Oid             t_oid;t_oid13,233
-  CommandId       t_cmin;t_cmin15,259
-  CommandId       t_cmax;t_cmax16,285
-  TransactionId   t_xmin;t_xmin18,312
-  TransactionId   t_xmax;t_xmax19,338
-  AbsoluteTime    t_tmin;t_tmin21,365
-  AbsoluteTime    t_tmax;t_tmax22,391
-  int16           t_natts;t_natts24,418
-  char            t_vtype;t_vtype25,445
-  char            t_infomask;t_infomask27,473
-  uint8           t_hoff;t_hoff29,504
-  bits8           t_bits[MinHeapTupleBitmapSize/8];t_bits30,530
-} HeapTupleData;HeapTupleData31,582
-typedef HeapTupleData *HeapTuple;HeapTuple33,600
-#define GETSTRUCT(GETSTRUCT35,635
+#define ObjectIdAttributeNumber ObjectIdAttributeNumber6,88
+#define MinHeapTupleBitmapSize MinHeapTupleBitmapSize8,127
+typedef struct HeapTupleData {HeapTupleData10,162
+  unsigned int    t_len;t_len11,193
+  ItemPointerData t_ctid;t_ctid12,218
+  ItemPointerData t_chain;t_chain13,244
+  Oid             t_oid;t_oid15,272
+  CommandId       t_cmin;t_cmin17,298
+  CommandId       t_cmax;t_cmax18,324
+  TransactionId   t_xmin;t_xmin20,351
+  TransactionId   t_xmax;t_xmax21,377
+  AbsoluteTime    t_tmin;t_tmin23,404
+  AbsoluteTime    t_tmax;t_tmax24,430
+  int16           t_natts;t_natts26,457
+  char            t_vtype;t_vtype27,484
+  char            t_infomask;t_infomask29,512
+  uint8           t_hoff;t_hoff31,543
+  bits8           t_bits[MinHeapTupleBitmapSize/8];t_bits32,569
+} HeapTupleData;HeapTupleData33,621
+typedef HeapTupleData *HeapTuple;HeapTuple35,639
+#define GETSTRUCT(GETSTRUCT37,674
+#define HeapTupleIsValid(HeapTupleIsValid39,744
 
 backend/access/xact.h,672
 #define XACT_HXACT_H2,15
@@ -93,6 +107,9 @@ typedef TransactionStateData *TransactionState;TransactionState21,424
 backend/access/attnum.h,73
 #define ATTNUM_HATTNUM_H2,17
 typedef int16 AttrNumber;AttrNumber5,50
+
+backend/access/istrat.h,33
+#define ISTRATE_HISTRATE_H2,18
 
 backend/access/tupdesc.h,186
 #define TUPDESC_HTUPDESC_H2,18
@@ -126,8 +143,24 @@ typedef HeapAccessStatisticsData *HeapAccessStatistics;HeapAccessStatistics12,
 backend/access/heap/stats.c,92
 HeapAccessStatistics heap_access_stats = (HeapAccessStatistics)NULL;heap_access_stats4,51
 
-backend/access/heap/heapam.c,48
+backend/access/heap/heapam.c,264
 heap_openr(char *relationName){heap_openr6,84
+heap_close(Relation relation){heap_close20,405
+heap_endscan(HeapScanDesc sdesc){heap_endscan28,550
+heap_beginscan(Relation relation,heap_beginscan43,881
+heap_getnext(HeapScanDesc scandesc,heap_getnext82,1876
+
+backend/access/strat.h,511
+#define STRAT_HSTRAT_H2,16
+typedef struct StrategyMapData {StrategyMapData6,80
+  ScanKeyData entry[1];entry7,113
+} StrategyMapData;StrategyMapData8,137
+typedef StrategyMapData *StrategyMap;StrategyMap10,157
+typedef struct IndexStrategyData {IndexStrategyData12,196
+  StrategyMapData strategyMapData[1];strategyMapData13,231
+} IndexStrategyData;IndexStrategyData14,269
+typedef uint16            StrategyNumber;StrategyNumber16,291
+typedef IndexStrategyData *IndexStrategy;IndexStrategy18,334
 
 backend/obj/bootstrap_token.h,1007
 # define YYTOKENTYPEYYTOKENTYPE36,1566
@@ -155,13 +188,13 @@ backend/obj/bootstrap_token.h,1007
 #define low low63,2110
 #define high high64,2126
 typedef union YYSTYPEYYSTYPE70,2202
-  int ival;ival76,2336
-} YYSTYPE;YYSTYPE82,2397
-# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL83,2408
-# define yystype yystype84,2438
-# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED85,2500
+  int ival;ival76,2335
+} YYSTYPE;YYSTYPE82,2396
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL83,2407
+# define yystype yystype84,2437
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED85,2499
 
-backend/obj/fmgr.h,370
+backend/obj/fmgr.h,407
 #define FMGR_HFMGR_H22,658
 #define	MAXFMGRARGS	MAXFMGRARGS33,979
     char *data[MAXFMGRARGS];data36,1019
@@ -172,6 +205,7 @@ backend/obj/fmgr.h,370
 #define	SEL_RIGHT	SEL_RIGHT74,2228
 #define F_BOOLIN F_BOOLIN76,2294
 #define F_BOOLOUT F_BOOLOUT77,2314
+#define F_TEXTOUT F_TEXTOUT78,2335
 
 backend/obj/bootparse.c,7713
 #define YYBISON YYBISON44,2057
@@ -181,161 +215,161 @@ backend/obj/bootparse.c,7713
 #define YYPUSH YYPUSH56,2245
 #define YYPULL YYPULL59,2284
 #define YYLSP_NEEDED YYLSP_NEEDED62,2326
-#define DO_START DO_START76,2622
-#define DO_END DO_END78,2669
-# define YYDEBUG YYDEBUG90,2852
-# undef YYERROR_VERBOSEYYERROR_VERBOSE95,2942
-# define YYERROR_VERBOSE YYERROR_VERBOSE96,2966
-# define YYERROR_VERBOSE YYERROR_VERBOSE98,2999
-# define YYTOKEN_TABLE YYTOKEN_TABLE103,3089
-# define YYTOKENTYPEYYTOKENTYPE109,3158
-   enum Int_yytokentype {Int_yytokentype112,3282
-     ID = 258,ID113,3308
-     OPEN = 259,OPEN114,3323
-     XCLOSE = 260,XCLOSE115,3340
-     XCREATE = 261,XCREATE116,3359
-     COMMA = 262,COMMA117,3379
-     EQUALS = 263,EQUALS118,3397
-     LPAREN = 264,LPAREN119,3416
-     RPAREN = 265,RPAREN120,3435
-     XBOOTSTRAP = 266,XBOOTSTRAP121,3454
-     low = 267,low122,3477
-     high = 268high123,3493
-#define ID ID127,3537
-#define OPEN OPEN128,3552
-#define XCLOSE XCLOSE129,3569
-#define XCREATE XCREATE130,3588
-#define COMMA COMMA131,3608
-#define EQUALS EQUALS132,3626
-#define LPAREN LPAREN133,3645
-#define RPAREN RPAREN134,3664
-#define XBOOTSTRAP XBOOTSTRAP135,3683
-#define low low136,3706
-#define high high137,3722
-typedef union YYSTYPEYYSTYPE143,3798
-  int ival;ival149,3931
-} YYSTYPE;YYSTYPE155,3992
-# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL156,4003
-# define Int_yystype Int_yystype157,4033
-# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED158,4099
-# undef shortshort169,4251
-typedef YYTYPE_UINT8 Int_yytype_uint8;Int_yytype_uint8173,4293
-typedef unsigned char Int_yytype_uint8;Int_yytype_uint8175,4338
-typedef YYTYPE_INT8 Int_yytype_int8;Int_yytype_int8179,4405
-typedef signed char Int_yytype_int8;Int_yytype_int8182,4542
-typedef short int Int_yytype_int8;Int_yytype_int8184,4585
-typedef YYTYPE_UINT16 Int_yytype_uint16;Int_yytype_uint16188,4649
-typedef unsigned short int Int_yytype_uint16;Int_yytype_uint16190,4696
-typedef YYTYPE_INT16 Int_yytype_int16;Int_yytype_int16194,4770
-typedef short int Int_yytype_int16;Int_yytype_int16196,4815
-#  define YYSIZE_T YYSIZE_T201,4898
-#  define YYSIZE_T YYSIZE_T203,4953
-#  define YYSIZE_T YYSIZE_T207,5159
-#  define YYSIZE_T YYSIZE_T209,5192
-#define YYSIZE_MAXIMUM YYSIZE_MAXIMUM213,5240
-#   define YY_(YY_219,5410
-#  define YY_(YY_223,5496
-# define YYUSE(YYUSE229,5633
-# define YYUSE(YYUSE231,5670
-# define YYID(YYID236,5800
-YYID (int Int_yyi)YYID241,5936
-#    define YYSTACK_ALLOC YYSTACK_ALLOC259,6236
-#    define YYSTACK_ALLOC YYSTACK_ALLOC263,6399
-#    define alloca alloca266,6519
-#    define YYSTACK_ALLOC YYSTACK_ALLOC268,6555
-#      define EXIT_SUCCESS EXIT_SUCCESS273,6825
-#  define YYSTACK_FREE(YYSTACK_FREE282,6975
-#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM288,7372
-#  define YYSTACK_ALLOC YYSTACK_ALLOC291,7454
-#  define YYSTACK_FREE YYSTACK_FREE292,7487
-#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM294,7549
-#    define EXIT_SUCCESS EXIT_SUCCESS301,7839
-#   define YYMALLOC YYMALLOC305,7904
-#   define YYFREE YYFREE312,8174
-union Int_yyallocInt_yyalloc327,8668
-  Int_yytype_int16 Int_yyss_alloc;Int_yyss_alloc329,8688
-  YYSTYPE Int_yyvs_alloc;Int_yyvs_alloc330,8723
-# define YYSTACK_GAP_MAXIMUM YYSTACK_GAP_MAXIMUM334,8828
-# define YYSTACK_BYTES(YYSTACK_BYTES338,8980
-# define YYCOPY_NEEDED YYCOPY_NEEDED342,9099
-# define YYSTACK_RELOCATE(YYSTACK_RELOCATE349,9408
-#   define YYCOPY(YYCOPY367,9995
-#   define YYCOPY(YYCOPY370,10102
-#define YYFINAL YYFINAL383,10419
-#define YYLAST YYLAST385,10478
-#define YYNTOKENS YYNTOKENS388,10540
-#define YYNNTS YYNNTS390,10603
-#define YYNRULES YYNRULES392,10658
-#define YYNSTATES YYNSTATES394,10716
-#define YYUNDEFTOK YYUNDEFTOK397,10812
-#define YYMAXUTOK YYMAXUTOK398,10834
-#define YYTRANSLATE(YYTRANSLATE400,10859
-static const Int_yytype_uint8 Int_yytranslate[] =Int_yytranslate404,11039
-static const Int_yytype_uint8 Int_yyprhs[] =Int_yyprhs438,13154
-static const Int_yytype_int8 Int_yyrhs[] =Int_yyrhs445,13379
-static const Int_yytype_uint8 Int_yyrline[] =Int_yyrline454,13782
-static const char *const Int_yytname[] =Int_yytname464,14142
-static const Int_yytype_uint16 Int_yytoknum[] =Int_yytoknum476,14566
-static const Int_yytype_uint8 Int_yyr1[] =Int_yyr1484,14798
-static const Int_yytype_uint8 Int_yyr2[] =Int_yyr2491,15041
-static const Int_yytype_uint8 Int_yydefact[] =Int_yydefact500,15387
-static const Int_yytype_int8 Int_yydefgoto[] =Int_yydefgoto508,15638
-#define YYPACT_NINF YYPACT_NINF516,15858
-static const Int_yytype_int8 Int_yypact[] =Int_yypact517,15882
-static const Int_yytype_int8 Int_yypgoto[] =Int_yypgoto525,16128
-#define YYTABLE_NINF YYTABLE_NINF534,16458
-static const Int_yytype_uint8 Int_yytable[] =Int_yytable535,16482
-#define Int_yypact_value_is_default(Int_yypact_value_is_default541,16630
-#define Int_yytable_value_is_error(Int_yytable_value_is_error544,16709
-static const Int_yytype_int8 Int_yycheck[] =Int_yycheck547,16777
-static const Int_yytype_uint8 Int_yystos[] =Int_yystos555,17021
-#define Int_yyerrok	Int_yyerrok562,17241
-#define Int_yyclearin	Int_yyclearin563,17284
-#define YYEMPTY	YYEMPTY564,17329
-#define YYEOF	YYEOF565,17351
-#define YYACCEPT	YYACCEPT567,17369
-#define YYABORT	YYABORT568,17407
-#define YYERROR	YYERROR569,17444
-#define YYFAIL	YYFAIL579,17851
-#define YYRECOVERING(YYRECOVERING587,18175
-#define YYBACKUP(YYBACKUP589,18220
-#define YYTERROR	YYTERROR606,18629
-#define YYERRCODE	YYERRCODE607,18648
-#define YYRHSLOC(YYRHSLOC614,18854
-# define YYLLOC_DEFAULT(YYLLOC_DEFAULT616,18913
-# define YY_LOCATION_PRINT(YY_LOCATION_PRINT639,19664
-# define YYLEX YYLEX646,19804
-# define YYLEX YYLEX648,19849
-#  define YYFPRINTF YYFPRINTF656,20011
-# define YYDPRINTF(YYDPRINTF659,20048
-# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT665,20159
-Int_yy_symbol_value_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_value_print685,20709
-Int_yy_symbol_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_print717,21453
-Int_yy_stack_print (Int_yytype_int16 *Int_yybottom, Int_yytype_int16 *Int_yytop)Int_yy_stack_print743,22395
-# define YY_STACK_PRINT(YY_STACK_PRINT760,22828
-Int_yy_reduce_print (YYSTYPE *Int_yyvsp, int Int_yyrule)Int_yy_reduce_print774,23246
-# define YY_REDUCE_PRINT(YY_REDUCE_PRINT798,23970
-int Int_yydebug;Int_yydebug806,24211
-# define YYDPRINTF(YYDPRINTF808,24249
-# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT809,24274
-# define YY_STACK_PRINT(YY_STACK_PRINT810,24329
-# define YY_REDUCE_PRINT(YY_REDUCE_PRINT811,24366
-# define YYINITDEPTH YYINITDEPTH817,24500
-# define YYMAXDEPTH YYMAXDEPTH828,24856
-#   define Int_yystrlen Int_yystrlen836,24979
-Int_yystrlen (const char *Int_yystr)Int_yystrlen842,25167
-#   define Int_yystpcpy Int_yystpcpy859,25510
-Int_yystpcpy (char *Int_yydest, const char *Int_yysrc)Int_yystpcpy866,25750
-Int_yytnamerr (char *Int_yyres, const char *Int_yystr)Int_yytnamerr894,26563
-Int_yysyntax_error (YYSIZE_T *Int_yymsg_alloc, char **Int_yymsg,Int_yysyntax_error942,27692
-# define YYCASE_(YYCASE_1021,31537
-# undef YYCASE_YYCASE_1031,32092
-Int_yydestruct (const char *Int_yymsg, int Int_yytype, YYSTYPE *Int_yyvaluep)Int_yydestruct1078,33438
-int Int_yychar;Int_yychar1119,34255
-YYSTYPE Int_yylval;Int_yylval1122,34323
-int Int_yynerrs;Int_yynerrs1125,34383
-Int_yyparse (void *YYPARSE_PARAM)Int_yyparse1136,34572
-#define YYPOPSTACK(YYPOPSTACK1192,35949
+#define DO_START DO_START76,2621
+#define DO_END DO_END78,2668
+# define YYDEBUG YYDEBUG90,2851
+# undef YYERROR_VERBOSEYYERROR_VERBOSE95,2941
+# define YYERROR_VERBOSE YYERROR_VERBOSE96,2965
+# define YYERROR_VERBOSE YYERROR_VERBOSE98,2998
+# define YYTOKEN_TABLE YYTOKEN_TABLE103,3088
+# define YYTOKENTYPEYYTOKENTYPE109,3157
+   enum Int_yytokentype {Int_yytokentype112,3281
+     ID = 258,ID113,3307
+     OPEN = 259,OPEN114,3322
+     XCLOSE = 260,XCLOSE115,3339
+     XCREATE = 261,XCREATE116,3358
+     COMMA = 262,COMMA117,3378
+     EQUALS = 263,EQUALS118,3396
+     LPAREN = 264,LPAREN119,3415
+     RPAREN = 265,RPAREN120,3434
+     XBOOTSTRAP = 266,XBOOTSTRAP121,3453
+     low = 267,low122,3476
+     high = 268high123,3492
+#define ID ID127,3536
+#define OPEN OPEN128,3551
+#define XCLOSE XCLOSE129,3568
+#define XCREATE XCREATE130,3587
+#define COMMA COMMA131,3607
+#define EQUALS EQUALS132,3625
+#define LPAREN LPAREN133,3644
+#define RPAREN RPAREN134,3663
+#define XBOOTSTRAP XBOOTSTRAP135,3682
+#define low low136,3705
+#define high high137,3721
+typedef union YYSTYPEYYSTYPE143,3797
+  int ival;ival149,3929
+} YYSTYPE;YYSTYPE155,3990
+# define YYSTYPE_IS_TRIVIAL YYSTYPE_IS_TRIVIAL156,4001
+# define Int_yystype Int_yystype157,4031
+# define YYSTYPE_IS_DECLARED YYSTYPE_IS_DECLARED158,4097
+# undef shortshort169,4249
+typedef YYTYPE_UINT8 Int_yytype_uint8;Int_yytype_uint8173,4291
+typedef unsigned char Int_yytype_uint8;Int_yytype_uint8175,4336
+typedef YYTYPE_INT8 Int_yytype_int8;Int_yytype_int8179,4403
+typedef signed char Int_yytype_int8;Int_yytype_int8182,4540
+typedef short int Int_yytype_int8;Int_yytype_int8184,4583
+typedef YYTYPE_UINT16 Int_yytype_uint16;Int_yytype_uint16188,4647
+typedef unsigned short int Int_yytype_uint16;Int_yytype_uint16190,4694
+typedef YYTYPE_INT16 Int_yytype_int16;Int_yytype_int16194,4768
+typedef short int Int_yytype_int16;Int_yytype_int16196,4813
+#  define YYSIZE_T YYSIZE_T201,4896
+#  define YYSIZE_T YYSIZE_T203,4951
+#  define YYSIZE_T YYSIZE_T207,5157
+#  define YYSIZE_T YYSIZE_T209,5190
+#define YYSIZE_MAXIMUM YYSIZE_MAXIMUM213,5238
+#   define YY_(YY_219,5408
+#  define YY_(YY_223,5494
+# define YYUSE(YYUSE229,5631
+# define YYUSE(YYUSE231,5668
+# define YYID(YYID236,5798
+YYID (int Int_yyi)YYID241,5934
+#    define YYSTACK_ALLOC YYSTACK_ALLOC259,6234
+#    define YYSTACK_ALLOC YYSTACK_ALLOC263,6397
+#    define alloca alloca266,6517
+#    define YYSTACK_ALLOC YYSTACK_ALLOC268,6553
+#      define EXIT_SUCCESS EXIT_SUCCESS273,6823
+#  define YYSTACK_FREE(YYSTACK_FREE282,6973
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM288,7370
+#  define YYSTACK_ALLOC YYSTACK_ALLOC291,7452
+#  define YYSTACK_FREE YYSTACK_FREE292,7485
+#   define YYSTACK_ALLOC_MAXIMUM YYSTACK_ALLOC_MAXIMUM294,7547
+#    define EXIT_SUCCESS EXIT_SUCCESS301,7837
+#   define YYMALLOC YYMALLOC305,7902
+#   define YYFREE YYFREE312,8172
+union Int_yyallocInt_yyalloc327,8666
+  Int_yytype_int16 Int_yyss_alloc;Int_yyss_alloc329,8686
+  YYSTYPE Int_yyvs_alloc;Int_yyvs_alloc330,8721
+# define YYSTACK_GAP_MAXIMUM YYSTACK_GAP_MAXIMUM334,8826
+# define YYSTACK_BYTES(YYSTACK_BYTES338,8978
+# define YYCOPY_NEEDED YYCOPY_NEEDED342,9097
+# define YYSTACK_RELOCATE(YYSTACK_RELOCATE349,9406
+#   define YYCOPY(YYCOPY367,9993
+#   define YYCOPY(YYCOPY370,10100
+#define YYFINAL YYFINAL383,10417
+#define YYLAST YYLAST385,10476
+#define YYNTOKENS YYNTOKENS388,10538
+#define YYNNTS YYNNTS390,10601
+#define YYNRULES YYNRULES392,10656
+#define YYNSTATES YYNSTATES394,10714
+#define YYUNDEFTOK YYUNDEFTOK397,10810
+#define YYMAXUTOK YYMAXUTOK398,10832
+#define YYTRANSLATE(YYTRANSLATE400,10857
+static const Int_yytype_uint8 Int_yytranslate[] =Int_yytranslate404,11037
+static const Int_yytype_uint8 Int_yyprhs[] =Int_yyprhs438,13152
+static const Int_yytype_int8 Int_yyrhs[] =Int_yyrhs445,13377
+static const Int_yytype_uint8 Int_yyrline[] =Int_yyrline454,13780
+static const char *const Int_yytname[] =Int_yytname464,14140
+static const Int_yytype_uint16 Int_yytoknum[] =Int_yytoknum476,14564
+static const Int_yytype_uint8 Int_yyr1[] =Int_yyr1484,14796
+static const Int_yytype_uint8 Int_yyr2[] =Int_yyr2491,15039
+static const Int_yytype_uint8 Int_yydefact[] =Int_yydefact500,15385
+static const Int_yytype_int8 Int_yydefgoto[] =Int_yydefgoto508,15636
+#define YYPACT_NINF YYPACT_NINF516,15856
+static const Int_yytype_int8 Int_yypact[] =Int_yypact517,15880
+static const Int_yytype_int8 Int_yypgoto[] =Int_yypgoto525,16126
+#define YYTABLE_NINF YYTABLE_NINF534,16456
+static const Int_yytype_uint8 Int_yytable[] =Int_yytable535,16480
+#define Int_yypact_value_is_default(Int_yypact_value_is_default541,16628
+#define Int_yytable_value_is_error(Int_yytable_value_is_error544,16707
+static const Int_yytype_int8 Int_yycheck[] =Int_yycheck547,16775
+static const Int_yytype_uint8 Int_yystos[] =Int_yystos555,17019
+#define Int_yyerrok	Int_yyerrok562,17239
+#define Int_yyclearin	Int_yyclearin563,17282
+#define YYEMPTY	YYEMPTY564,17327
+#define YYEOF	YYEOF565,17349
+#define YYACCEPT	YYACCEPT567,17367
+#define YYABORT	YYABORT568,17405
+#define YYERROR	YYERROR569,17442
+#define YYFAIL	YYFAIL579,17849
+#define YYRECOVERING(YYRECOVERING587,18173
+#define YYBACKUP(YYBACKUP589,18218
+#define YYTERROR	YYTERROR606,18627
+#define YYERRCODE	YYERRCODE607,18646
+#define YYRHSLOC(YYRHSLOC614,18852
+# define YYLLOC_DEFAULT(YYLLOC_DEFAULT616,18911
+# define YY_LOCATION_PRINT(YY_LOCATION_PRINT639,19662
+# define YYLEX YYLEX646,19802
+# define YYLEX YYLEX648,19847
+#  define YYFPRINTF YYFPRINTF656,20009
+# define YYDPRINTF(YYDPRINTF659,20046
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT665,20157
+Int_yy_symbol_value_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_value_print685,20707
+Int_yy_symbol_print (FILE *Int_yyoutput, int Int_yytype, YYSTYPE const * const Int_yyvaluep)Int_yy_symbol_print717,21451
+Int_yy_stack_print (Int_yytype_int16 *Int_yybottom, Int_yytype_int16 *Int_yytop)Int_yy_stack_print743,22393
+# define YY_STACK_PRINT(YY_STACK_PRINT760,22826
+Int_yy_reduce_print (YYSTYPE *Int_yyvsp, int Int_yyrule)Int_yy_reduce_print774,23244
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT798,23968
+int Int_yydebug;Int_yydebug806,24209
+# define YYDPRINTF(YYDPRINTF808,24247
+# define YY_SYMBOL_PRINT(YY_SYMBOL_PRINT809,24272
+# define YY_STACK_PRINT(YY_STACK_PRINT810,24327
+# define YY_REDUCE_PRINT(YY_REDUCE_PRINT811,24364
+# define YYINITDEPTH YYINITDEPTH817,24498
+# define YYMAXDEPTH YYMAXDEPTH828,24854
+#   define Int_yystrlen Int_yystrlen836,24977
+Int_yystrlen (const char *Int_yystr)Int_yystrlen842,25165
+#   define Int_yystpcpy Int_yystpcpy859,25508
+Int_yystpcpy (char *Int_yydest, const char *Int_yysrc)Int_yystpcpy866,25748
+Int_yytnamerr (char *Int_yyres, const char *Int_yystr)Int_yytnamerr894,26561
+Int_yysyntax_error (YYSIZE_T *Int_yymsg_alloc, char **Int_yymsg,Int_yysyntax_error942,27690
+# define YYCASE_(YYCASE_1021,31535
+# undef YYCASE_YYCASE_1031,32090
+Int_yydestruct (const char *Int_yymsg, int Int_yytype, YYSTYPE *Int_yyvaluep)Int_yydestruct1078,33436
+int Int_yychar;Int_yychar1119,34253
+YYSTYPE Int_yylval;Int_yylval1122,34321
+int Int_yynerrs;Int_yynerrs1125,34381
+Int_yyparse (void *YYPARSE_PARAM)Int_yyparse1136,34570
+#define YYPOPSTACK(YYPOPSTACK1192,35947
 
 backend/obj/bootscanner.c,10143
 #define  YY_INT_ALIGNED YY_INT_ALIGNED4,25
@@ -514,10 +548,10 @@ Int_yyerror(str)Int_yyerror1814,50169
 
 backend/obj/fmgrtab.c,310
 # define MAXINT	MAXINT32,1082
-static FmgrCall fmgr_builtins[] = {fmgr_builtins43,1287
-static int fmgr_nbuiltins = (sizeof(fmgr_builtins) / sizeof(FmgrCall)) - 1;fmgr_nbuiltins54,1529
-FmgrCall *fmgr_isbuiltin(Oid id)fmgr_isbuiltin56,1606
-func_ptr fmgr_lookupByName(char *name)fmgr_lookupByName78,2040
+static FmgrCall fmgr_builtins[] = {fmgr_builtins44,1311
+static int fmgr_nbuiltins = (sizeof(fmgr_builtins) / sizeof(FmgrCall)) - 1;fmgr_nbuiltins56,1587
+FmgrCall *fmgr_isbuiltin(Oid id)fmgr_isbuiltin58,1664
+func_ptr fmgr_lookupByName(char *name)fmgr_lookupByName80,2098
 
 backend/obj/bootstrap_tokens.h,185
 typedef int YYSTYPE;YYSTYPE39,1590
@@ -541,11 +575,29 @@ typedef struct Dllist {Dllist11,177
   Dlelem *dll_tail;dll_tail13,221
 } Dllist;Dllist14,241
 
-backend/catalog/index.c,123
-AccessMethodObjectIdGetAccessMethodTupleForm(Oid accessMethodObjectId){AccessMethodObjectIdGetAccessMethodTupleForm7,120
+backend/catalog/index.c,124
+AccessMethodObjectIdGetAccessMethodTupleForm(Oid accessMethodObjectId){AccessMethodObjectIdGetAccessMethodTupleForm10,203
+
+backend/catalog/pg_rewrite.h,537
+#define PG_REWRITE_HPG_REWRITE_H2,21
+#define Natts_pg_rewrite Natts_pg_rewrite4,43
+#define Anum_pg_rewrite_rulename Anum_pg_rewrite_rulename5,80
+#define Anum_pg_rewrite_ev_type Anum_pg_rewrite_ev_type6,117
+#define Anum_pg_rewrite_ev_class Anum_pg_rewrite_ev_class7,154
+#define Anum_pg_rewrite_ev_attr Anum_pg_rewrite_ev_attr8,191
+#define Anum_pg_rewrite_is_instead Anum_pg_rewrite_is_instead9,228
+#define Anum_pg_rewrite_ev_qual Anum_pg_rewrite_ev_qual10,265
+#define Anum_pg_rewrite_action Anum_pg_rewrite_action11,302
 
 backend/catalog/catalog.c,22
 newoid(){newoid6,80
+
+backend/catalog/pg_amproc.h,249
+#define PG_AMPROC_HPG_AMPROC_H2,20
+CATALOG(){CATALOG5,63
+typedef FormData_pg_amproc *Form_pg_amproc;Form_pg_amproc12,161
+#define Anum_pg_amproc_amid Anum_pg_amproc_amid14,206
+#define Anum_pg_amproc_amopclaid Anum_pg_amproc_amopclaid15,241
 
 backend/catalog/catalog.h,33
 #define CATALOG_HCATALOG_H2,18
@@ -563,8 +615,22 @@ static TempRelList *tempRels = NULL;tempRels14,258
 heap_creatr(char      *name,heap_creatr17,305
 AddToTempRelList(Relation r){AddToTempRelList103,2324
 
-backend/catalog/pg_proc.h,33
+backend/catalog/pg_index.h,199
+#define PG_INDEX_HPG_INDEX_H2,19
+CATALOG(pg_index) {CATALOG5,61
+typedef FormData_pg_index *IndexTupleForm;IndexTupleForm16,256
+#define Anum_pg_index_indexrelid Anum_pg_index_indexrelid18,300
+
+backend/catalog/pg_proc.h,99
 #define PG_PROC_HPG_PROC_H2,18
+#define ObjectIdEqualRegProcedure ObjectIdEqualRegProcedure4,58
+
+backend/catalog/pg_amop.h,239
+#define PG_AMOP_HPG_AMOP_H2,18
+#define Anum_pg_amop_amopid Anum_pg_amop_amopid5,59
+#define Anum_pg_amop_amopclaid Anum_pg_amop_amopclaid6,92
+CATALOG(pg_amop){CATALOG8,126
+typedef FormData_pg_amop *Form_pg_amop;Form_pg_amop17,291
 
 backend/catalog/pg_attribute.h,178
 #define PG_ATTRIBUTE_HPG_ATTRIBUTE_H2,23
@@ -582,15 +648,21 @@ backend/catalog/heap.h,27
 backend/catalog/pg_type.h,33
 #define PG_TYPE_HPG_TYPE_H2,18
 
-backend/catalog/catname.h,314
+backend/catalog/catname.h,711
 #define CATANAME_HCATANAME_H2,19
-#define RelationRelationName RelationRelationName4,39
-#define AttributeRelationName AttributeRelationName5,81
-#define ProcedureRelationName ProcedureRelationName6,127
-#define TypeRelationName TypeRelationName7,168
-#define VariableRelationName VariableRelationName8,209
+#define AccessMethodRelationName AccessMethodRelationName4,39
+#define RelationRelationName RelationRelationName5,89
+#define RewriteRelationName RewriteRelationName6,142
+#define AttributeRelationName AttributeRelationName7,197
+#define ProcedureRelationName ProcedureRelationName8,254
+#define TypeRelationName TypeRelationName9,306
+#define VariableRelationName VariableRelationName10,358
+#define OperatorRelationName OperatorRelationName11,414
+#define AccessMethodOperatorRelationName AccessMethodOperatorRelationName12,470
+#define AccessMethodProcedureRelationName AccessMethodProcedureRelationName13,522
+#define IndexRelationName IndexRelationName14,576
 
-backend/catalog/pg_class.h,387
+backend/catalog/pg_class.h,437
 #define PG_CLASS_HPG_CLASS_H2,19
 #define RelOid_pg_type RelOid_pg_type4,39
 #define RelOid_pg_attribute RelOid_pg_attribute5,70
@@ -598,7 +670,8 @@ backend/catalog/pg_class.h,387
 #define RelOid_pg_class RelOid_pg_class7,132
 #define RELKIND_INDEX RELKIND_INDEX9,164
 #define RELKIND_UNCATALOGED RELKIND_UNCATALOGED10,196
-typedef FormData_pg_class *Form_pg_class;Form_pg_class21,457
+typedef FormData_pg_class *Form_pg_class;Form_pg_class22,505
+#define CLASS_TUPLE_SIZE CLASS_TUPLE_SIZE24,548
 
 backend/rewrite/prs2lock.h,471
 #define PRS2LOCK_HPRS2LOCK_H2,19
@@ -848,6 +921,9 @@ typedef struct hashnode{hashnode12,180
 backend/utils/adt/name.c,50
 namestrcpy(Name name, char *str){namestrcpy3,26
 
+backend/utils/adt/varlena.c,44
+textout(struct varlena *vlena){textout2,7
+
 backend/utils/hash/dynahash.c,277
 #define GET_SEG(GET_SEG6,144
 #define GET_BUCKET(GET_BUCKET8,241
@@ -885,22 +961,28 @@ typedef struct catcache {catcache15,245
   Dllist          *cc_cache[NCCBUCK+1];cc_cache32,738
 } CatCache;CatCache33,778
 
-backend/utils/rel.h,714
+backend/utils/rel.h,1082
 #define REL_HREL_H2,14
-#define RelationIsValid(RelationIsValid10,190
-typedef struct RelationData {RelationData12,250
-  File          rd_fd;rd_fd13,280
-  uint16        rd_refcnt;//引用计数rd_refcnt14,303
-  bool          rd_islocal;rd_islocal15,344
-  Form_pg_class rd_rel;   //关系结构指针rd_rel16,372
-  Oid           rd_id;    //关系idrd_id17,419
-  Pointer       lockInfo;lockInfo18,456
-  TupleDesc     rd_att;   //元组属性rd_att19,482
-  bool          rd_isnailed;rd_isnailed20,523
-  RuleLock      *rd_rules;rd_rules21,552
-} RelationData;RelationData22,579
-typedef RelationData *Relation;Relation24,596
-#define RelationSetReferenceCount(RelationSetReferenceCount26,629
+#define RelationIsValid(RelationIsValid11,216
+typedef struct RelationData {RelationData13,276
+  File          rd_fd;rd_fd14,306
+  uint16        rd_refcnt;//引用计数rd_refcnt15,329
+  bool          rd_islocal;rd_islocal16,370
+  Form_pg_am    rd_am;    //relation access methodrd_am17,398
+  Form_pg_class rd_rel;   //关系结构指针rd_rel18,449
+  Oid           rd_id;    //关系idrd_id19,496
+  Pointer       lockInfo;lockInfo20,533
+  TupleDesc     rd_att;   //元组属性rd_att21,559
+  bool          rd_isnailed;rd_isnailed22,600
+  RuleLock      *rd_rules;rd_rules23,629
+  IndexStrategy rd_istrat;rd_istrat24,656
+  RegProcedure* rd_support;rd_support25,683
+} RelationData;RelationData26,711
+typedef RelationData *Relation;Relation28,728
+#define RelationSetReferenceCount(RelationSetReferenceCount30,761
+#define RelationIncrementReferenceCount(RelationIncrementReferenceCount31,844
+#define RelationGetRelationName(RelationGetRelationName33,925
+#define RelationGetTupleDescriptor(RelationGetTupleDescriptor34,998
 
 backend/utils/error/elog.c,148
 static int Debugfile = -1;Debugfile6,79
@@ -956,35 +1038,46 @@ ResetSystemCaches(){ResetSystemCaches6,91
 CacheInvalidate(Index       cacheId,CacheInvalidate12,185
 DiscardInvalid(){DiscardInvalid20,309
 
-backend/utils/cache/relcache.c,1200
-GlobalMemory CacheCxt;CacheCxt9,177
-static List *newlyCreatedRelns = NULL;newlyCreatedRelns10,200
-HTAB *RelationNameCache;RelationNameCache13,308
-HTAB *RelationIdCache;RelationIdCache14,333
-#define INFO_RELID INFO_RELID16,357
-#define INFO_RELNAME INFO_RELNAME17,380
-typedef struct RelationBuildDescInfo {RelationBuildDescInfo18,403
-  int infotype;infotype19,442
-    Oid info_id;info_id21,468
-    char *info_name;info_name22,485
-  } i;i23,506
-} RelationBuildDescInfo;RelationBuildDescInfo25,514
-typedef struct relidcacheent {relidcacheent27,540
-  Oid      reloid;reloid28,571
-  Relation reldesc;reldesc29,590
-} RelIdCacheEnt;RelIdCacheEnt30,610
-typedef struct relnamecacheent {relnamecacheent32,628
-  NameData relname;relname33,661
-  Relation reldesc;reldesc34,681
-} RelNameCacheEnt;RelNameCacheEnt35,701
-#define RelationCacheInsert(RelationCacheInsert37,721
-#define RelationNameCacheLookup(RelationNameCacheLookup67,2160
-RelationRegisterRelation(Relation relation){RelationRegisterRelation83,3084
-RelationNameGetRelation(char *relationName){RelationNameGetRelation104,3653
-RelationBuildDesc(RelationBuildDescInfo buildinfo){RelationBuildDesc123,4102
+backend/utils/cache/rel.c,77
+RelationSetIndexSupport(Relation      relation,RelationSetIndexSupport4,29
 
-backend/utils/mmgr/palloc.c,31
+backend/utils/cache/relcache.c,1711
+GlobalMemory CacheCxt;CacheCxt23,562
+static List *newlyCreatedRelns = NULL;newlyCreatedRelns24,585
+HTAB *RelationNameCache;RelationNameCache26,625
+HTAB *RelationIdCache;RelationIdCache27,650
+#define INFO_RELID INFO_RELID29,674
+#define INFO_RELNAME INFO_RELNAME30,697
+typedef struct RelationBuildDescInfo {RelationBuildDescInfo31,720
+  int infotype;infotype32,759
+    Oid info_id;info_id34,785
+    char *info_name;info_name35,802
+  } i;i36,823
+} RelationBuildDescInfo;RelationBuildDescInfo38,831
+typedef struct relidcacheent {relidcacheent51,1468
+  Oid      reloid;reloid52,1499
+  Relation reldesc;reldesc53,1518
+} RelIdCacheEnt;RelIdCacheEnt54,1538
+typedef struct relnamecacheent {relnamecacheent56,1556
+  NameData relname;relname57,1589
+  Relation reldesc;reldesc58,1609
+} RelNameCacheEnt;RelNameCacheEnt59,1629
+#define RelationCacheInsert(RelationCacheInsert61,1649
+#define RelationNameCacheLookup(RelationNameCacheLookup91,3088
+RelationRegisterRelation(Relation relation){RelationRegisterRelation109,4075
+RelationNameGetRelation(char *relationName){RelationNameGetRelation130,4644
+RelationBuildDesc(RelationBuildDescInfo buildinfo){RelationBuildDesc149,5093
+IndexedAccessMethodInitialize(Relation relation){IndexedAccessMethodInitialize205,6626
+RelationBuildRuleLock(Relation relation){RelationBuildRuleLock238,7720
+RelationBuildTupleDsec(RelationBuildDescInfo buildinfo,RelationBuildTupleDsec310,10325
+AllocateRelationDesc(u_int natts, Form_pg_class relp){AllocateRelationDesc319,10650
+ScanPgRelation(RelationBuildDescInfo buildinfo){ScanPgRelation335,11170
+RelationNameCacheGetRelation(char *relationName){RelationNameCacheGetRelation341,11306
+
+backend/utils/mmgr/palloc.c,116
 palloc(Size size){palloc3,28
+pfree(void *pointer){pfree8,78
+repalloc(void *pointer, Size size){repalloc13,127
 
 backend/utils/mmgr/mcxt.c,819
 static struct MemoryContextMethodsData GlobalContextMethodsData = {GlobalContextMethodsData12,441
@@ -1041,9 +1134,10 @@ backend/utils/elog.h,198
 backend/utils/inval.h,29
 #define INVAL_HINVAL_H2,16
 
-backend/utils/init/globals.c,66
+backend/utils/init/globals.c,105
 BackendId MyBackendId;MyBackendId4,60
-int Quiet = 1;Quiet6,84
+int       Quiet = 1;Quiet6,84
+char *    DataDir;DataDir7,105
 
 backend/utils/init/miscinit.c,113
 static ProcessingMode Mode = NoProcessing;Mode4,46
@@ -1091,6 +1185,9 @@ typedef struct htab {htab41,678
   long       *(*alloc)();alloc46,786
 } HTAB;HTAB47,812
 
+backend/utils/palloc.h,31
+#define PALLOC_HPALLOC_H2,17
+
 backend/utils/nabstime.h,186
 #define NABSTIME_HNABSTIME_H2,19
 typedef int32 AbsoluteTime;AbsoluteTime6,79
@@ -1108,7 +1205,7 @@ typedef enum ProcessingMode {ProcessingMode10,143
   NomalProcessingNomalProcessing14,230
 } ProcessingMode;ProcessingMode15,248
 
-backend/include/postgres.h,850
+backend/include/postgres.h,986
 #define POSTGRES_HPOSTGRES_H3,20
 #define FirstCommandId FirstCommandId6,55
 typedef uint32 TransactionId;TransactionId8,81
@@ -1116,22 +1213,26 @@ typedef uint16 CommandId;CommandId9,111
 typedef uint32 Oid;Oid10,137
 typedef int32  int4;int411,157
 typedef int16  int2;int212,178
-#define BOOTSTRAPBOOTSTRAP14,200
-#define CATALOG(CATALOG15,218
-#define InvalidOid InvalidOid17,277
-#define OidIsValid(OidIsValid18,308
-typedef struct nameData {nameData20,372
-  char data[NAMEDATALEN];data21,398
-} NameData;NameData22,424
-typedef NameData *Name;Name23,436
-struct varlena {varlena25,461
-  int32 vl_len;vl_len26,478
-  char  vl_dat[1];vl_dat27,494
-typedef struct varlena text;text30,517
-typedef Oid regproc;regproc32,547
-typedef Oid RegProcedure;RegProcedure33,568
-#define STATUS_OK STATUS_OK36,627
-#define STATUS_ERROR STATUS_ERROR37,652
+typedef int2 int28[8];int2814,200
+typedef Oid  oid8[8];oid815,223
+#define NAMEDATALEN NAMEDATALEN18,266
+#define BOOTSTRAPBOOTSTRAP21,297
+#define CATALOG(CATALOG22,315
+#define DATA(DATA24,374
+#define InvalidOid InvalidOid26,408
+#define OidIsValid(OidIsValid27,439
+typedef struct nameData {nameData29,503
+  char data[NAMEDATALEN];data30,529
+} NameData;NameData31,555
+typedef NameData *Name;Name32,567
+struct varlena {varlena34,592
+  int32 vl_len;vl_len35,609
+  char  vl_dat[1];vl_dat36,625
+typedef struct varlena text;text39,648
+typedef Oid regproc;regproc41,678
+typedef Oid RegProcedure;RegProcedure42,699
+#define STATUS_OK STATUS_OK45,758
+#define STATUS_ERROR STATUS_ERROR46,783
 
 backend/include/c.h,899
 #define C_HC_H2,12
@@ -1381,6 +1482,9 @@ typedef enum CmdType {CmdType24,336
 backend/nodes/list.c,43
 lcons(void *datum, List *list){lcons5,56
 
+backend/nodes/read.c,42
+StringToNode(char *str){StringToNode2,7
+
 backend/nodes/pg_list.h,237
 #define PG_LIST_HPG_LIST_H2,18
 typedef struct List {List6,63
@@ -1431,8 +1535,12 @@ typedef struct ItemPointerData{ItemPointerData6,89
 } ItemPointerData;ItemPointerData9,171
 typedef ItemPointerData *ItemPointer;ItemPointer11,191
 
-backend/storage/lmgr/lmgr.c,68
-RelationInitLockInfo(Relation relation){RelationInitLockInfo8,131
+backend/storage/lmgr/lmgr.c,161
+RelationSetLockForDescriptorOpen(Relation relation){RelationSetLockForDescriptorOpen8,131
+RelationInitLockInfo(Relation relation){RelationInitLockInfo17,285
+
+backend/storage/file/fd.c,59
+FileSeek(File file, long offset, int whence){FileSeek2,5
 
 backend/storage/sinval.h,31
 #define SIGVAL_HSIGVAL_H2,17
@@ -1503,8 +1611,57 @@ tas(slock_t *m)tas4,30
 S_LOCK(slock_t *lock)S_LOCK12,140
 S_UNLOCK(slock_t *lock)S_UNLOCK19,197
 
-backend/storage/smgr/smgr.c,56
-smgrcreate(int16 which, Relation reln){smgrcreate4,29
+backend/storage/smgr/smgr.c,802
+typedef struct f_smgr {f_smgr6,96
+  int (*smgr_init)();smgr_init7,120
+  int (*smgr_shutdown)();smgr_shutdown8,142
+  int (*smgr_create)();smgr_create9,168
+  int (*smgr_unlink)();smgr_unlink10,192
+  int (*smgr_extend)();smgr_extend11,216
+  int (*smgr_open)();smgr_open12,240
+  int (*smgr_close)();smgr_close13,262
+  int (*smgr_read)();smgr_read14,285
+  int (*smgr_write)();smgr_write15,307
+  int (*smgr_fulsh)();smgr_fulsh16,330
+  int (*smgr_blindwrt)();smgr_blindwrt17,353
+  int (*smgr_nblocks)();smgr_nblocks18,379
+  int (*smgr_commit)();smgr_commit19,404
+  int (*smgr_abort)();smgr_abort20,428
+} f_smgr;f_smgr21,451
+static f_smgr smgrsw[] = {smgrsw23,462
+smgrcreate(int16 which, Relation reln){smgrcreate29,643
+smgropen(int16 which, Relation reln){smgropen39,854
+
+backend/storage/smgr/md.c,1370
+typedef struct _MdfdVec {_MdfdVec12,236
+  int             mdfd_vfd;mdfd_vfd13,262
+  uint16          mdfd_flags;mdfd_flags14,290
+  int             mdfd_lstbcnt;mdfd_lstbcnt15,320
+  struct _MdfdVec *mdfd_chain;mdfd_chain16,352
+} MdfdVec;MdfdVec17,383
+#define RELSEG_SIZE RELSEG_SIZE19,395
+#define MDFD_DIRTY MDFD_DIRTY20,422
+static MdfdVec       *Md_fdvec = (MdfdVec *)NULL;Md_fdvec22,457
+static MemoryContext MdCxt;MdCxt23,507
+static int           Nfds  = 100;Nfds24,535
+static int           CurFd = 0;CurFd25,569
+mdinit(){mdinit33,841
+mdcreate(Relation reln){mdcreate53,1265
+mdunlink(Relation reln){mdunlink88,2008
+mdextend(Relation reln, char *buffer){mdextend125,2829
+mdopen(Relation reln){mdopen147,3306
+mdclose(Relation reln){mdclose174,3850
+mdread(Relation reln, BlockNumber blocknum, char *buffer){mdread191,4165
+mdwrite(Relation reln, BlockNumber blocknum, char *buffer){mdwrite216,4688
+mdflush(Relation    reln,mdflush238,5141
+mdblindwrt(char       *dbstr,mdblindwrt263,5653
+mdnblocks(Relation reln){mdnblocks319,7019
+mdcommit(){mdcommit350,7749
+mdabort(){mdabort368,8054
+_fdvec_ext(){_fdvec_ext381,8253
+_mdfd_openseg(Relation reln, int segno, int oflags){_mdfd_openseg400,8647
+_mdfd_getseg(Relation reln, int blkno, int oflag){_mdfd_getseg437,9486
+_mdnblocks(File file, Size blcksz){_mdnblocks465,10169
 
 backend/storage/smgr/sgmr.c,55
 smgrcreate(int16 which, Relation reln){smgrcreate2,4
@@ -1593,10 +1750,11 @@ backend/storage/shmem.h,116
 typedef unsigned long SHMEM_OFFSET;SHMEM_OFFSET5,59
 #define MAKE_PTR(MAKE_PTR8,127
 
-backend/storage/smgr.h,97
+backend/storage/smgr.h,133
 #define SMGR_HSMGR_H2,15
 #define SM_FAIL SM_FAIL6,55
-#define DEFAULT_SMGR DEFAULT_SMGR8,77
+#define SM_SUCCESS SM_SUCCESS7,76
+#define DEFAULT_SMGR DEFAULT_SMGR9,98
 
 backend/storage/block.h,264
 #define BLOCK_HBLOCK_H2,16

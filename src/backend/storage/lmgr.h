@@ -3,6 +3,7 @@
 #include "postgres.h"
 #include "storage/itemptr.h"
 #include "nodes/memnodes.h"
+#include "utils/rel.h"
 
 typedef struct LRelId {
   Oid relId;
@@ -16,5 +17,7 @@ typedef struct LockInfoData {
   uint16        flags;
 } LockInfoData;
 typedef LockInfoData *LockInfo;
+
+extern void RelationSetLockForDescriptorOpen(Relation relation);
 
 #endif

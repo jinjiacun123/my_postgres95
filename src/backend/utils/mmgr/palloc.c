@@ -8,3 +8,8 @@ void
 pfree(void *pointer){
   free(pointer);
 }
+
+void *
+repalloc(void *pointer, Size size){
+  return realloc(pointer, size);
+}

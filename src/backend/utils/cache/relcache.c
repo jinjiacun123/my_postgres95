@@ -274,7 +274,11 @@ RelationBuildRuleLock(Relation relation){
 						Anum_pg_rewrite_ev_type,
 						pg_rewrite_tupdesc,
 						&isnull)-48);
-    rule->attrno = (AttrNumber)heap_getattr(pg_rewrite_tuple, &isnull);
+    rule->attrno = (AttrNumber)heap_getattr(pg_rewrite_tuple,
+                                            InvalidBuffer,
+                                            Anum_pg_rewrite_ev_attr,
+                                            pg_rewrite_tupdesc,
+                                            &isnull);
     ruleaction = heap_getattr(pg_rewrite_tuple,
                               InvalidBuffer,
                               Anum_pg_rewrite_action,

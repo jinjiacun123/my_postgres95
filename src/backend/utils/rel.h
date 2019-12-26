@@ -28,6 +28,8 @@ typedef struct RelationData {
 
 typedef RelationData *Relation;
 
+typedef Relation *RelationPtr;
+
 #define RelationSetReferenceCount(relation,count) ((relation)->rd_refcnt == count)
 #define RelationIncrementReferenceCount(relation) ((relation)->rd_refcnt += 1);
 

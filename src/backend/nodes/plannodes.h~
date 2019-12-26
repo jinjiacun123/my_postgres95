@@ -1,0 +1,34 @@
+#ifndef PLANNODES_H
+#define PLANNODES_H
+
+typedef struct Plan {
+  NodeTag      type;
+  Cost         cost;
+  int          plan_size;
+  int          plan_width;
+  int          plan_tupperpage;
+  EState       *state;
+
+  List         *targetList;
+  List         *qual;
+  struct Plan  *lefttree;
+  struct Plan  *righttree;
+} Plan;
+
+typedef struct Result {
+  Plan        plan;
+  Node        *resconstantqual;
+  ResultState *resstate;
+} Result;
+
+typedef Plan Existential;
+
+typedef struct Append {
+  Plan        plan;
+  List        *unionplans;
+  Index       unionrelid;
+  List        *uniionrtentries;
+  AppendState *unionstate;
+} Append;
+
+#endif

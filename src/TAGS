@@ -3,7 +3,7 @@ backend/access/itup.h,89
 #define ITUP_HITUP_H2,15
 #define MaxIndexAttributeNumber MaxIndexAttributeNumber4,31
 
-backend/access/skey.h,362
+backend/access/skey.h,407
 #define SKEY_HSKEY_H2,15
 typedef struct ScanKeyData {ScanKeyData6,80
   bits16       sk_flags;sk_flags7,109
@@ -13,12 +13,28 @@ typedef struct ScanKeyData {ScanKeyData6,80
   int32        sk_nargs;sk_nargs11,212
   Datum        sk_argument;sk_argument12,237
 } ScanKeyData;ScanKeyData13,265
+typedef ScanKeyData* ScanKey;ScanKey15,281
 
-backend/access/relscan.h,191
+backend/access/relscan.h,824
 #define RELSCAN_HRELSCAN_H2,18
-typedef struct HeapScanDescData {HeapScanDescData6,63
-} HeapScanDescData;HeapScanDescData8,98
-typedef HeapScanDescData *HeapScanDesc;HeapScanDesc10,119
+typedef struct HeapScanDescData {HeapScanDescData9,136
+  Relation        rs_rd;rs_rd10,170
+  HeapTuple       rs_ptup;rs_ptup11,195
+  HeapTuple       rs_ctup;rs_ctup12,222
+  HeapTuple       rs_ntup;rs_ntup13,249
+  Buffer          rs_pbuf;rs_pbuf14,276
+  Buffer          rs_cbuf;rs_cbuf15,303
+  Buffer          rs_nbuf;rs_nbuf16,330
+  ItemPointerData rs_mctid;rs_mctid17,357
+  ItemPointerData rs_mntid;rs_mntid18,385
+  ItemPointerData rs_mcd;rs_mcd19,413
+  bool            rs_atend;rs_atend20,439
+  TimeQual        rs_tr;rs_tr21,467
+  uint16          rs_cdelta;rs_cdelta22,492
+  uint16          rs_nkeys;rs_nkeys23,521
+  ScanKey         rs_key;rs_key24,549
+} HeapScanDescData;HeapScanDescData25,575
+typedef HeapScanDescData *HeapScanDesc;HeapScanDesc27,596
 
 backend/access/transam/xid.c,160
 TransactionIdStore(TransactionId transactionId,TransactionIdStore6,69
@@ -58,6 +74,9 @@ backend/access/common/tupdesc.c,210
 CreateTupleDesc(int natts, AttributeTupleForm *attrs){CreateTupleDesc5,61
 CreateTupleDescCopy(TupleDesc tupdesc){CreateTupleDescCopy18,299
 CreateTemplateTupleDesc(int natts){CreateTemplateTupleDesc35,785
+
+backend/access/common/scankey.c,71
+ScanKeyEntryInitialize(ScanKey      entry,ScanKeyEntryInitialize6,80
 
 backend/access/index/istrat.c,199
 IndexSupportInitialize(IndexStrategy  indexStrategy,IndexSupportInitialize18,409
@@ -118,6 +137,15 @@ typedef struct tupleDesc {tupleDesc5,97
   AttributeTupleForm *attrs;attrs7,152
 } *TupleDesc;TupleDesc8,181
 
+backend/access/funcindex.h,275
+#define FUNCINDEX_HFUNCINDEX_H2,20
+  int      nargs;nargs6,80
+  Oid      arglist[8];arglist7,98
+  Oid      procOid;procOid8,121
+  NameData funcName;funcName9,141
+} FuncIndexInfo;FuncIndexInfo10,162
+typedef FuncIndexInfo *FuncIndexInfoPtr;FuncIndexInfoPtr12,180
+
 backend/access/transam.h,530
 #define TRANSAM_HTRANSAM_H2,18
 #define BootstrapObjectIdData BootstrapObjectIdData4,37
@@ -129,26 +157,78 @@ typedef struct VariableRelationContentsData {VariableRelationContentsData5,73
 } VariableRelationContentsData;VariableRelationContentsData10,238
 typedef VariableRelationContentsData * VariableRelationContents;VariableRelationContents12,271
 
-backend/access/heapam.h,522
+backend/access/heapam.h,2646
 #define HEAPAM_HHEAPAM_H2,17
-typedef struct HeapAccessStatisticsData{HeapAccessStatisticsData4,35
-  int global_openr;global_openr5,76
-  int global_RelationNameGetRelation;global_RelationNameGetRelation6,96
-  int local_openr;local_openr8,135
-  int local_RelationNameGetRelation;local_RelationNameGetRelation9,154
-} HeapAccessStatisticsData;HeapAccessStatisticsData10,191
-typedef HeapAccessStatisticsData *HeapAccessStatistics;HeapAccessStatistics12,220
-#define IncrHeapAccessStat(IncrHeapAccessStat15,324
+typedef struct HeapAccessStatisticsData{HeapAccessStatisticsData8,136
+  time_t init_global_timestamp;init_global_timestamp9,177
+  time_t local_reset_timestamp;local_reset_timestamp10,209
+  time_t last_request_timestamp;last_request_timestamp11,241
+  int global_open;global_open13,275
+  int global_openr;global_openr14,294
+  int global_close;global_close15,314
+  int global_beginscan;global_beginscan16,334
+  int global_rescan;global_rescan17,358
+  int global_endscan;global_endscan18,379
+  int global_getnext;global_getnext19,401
+  int global_fetch;global_fetch20,423
+  int global_insert;global_insert21,443
+  int global_delete;global_delete22,464
+  int global_replace;global_replace23,485
+  int global_markpos;global_markpos24,507
+  int global_restrpos;global_restrpos25,529
+  int global_BufferGetRelation;global_BufferGetRelation26,552
+  int global_RelationIdGetRelation;global_RelationIdGetRelation27,584
+  int global_RelationIdGetRelation_Buf;global_RelationIdGetRelation_Buf28,620
+  int global_RelationNameGetRelation;global_RelationNameGetRelation29,660
+  int global_getreldesc;global_getreldesc30,698
+  int global_heapgettup;global_heapgettup31,723
+  int global_RelationPutHeapTuple;global_RelationPutHeapTuple32,748
+  int global_RelationPutLongHeapTuple;global_RelationPutLongHeapTuple33,783
+  int local_open;local_open34,822
+  int local_openr;local_openr35,840
+  int local_close;local_close36,859
+  int local_beginscan;local_beginscan37,878
+  int local_rescan;local_rescan38,901
+  int local_endscan;local_endscan39,921
+  int local_getnext;local_getnext40,942
+  int local_fetch;local_fetch41,963
+  int local_insert;local_insert42,982
+  int local_delete;local_delete43,1002
+  int local_replace;local_replace44,1022
+  int local_markpos;local_markpos45,1043
+  int local_restrpos;local_restrpos46,1064
+  int local_BufferGetRelation;local_BufferGetRelation47,1086
+  int local_RelationIdGetRelation;local_RelationIdGetRelation48,1117
+  int local_RelationIdGetRelation_Buf;local_RelationIdGetRelation_Buf49,1152
+  int local_RelationNameGetRelation;local_RelationNameGetRelation50,1191
+  int local_getreldesc;local_getreldesc51,1228
+  int local_heapgettup;local_heapgettup52,1252
+  int local_RelationPutHeapTuple;local_RelationPutHeapTuple53,1276
+  int local_RelationPutLongHeapTuple;local_RelationPutLongHeapTuple54,1310
+} HeapAccessStatisticsData;HeapAccessStatisticsData55,1348
+typedef HeapAccessStatisticsData *HeapAccessStatistics;HeapAccessStatistics57,1377
+#define IncrHeapAccessStat(IncrHeapAccessStat60,1481
 
 backend/access/heap/stats.c,92
 HeapAccessStatistics heap_access_stats = (HeapAccessStatistics)NULL;heap_access_stats4,51
 
-backend/access/heap/heapam.c,264
-heap_openr(char *relationName){heap_openr6,84
-heap_close(Relation relation){heap_close20,405
-heap_endscan(HeapScanDesc sdesc){heap_endscan28,550
-heap_beginscan(Relation relation,heap_beginscan43,881
-heap_getnext(HeapScanDesc scandesc,heap_getnext82,1876
+backend/access/heap/heapam.c,540
+#define HEAPDEBUG_1HEAPDEBUG_111,228
+#define HEAPDEBUG_2HEAPDEBUG_212,248
+#define HEAPDEBUG_3HEAPDEBUG_313,268
+#define HEAPDEBUG_4HEAPDEBUG_414,288
+#define HEAPDEBUG_5HEAPDEBUG_515,308
+#define HEAPDEBUG_6HEAPDEBUG_616,328
+#define HEAPDEBUG_7HEAPDEBUG_717,348
+heap_openr(char *relationName){heap_openr21,379
+heap_close(Relation relation){heap_close35,700
+heap_endscan(HeapScanDesc sdesc){heap_endscan43,845
+heap_beginscan(Relation relation,heap_beginscan58,1176
+heap_getnext(HeapScanDesc scandesc,heap_getnext97,2171
+
+backend/access/heap/tqual.c,140
+static TimeQualData SelfTimeQualData;SelfTimeQualData1,0
+TimeQual            SelfTimeQual = (Pointer)&SelfTimeQualData;SelfTimeQual2,38
 
 backend/access/strat.h,511
 #define STRAT_HSTRAT_H2,16
@@ -161,6 +241,14 @@ typedef struct IndexStrategyData {IndexStrategyData12,196
 } IndexStrategyData;IndexStrategyData14,269
 typedef uint16            StrategyNumber;StrategyNumber16,291
 typedef IndexStrategyData *IndexStrategy;IndexStrategy18,334
+
+backend/access/sdir.h,288
+#define SDIR_HSDIR_H2,15
+typedef enum ScanDirection {ScanDirection4,31
+  BackwardScanDirection   = -1,BackwardScanDirection5,60
+  NoMovementScanDirection = 0,NoMovementScanDirection6,92
+  ForwardScanDirection    = 1ForwardScanDirection7,123
+} ScanDirection;ScanDirection8,153
 
 backend/obj/bootstrap_token.h,1007
 # define YYTOKENTYPEYYTOKENTYPE36,1566
@@ -621,9 +709,10 @@ CATALOG(pg_index) {CATALOG5,61
 typedef FormData_pg_index *IndexTupleForm;IndexTupleForm16,256
 #define Anum_pg_index_indexrelid Anum_pg_index_indexrelid18,300
 
-backend/catalog/pg_proc.h,99
+backend/catalog/pg_proc.h,171
 #define PG_PROC_HPG_PROC_H2,18
 #define ObjectIdEqualRegProcedure ObjectIdEqualRegProcedure4,58
+#define Character16EqualRegProcedure Character16EqualRegProcedure5,99
 
 backend/catalog/pg_amop.h,239
 #define PG_AMOP_HPG_AMOP_H2,18
@@ -632,10 +721,27 @@ backend/catalog/pg_amop.h,239
 CATALOG(pg_amop){CATALOG8,126
 typedef FormData_pg_amop *Form_pg_amop;Form_pg_amop17,291
 
-backend/catalog/pg_attribute.h,178
+backend/catalog/pg_attribute.h,1356
 #define PG_ATTRIBUTE_HPG_ATTRIBUTE_H2,23
-typedef FormData_pg_attribute *AttributeTupleForm;AttributeTupleForm25,471
-#define ATTRIBUTE_TUPLE_SIZE ATTRIBUTE_TUPLE_SIZE27,523
+#define Natts_pg_attribute Natts_pg_attribute5,69
+#define Anum_pg_attribute_attrelid Anum_pg_attribute_attrelid6,110
+#define Anum_pg_attribute_attname Anum_pg_attribute_attname7,150
+#define Anum_pg_attribute_atttypeid Anum_pg_attribute_atttypeid8,190
+#define Anum_pg_attribute_attdefrel Anum_pg_attribute_attdefrel9,230
+#define Anum_pg_attribute_attnvals Anum_pg_attribute_attnvals10,270
+#define Anum_pg_attribute_atttyparg Anum_pg_attribute_atttyparg11,310
+#define Anum_pg_attribute_attlen Anum_pg_attribute_attlen12,350
+#define Anum_pg_attribute_attnum Anum_pg_attribute_attnum13,390
+#define Anum_pg_attribute_attbound Anum_pg_attribute_attbound14,430
+#define Anum_pg_attribute_attbyval Anum_pg_attribute_attbyval15,470
+#define Anum_pg_attribute_attcanindex Anum_pg_attribute_attcanindex16,511
+#define Anum_pg_attribute_attproc Anum_pg_attribute_attproc17,552
+#define Anum_pg_attribute_attrelems Anum_pg_attribute_attrelems18,593
+#define Anum_pg_attribute_attcacheoff Anum_pg_attribute_attcacheoff19,634
+#define Anum_pg_attribute_attisset Anum_pg_attribute_attisset20,675
+#define Anum_pg_attribute_attalign Anum_pg_attribute_attalign21,716
+typedef FormData_pg_attribute *AttributeTupleForm;AttributeTupleForm43,1160
+#define ATTRIBUTE_TUPLE_SIZE ATTRIBUTE_TUPLE_SIZE45,1212
 
 backend/catalog/pg_am.h,112
 #define PG_AM_HPG_AM_H2,16
@@ -662,7 +768,7 @@ backend/catalog/catname.h,711
 #define AccessMethodProcedureRelationName AccessMethodProcedureRelationName13,522
 #define IndexRelationName IndexRelationName14,576
 
-backend/catalog/pg_class.h,437
+backend/catalog/pg_class.h,497
 #define PG_CLASS_HPG_CLASS_H2,19
 #define RelOid_pg_type RelOid_pg_type4,39
 #define RelOid_pg_attribute RelOid_pg_attribute5,70
@@ -672,6 +778,7 @@ backend/catalog/pg_class.h,437
 #define RELKIND_UNCATALOGED RELKIND_UNCATALOGED10,196
 typedef FormData_pg_class *Form_pg_class;Form_pg_class22,505
 #define CLASS_TUPLE_SIZE CLASS_TUPLE_SIZE24,548
+#define Anum_pg_class_relname Anum_pg_class_relname27,636
 
 backend/rewrite/prs2lock.h,471
 #define PRS2LOCK_HPRS2LOCK_H2,19
@@ -868,6 +975,24 @@ backend/fmgr.h,370
 #define F_BOOLIN F_BOOLIN76,2294
 #define F_BOOLOUT F_BOOLOUT77,2314
 
+backend/executor/tuptable.h,696
+#define TUPTABLE_HTUPTABLE_H2,19
+typedef struct TupleTableSlot {TupleTableSlot8,142
+  NodeTag    type;type9,174
+  HeapTuple  val;val10,193
+  bool       ttc_shouldFree;ttc_shouldFree11,211
+  bool       ttc_descIsNew;ttc_descIsNew12,240
+  TupleDesc  ttc_tupleDescriptor;ttc_tupleDescriptor13,268
+  Buffer     ttc_buffer;ttc_buffer14,302
+  int        ttc_whichplan;ttc_whichplan15,327
+} TupleTableSlot;TupleTableSlot16,355
+typedef struct TupleTableData {TupleTableData18,374
+  int            size;size19,406
+  int            next;next20,429
+  TupleTableSlot *array;array21,452
+} TupleTableData;TupleTableData22,477
+typedef TupleTableData *TupleTable;TupleTable24,496
+
 backend/parser/scansup.c,62
 serror(char *str)serror6,75
 scanstr(char *s)scanstr12,151
@@ -961,28 +1086,30 @@ typedef struct catcache {catcache15,245
   Dllist          *cc_cache[NCCBUCK+1];cc_cache32,738
 } CatCache;CatCache33,778
 
-backend/utils/rel.h,1082
+backend/utils/rel.h,1179
 #define REL_HREL_H2,14
 #define RelationIsValid(RelationIsValid11,216
 typedef struct RelationData {RelationData13,276
   File          rd_fd;rd_fd14,306
-  uint16        rd_refcnt;//引用计数rd_refcnt15,329
-  bool          rd_islocal;rd_islocal16,370
-  Form_pg_am    rd_am;    //relation access methodrd_am17,398
-  Form_pg_class rd_rel;   //关系结构指针rd_rel18,449
-  Oid           rd_id;    //关系idrd_id19,496
-  Pointer       lockInfo;lockInfo20,533
-  TupleDesc     rd_att;   //元组属性rd_att21,559
-  bool          rd_isnailed;rd_isnailed22,600
-  RuleLock      *rd_rules;rd_rules23,629
-  IndexStrategy rd_istrat;rd_istrat24,656
-  RegProcedure* rd_support;rd_support25,683
-} RelationData;RelationData26,711
-typedef RelationData *Relation;Relation28,728
-#define RelationSetReferenceCount(RelationSetReferenceCount30,761
-#define RelationIncrementReferenceCount(RelationIncrementReferenceCount31,844
-#define RelationGetRelationName(RelationGetRelationName33,925
-#define RelationGetTupleDescriptor(RelationGetTupleDescriptor34,998
+  int           rd_nblocks;rd_nblocks15,329
+  uint16        rd_refcnt;//引用计数rd_refcnt16,357
+  bool          rd_islocal;rd_islocal17,398
+  Form_pg_am    rd_am;    //relation access methodrd_am18,426
+  Form_pg_class rd_rel;   //关系结构指针rd_rel19,477
+  Oid           rd_id;    //关系idrd_id20,524
+  Pointer       lockInfo;lockInfo21,561
+  TupleDesc     rd_att;   //元组属性rd_att22,587
+  bool          rd_isnailed;rd_isnailed23,628
+  RuleLock      *rd_rules;rd_rules24,657
+  IndexStrategy rd_istrat;rd_istrat25,684
+  RegProcedure* rd_support;rd_support26,711
+} RelationData;RelationData27,739
+typedef RelationData *Relation;Relation29,756
+typedef Relation *RelationPtr;RelationPtr31,789
+#define RelationSetReferenceCount(RelationSetReferenceCount33,821
+#define RelationIncrementReferenceCount(RelationIncrementReferenceCount34,904
+#define RelationGetRelationName(RelationGetRelationName36,985
+#define RelationGetTupleDescriptor(RelationGetTupleDescriptor37,1058
 
 backend/utils/error/elog.c,148
 static int Debugfile = -1;Debugfile6,79
@@ -1016,22 +1143,43 @@ backend/utils/tqual.h,107
 typedef Pointer TimeQual;TimeQual4,33
 #define NowTimeQual NowTimeQual5,59
 
+backend/utils/fcache.h,702
+#define FCACHE_HFCACHE_H2,17
+  int      typlen;typlen5,52
+  int      typbyval;typbyval6,71
+  func_ptr func;func7,92
+  Oid      foid;foid8,109
+  Oid      language;language9,126
+  int      nargs;nargs10,147
+  Oid      *argOidVect;argOidVect11,165
+  bool     *nullVect;nullVect12,189
+  char     *src;src13,211
+  char     *bin;bin14,228
+  char     *func_state;func_state15,245
+  bool     oneResult;oneResult17,270
+  bool     hasSetArg;hasSetArg18,292
+  Pointer  funcSlot;funcSlot19,314
+  char     *setArg;setArg20,335
+  bool     istrusted;istrusted21,355
+} FunctionCache, *FunctionCachePtr;FunctionCache22,377
+} FunctionCache, *FunctionCachePtr;FunctionCachePtr22,377
+
 backend/utils/relcache.h,35
 #define RELCACHE_HRELCACHE_H2,19
 
-backend/utils/cache/catcache.c,489
-static int DisableCache;DisableCache7,127
-CatCache     *Caches = NULL;Caches8,152
-GlobalMemory CacheCxt;CacheCxt9,181
-#define INFO_RELID INFO_RELID11,205
-#define INFO_RELNAME INFO_RELNAME12,228
-typedef struct RelationBuildDescInfo {RelationBuildDescInfo13,251
-  int infotype;infotype14,290
-    Oid  info_id;info_id16,316
-    char *info_name;info_name17,334
-  } i;i18,355
-} RelationBuildDescInfo;RelationBuildDescInfo19,362
-ResetSystemCache(){ResetSystemCache22,393
+backend/utils/cache/catcache.c,490
+static int DisableCache;DisableCache8,152
+CatCache     *Caches = NULL;Caches9,177
+GlobalMemory CacheCxt;CacheCxt10,206
+#define INFO_RELID INFO_RELID12,230
+#define INFO_RELNAME INFO_RELNAME13,253
+typedef struct RelationBuildDescInfo {RelationBuildDescInfo14,276
+  int infotype;infotype15,315
+    Oid  info_id;info_id17,341
+    char *info_name;info_name18,359
+  } i;i19,380
+} RelationBuildDescInfo;RelationBuildDescInfo20,387
+ResetSystemCache(){ResetSystemCache23,418
 
 backend/utils/cache/inval.c,144
 ResetSystemCaches(){ResetSystemCaches6,91
@@ -1041,43 +1189,46 @@ DiscardInvalid(){DiscardInvalid20,309
 backend/utils/cache/rel.c,77
 RelationSetIndexSupport(Relation      relation,RelationSetIndexSupport4,29
 
-backend/utils/cache/relcache.c,1711
-GlobalMemory CacheCxt;CacheCxt23,562
-static List *newlyCreatedRelns = NULL;newlyCreatedRelns24,585
-HTAB *RelationNameCache;RelationNameCache26,625
-HTAB *RelationIdCache;RelationIdCache27,650
-#define INFO_RELID INFO_RELID29,674
-#define INFO_RELNAME INFO_RELNAME30,697
-typedef struct RelationBuildDescInfo {RelationBuildDescInfo31,720
-  int infotype;infotype32,759
-    Oid info_id;info_id34,785
-    char *info_name;info_name35,802
-  } i;i36,823
-} RelationBuildDescInfo;RelationBuildDescInfo38,831
-typedef struct relidcacheent {relidcacheent51,1468
-  Oid      reloid;reloid52,1499
-  Relation reldesc;reldesc53,1518
-} RelIdCacheEnt;RelIdCacheEnt54,1538
-typedef struct relnamecacheent {relnamecacheent56,1556
-  NameData relname;relname57,1589
-  Relation reldesc;reldesc58,1609
-} RelNameCacheEnt;RelNameCacheEnt59,1629
-#define RelationCacheInsert(RelationCacheInsert61,1649
-#define RelationNameCacheLookup(RelationNameCacheLookup91,3088
-RelationRegisterRelation(Relation relation){RelationRegisterRelation109,4075
-RelationNameGetRelation(char *relationName){RelationNameGetRelation130,4644
-RelationBuildDesc(RelationBuildDescInfo buildinfo){RelationBuildDesc149,5093
-IndexedAccessMethodInitialize(Relation relation){IndexedAccessMethodInitialize205,6626
-RelationBuildRuleLock(Relation relation){RelationBuildRuleLock238,7720
-RelationBuildTupleDsec(RelationBuildDescInfo buildinfo,RelationBuildTupleDsec310,10325
-AllocateRelationDesc(u_int natts, Form_pg_class relp){AllocateRelationDesc319,10650
-ScanPgRelation(RelationBuildDescInfo buildinfo){ScanPgRelation335,11170
-RelationNameCacheGetRelation(char *relationName){RelationNameCacheGetRelation341,11306
+backend/utils/cache/relcache.c,1886
+GlobalMemory CacheCxt;CacheCxt24,585
+static List *newlyCreatedRelns = NULL;newlyCreatedRelns25,608
+HTAB *RelationNameCache;RelationNameCache27,648
+HTAB *RelationIdCache;RelationIdCache28,673
+#define INFO_RELID INFO_RELID30,697
+#define INFO_RELNAME INFO_RELNAME31,720
+typedef struct RelationBuildDescInfo {RelationBuildDescInfo32,743
+  int infotype;infotype33,782
+    Oid info_id;info_id35,808
+    char *info_name;info_name36,825
+  } i;i37,846
+} RelationBuildDescInfo;RelationBuildDescInfo39,854
+ typedef struct relidcacheent {relidcacheent56,1820
+   Oid      reloid;reloid57,1852
+   Relation reldesc;reldesc58,1872
+ } RelIdCacheEnt;RelIdCacheEnt59,1893
+ typedef struct relnamecacheent {relnamecacheent61,1912
+   NameData relname;relname62,1946
+   Relation reldesc;reldesc63,1967
+ } RelNameCacheEnt;RelNameCacheEnt64,1988
+ #define RelationCacheInsert(RelationCacheInsert66,2009
+ #define RelationNameCacheLookup(RelationNameCacheLookup96,3476
+ RelationRegisterRelation(Relation relation){RelationRegisterRelation114,4479
+ RelationNameGetRelation(char *relationName){RelationNameGetRelation135,5063
+ RelationBuildDesc(RelationBuildDescInfo buildinfo){RelationBuildDesc154,5526
+ IndexedAccessMethodInitialize(Relation relation){IndexedAccessMethodInitialize210,7107
+ RelationBuildRuleLock(Relation relation){RelationBuildRuleLock243,8230
+ RelationBuildTupleDsec(RelationBuildDescInfo buildinfo,RelationBuildTupleDsec320,11265
+ AllocateRelationDesc(u_int natts, Form_pg_class relp){AllocateRelationDesc329,11598
+ ScanPgRelation(RelationBuildDescInfo buildinfo){ScanPgRelation345,12132
+ RelationNameCacheGetRelation(char *relationName){RelationNameCacheGetRelation351,12273
+ scan_pg_rel_seq(RelationBuildDescInfo buildinfo){scan_pg_rel_seq373,12750
+build_tupdesc_seq(RelationBuildDescInfo buildinfo,build_tupdesc_seq429,14501
 
-backend/utils/mmgr/palloc.c,116
+backend/utils/mmgr/palloc.c,155
 palloc(Size size){palloc3,28
 pfree(void *pointer){pfree8,78
 repalloc(void *pointer, Size size){repalloc13,127
+pstrdup(char * string){pstrdup18,205
 
 backend/utils/mmgr/mcxt.c,819
 static struct MemoryContextMethodsData GlobalContextMethodsData = {GlobalContextMethodsData12,441
@@ -1139,9 +1290,10 @@ BackendId MyBackendId;MyBackendId4,60
 int       Quiet = 1;Quiet6,84
 char *    DataDir;DataDir7,105
 
-backend/utils/init/miscinit.c,113
+backend/utils/init/miscinit.c,165
 static ProcessingMode Mode = NoProcessing;Mode4,46
 IsBootstrapProcessingMode(){IsBootstrapProcessingMode7,95
+IsInitProcessingMode(){IsInitProcessingMode12,180
 
 backend/utils/hsearch.h,1395
 #define HSEARCH_HHSEARCH_H2,18
@@ -1234,7 +1386,7 @@ typedef Oid RegProcedure;RegProcedure42,699
 #define STATUS_OK STATUS_OK45,758
 #define STATUS_ERROR STATUS_ERROR46,783
 
-backend/include/c.h,899
+backend/include/c.h,1303
 #define C_HC_H2,12
 #define NULL NULL5,38
 typedef unsigned int Index;Index8,61
@@ -1243,23 +1395,33 @@ typedef unsigned int Index;Index8,61
 #define TRUE TRUE14,153
 #define FALSE FALSE18,190
 typedef char bool;bool21,214
-typedef signed   short int16;int1623,234
-typedef signed   int   int32;int3224,264
-typedef unsigned char  uint8;uint826,295
-typedef unsigned short uint16;uint1627,325
-typedef unsigned int   uint32;uint3228,356
-typedef signed   int Offset;Offset30,388
-typedef char *Pointer;Pointer31,417
-typedef uint8   bits8;bits833,441
-typedef uint16  bits16;bits1634,464
-typedef unsigned long Datum;Datum36,489
-#define CppConcat(CppConcat38,519
-#define Assert(Assert40,548
-#define AssertArg(AssertArg41,574
-#define AssertState(AssertState42,603
-typedef unsigned int Size;Size44,635
-#define PointerIsValid(PointerIsValid46,663
-#define offsetof(offsetof49,746
+typedef bool *BoolPtr;BoolPtr22,233
+typedef signed   short int16;int1624,257
+typedef signed   int   int32;int3225,287
+typedef unsigned char  uint8;uint827,318
+typedef unsigned short uint16;uint1628,348
+typedef unsigned int   uint32;uint3229,379
+typedef signed   int Offset;Offset31,411
+typedef char *Pointer;Pointer32,440
+typedef uint8   bits8;bits834,464
+typedef uint16  bits16;bits1635,487
+typedef unsigned long Datum;Datum37,512
+#define CppConcat(CppConcat39,542
+#define Assert(Assert41,571
+#define AssertArg(AssertArg42,597
+#define AssertState(AssertState43,626
+typedef unsigned int Size;Size45,658
+#define PointerIsValid(PointerIsValid47,686
+#define offsetof(offsetof50,769
+#define SET_4_BYTES(SET_4_BYTES53,835
+#define NameGetDatum(NameGetDatum55,896
+#define PointerGetDatum(PointerGetDatum56,949
+#define ObjectIdGetDatum(ObjectIdGetDatum57,987
+#define MAXDIM MAXDIM59,1041
+  int indx[MAXDIM];indx61,1075
+} IntArray;IntArray62,1095
+typedef unsigned long Datum;Datum64,1108
+typedef Datum         *DatumPtr;DatumPtr65,1137
 
 backend/bootparse.c,7713
 #define YYBISON YYBISON44,2057
@@ -1435,6 +1597,93 @@ func_ptr fmgr_lookupByName(char *name)fmgr_lookupByName78,2040
 backend/nodes/nodes.c,46
 newNode(Size size, NodeTag tag){newNode5,55
 
+backend/nodes/execnodes.h,4398
+#define EXECNODES_HEXECNODES_H2,20
+typedef struct JunkFilter {JunkFilter9,176
+  NodeTag          type;type10,204
+  List             *jf_targetList;jf_targetList11,229
+  int              jf_length;jf_length12,264
+  TupleDesc        jf_tupType;jf_tupType13,294
+  List             *jf_cleanTargetList;jf_cleanTargetList14,325
+  int              jf_cleanLength;jf_cleanLength15,365
+  TupleDesc        jf_cleanTupType;jf_cleanTupType16,400
+  AttrNumber       *jf_cleanMap;jf_cleanMap17,436
+} JunkFilter;JunkFilter18,469
+typedef struct IndexInfo {IndexInfo20,484
+  NodeTag           type;type21,511
+  int               ii_NumKeyAttributes;ii_NumKeyAttributes22,537
+  AttrNumber        *ii_KeyAttributeNumbers;ii_KeyAttributeNumbers23,578
+  FuncIndexInfoPtr  ii_FuncIndexInfo;ii_FuncIndexInfo24,623
+  Node              *ii_Predicate;ii_Predicate25,661
+} IndexInfo;IndexInfo26,696
+typedef struct RelationInfo {RelationInfo28,710
+  NodeTag      type;type29,740
+  Index        ri_RangeTableIndex;ri_RangeTableIndex30,761
+  Relation     ri_RelationDesc;ri_RelationDesc31,796
+  int          ri_NumIndeces;ri_NumIndeces32,828
+  RelationPtr  ri_IndexRelationDescs;ri_IndexRelationDescs33,858
+  IndexInfo    **ri_IndexRelationInfo;ri_IndexRelationInfo34,896
+} RelationInfo;RelationInfo35,935
+typedef struct EState {EState37,952
+  NodeTag           type;type38,976
+  ScanDirection     es_direction;es_direction39,1002
+  List              *es_range_table;es_range_table40,1036
+  RelationInfo      *es_result_relation_info;es_result_relation_info41,1073
+  Relation          es_into_relation_descriptor;es_into_relation_descriptor42,1119
+  ParamListInfo     es_param_list_info;es_param_list_info43,1168
+  int               es_BaseId;es_BaseId44,1208
+  TupleTable        es_tupleTable;es_tupleTable45,1239
+  JunkFilter        *es_junkFilter;es_junkFilter46,1274
+  int               *es_refcount;es_refcount47,1310
+} EState;EState48,1344
+typedef struct ExprContext {ExprContext50,1355
+  NodeTag           type;type51,1384
+  TupleTableSlot    *ecxt_scantuple;ecxt_scantuple52,1410
+  TupleTableSlot    *ecxt_innertuple;ecxt_innertuple53,1447
+  TupleTableSlot    *ecxt_outertuple;ecxt_outertuple54,1485
+  Relation          ecxt_relation;ecxt_relation55,1523
+  Index             ecxt_relid;ecxt_relid56,1558
+  ParamListInfo     ecxt_param_list_info;ecxt_param_list_info57,1590
+  List              *ecxt_range_table;ecxt_range_table58,1632
+  Datum             *ecxt_values;ecxt_values59,1671
+  char              *ecxt_nulls;ecxt_nulls60,1705
+} ExprContext;ExprContext61,1738
+typedef struct ProjectionInfo {ProjectionInfo63,1754
+  NodeTag            type;type64,1786
+  List               *pi_targetlist;pi_targetlist65,1813
+  int                pl_len;pl_len66,1850
+  Datum              *pi_tupValue;pi_tupValue67,1879
+  ExprContext        *pi_exprContext;pi_exprContext68,1914
+  TupleTableSlog     *pi_slot;pi_slot69,1952
+} ProjectionInfo;ProjectionInfo70,1983
+typedef struct CommonState {CommonState72,2002
+  NodeTag        type;type73,2031
+  int            cs_base_id;cs_base_id74,2054
+  TupleTableSlot *cs_OuterTupleSlot;cs_OuterTupleSlot75,2083
+  TupleTableSlot *cs_ResultTupleSlot;cs_ResultTupleSlot76,2120
+  ExprContext    *cs_ExprContext;cs_ExprContext77,2158
+  ProjectionInfo *cs_ProjInfo;cs_ProjInfo78,2192
+  bool           cs_TupFromTlist;cs_TupFromTlist79,2223
+} CommonState;CommonState80,2257
+typedef struct AppendState {AppendState82,2273
+  CommonState cstate;cstate83,2302
+  int         as_whichplan;as_whichplan84,2324
+  int         as_nplans;as_nplans85,2352
+  bool        *as_initialized;as_initialized86,2377
+  List        *as_rentries;as_rentries87,2408
+  List        *as_result_relation_info_list;as_result_relation_info_list88,2436
+  List        *as_junkFilter_list;as_junkFilter_list89,2481
+} AppendState;AppendState90,2516
+typedef CommonState JoinState;JoinState92,2532
+typedef struct NestLoopState {NestLoopState94,2564
+  JoinState jstate;jstate95,2595
+  bool      nl_PortalFlag;nl_PortalFlag96,2615
+} NestLoopState;NestLoopState97,2642
+typedef struct HashJoinState {HashJoinState99,2660
+  JoinState             jstate;jstate100,2691
+  HashJoinTable         hj_HashTable;hj_HashTable101,2723
+} HashJoinState;HashJoinState108,2780
+
 backend/nodes/memnodes.h,827
 #define MEMNODES_HMEMNODES_H2,19
 typedef struct MemoryContextMethodsData{MemoryContextMethodsData7,107
@@ -1456,44 +1705,626 @@ typedef struct GlobalMemory{GlobalMemory20,397
   OrderedElemData      elemData;elemData25,548
 } *GlobalMemory;GlobalMemory26,581
 
-backend/nodes/nodes.h,670
+backend/nodes/nodes.h,4552
 #define NODES_HNODES_H2,16
-typedef enum NodeTag{NodeTag6,49
-  T_Invalid = 0,T_Invalid7,71
-  T_MemoryContext = 400,T_MemoryContext9,89
-  T_GlobalMemory,T_GlobalMemory10,114
-  T_Value = 500,T_Value12,133
-  T_ListT_List13,150
-} NodeTag;NodeTag14,159
-#define makeNode(makeNode16,171
-typedef struct Node {Node18,242
-  NodeTag type;type19,264
-} Node;Node20,280
-typedef enum CmdType {CmdType24,336
-  CMD_UNKNOWN,CMD_UNKNOWN25,359
-  CMD_SELECT,CMD_SELECT26,374
-  CMD_UPDATE,CMD_UPDATE27,388
-  CMD_INSERT,CMD_INSERT28,402
-  CMD_DELETE,CMD_DELETE29,416
-  CMD_NOTIFY,CMD_NOTIFY30,430
-  CMD_UTILITYCMD_UTILITY31,444
-} CmdType;CmdType32,458
+typedef float Cost;Cost5,48
+typedef enum NodeTag{NodeTag7,69
+  T_Invalid = 0,T_Invalid8,91
+  T_Plan = 10,T_Plan10,109
+  T_Existential,T_Existential11,124
+  T_Result,T_Result12,141
+  T_Append,T_Append13,153
+  T_Scan,T_Scan14,165
+  T_SeqScan,T_SeqScan15,175
+  T_IndexScan,T_IndexScan16,188
+  T_Join,T_Join17,203
+  T_NestLoop,T_NestLoop18,213
+  T_MergeJoin,T_MergeJoin19,227
+  T_HashJoin,T_HashJoin20,242
+  T_Temp,T_Temp21,256
+  T_Material,T_Material22,266
+  T_Sort,T_Sort23,280
+  T_Agg,T_Agg24,290
+  T_Unique,T_Unique25,299
+  T_Hash,T_Hash26,311
+  T_Resdom = 100,T_Resdom28,322
+  T_Fjoin,T_Fjoin29,340
+  T_Expr,T_Expr30,351
+  T_Var,T_Var31,361
+  T_Oper,T_Oper32,370
+  T_Const,T_Const33,380
+  T_Param,T_Param34,391
+  T_Aggreg,T_Aggreg35,402
+  T_Func,T_Func36,414
+  T_Array,T_Array37,424
+  T_ArrayRef,T_ArrayRef38,435
+  T_Rel = 200,T_Rel40,450
+  T_Path,T_Path41,465
+  T_IndexPath,T_IndexPath42,475
+  T_JoinPath,T_JoinPath43,490
+  T_MergePath,T_MergePath44,504
+  T_HashPath,T_HashPath45,519
+  T_OrderKey,T_OrderKey46,533
+  T_JoinKey,T_JoinKey47,547
+  T_MergeOrder,T_MergeOrder48,560
+  T_CInfo,T_CInfo49,576
+  T_JoinMethod,T_JoinMethod50,587
+  T_HInfo,T_HInfo51,603
+  T_MInfo,T_MInfo52,614
+  T_JInfo,T_JInfo53,625
+  T_Iter,T_Iter54,636
+  T_Stream,T_Stream55,646
+  T_IndexInfo = 300,T_IndexInfo57,659
+  T_RelationInfo,T_RelationInfo58,680
+  T_TupleCount,T_TupleCount59,698
+  T_TupleTableSlot,T_TupleTableSlot60,714
+  T_ExprContext,T_ExprContext61,734
+  T_projectionInfo,T_projectionInfo62,751
+  T_JunkFilter,T_JunkFilter63,771
+  T_EState,T_EState64,787
+  T_MemoryContext = 400,T_MemoryContext66,800
+  T_GlobalMemory,T_GlobalMemory67,825
+  T_Value = 500,T_Value69,844
+  T_List,T_List70,861
+  T_Integer,T_Integer71,871
+  T_Float,T_Float72,884
+  T_String,T_String73,895
+  T_Null,T_Null74,907
+  T_Query = 600,T_Query75,917
+  T_AppendStmt,T_AppendStmt76,934
+  T_DeleteStmt,T_DeleteStmt77,950
+  T_ReplaceStmt,T_ReplaceStmt78,966
+  T_CursorStmt,T_CursorStmt79,983
+  T_RetrieveStmt,T_RetrieveStmt80,999
+  T_AddAttrStmt,T_AddAttrStmt81,1017
+  T_AggregateStmt,T_AggregateStmt82,1034
+  T_ChangeACLStmt,T_ChangeACLStmt83,1053
+  T_ClosePortalStmt,T_ClosePortalStmt84,1072
+  T_ClusterStmt,T_ClusterStmt85,1093
+  T_CopyStmt,T_CopyStmt86,1110
+  T_CreateStmt,T_CreateStmt87,1124
+  T_VersionStmt,T_VersionStmt88,1140
+  T_DefineStmt,T_DefineStmt89,1157
+  T_DestroyStmt,T_DestroyStmt90,1173
+  T_ExtendStmt,T_ExtendStmt91,1190
+  T_FetchStmt,T_FetchStmt92,1206
+  T_IndexStmt,T_IndexStmt93,1221
+  T_MoveStmt,T_MoveStmt94,1236
+  T_ProcedureStmt,T_ProcedureStmt95,1250
+  T_PurgeStmt,T_PurgeStmt96,1269
+  T_RecipeStmt,T_RecipeStmt97,1284
+  T_RemoveFuncStmt,T_RemoveFuncStmt98,1300
+  T_RemoveOperStmt,T_RemoveOperStmt99,1320
+  T_RemoveStmt,T_RemoveStmt100,1340
+  T_RenameStmt,T_RenameStmt101,1356
+  T_RuleStmt,T_RuleStmt102,1372
+  T_NotifyStmt,T_NotifyStmt103,1386
+  T_ListenStmt,T_ListenStmt104,1402
+  T_TransactionStmt,T_TransactionStmt105,1418
+  T_ViewStmt,T_ViewStmt106,1439
+  T_LoadStmt,T_LoadStmt107,1453
+  T_CreatedStmt,T_CreatedStmt108,1467
+  T_DestroydbStmt,T_DestroydbStmt109,1484
+  T_VecuumStmt,T_VecuumStmt110,1503
+  T_ExplainStmt,T_ExplainStmt111,1519
+  T_A_Expr = 700,T_A_Expr113,1537
+  T_Attr,T_Attr114,1555
+  T_A_Const,T_A_Const115,1565
+  T_ParamNo,T_ParamNo116,1578
+  T_Ident,T_Ident117,1591
+  T_FuncCall,T_FuncCall118,1602
+  T_A_Indices,T_A_Indices119,1616
+  T_ResTarget,T_ResTarget120,1631
+  T_ParamString,T_ParamString121,1646
+  T_TimeRange,T_TimeRange122,1663
+  T_RelExpr,T_RelExpr123,1678
+  T_SortBy,T_SortBy124,1691
+  T_RangeVar,T_RangeVar125,1703
+  T_TypeName,T_TypeName126,1717
+  T_IndexElem,T_IndexElem127,1731
+  T_ColumnDef,T_ColumnDef128,1746
+  T_DefElem,T_DefElem129,1761
+  T_TargetEntry,T_TargetEntry130,1774
+  T_RangeTblEntry,T_RangeTblEntry131,1791
+  T_SortClause,T_SortClause132,1810
+  T_GroupClauseT_GroupClause133,1826
+} NodeTag;NodeTag134,1842
+#define makeNode(makeNode136,1854
+typedef struct Node {Node138,1925
+  NodeTag type;type139,1947
+} Node;Node140,1963
+typedef enum CmdType {CmdType144,2019
+  CMD_UNKNOWN,CMD_UNKNOWN145,2042
+  CMD_SELECT,CMD_SELECT146,2057
+  CMD_UPDATE,CMD_UPDATE147,2071
+  CMD_INSERT,CMD_INSERT148,2085
+  CMD_DELETE,CMD_DELETE149,2099
+  CMD_NOTIFY,CMD_NOTIFY150,2113
+  CMD_UTILITYCMD_UTILITY151,2127
+} CmdType;CmdType152,2141
 
-backend/nodes/list.c,43
+backend/nodes/readfuncs.c,1712
+parsePlanString(){parsePlanString56,1751
+_readQuery(){_readQuery157,5305
+_readIter(){_readIter207,6571
+_readHInfo(){_readHInfo221,6782
+_readJInfo(){_readJInfo243,7191
+toIntList(List *list){toIntList275,7819
+_readJoinMethod(){_readJoinMethod285,7958
+_readCInfo(){_readCInfo302,8271
+_readMergeOrder(){_readMergeOrder341,9068
+_readJoinKey(){_readJoinKey376,9785
+_readOrderKey(){_readOrderKey393,10083
+_readHashPath(){_readHashPath414,10465
+_readMergePath(){_readMergePath469,11787
+_readJoinPath(){_readJoinPath525,13115
+_readIndexPath(){_readIndexPath570,14144
+_readPath(){_readPath598,14768
+_readRangeTblEntry(){_readRangeTblEntry620,15200
+_readTargetEntry(){_readTargetEntry664,16184
+_readRel(){_readRel681,16498
+_readEState(){_readEState747,18046
+_readParam(){_readParam773,18546
+_readOper(){_readOper807,19255
+_readFunc(){_readFunc832,19751
+_readConst(){_readConst876,20699
+_readVar(){_readVar921,21607
+_readArray(){_readArray952,22279
+_readArrayRef(){_readArrayRef987,23114
+_readExpr(){_readExpr1026,24047
+_readResdom(){_readResdom1061,24872
+_readHash(){_readHash1110,25956
+_readUnique(){_readUnique1138,26509
+_readAgg(){_readAgg1159,26911
+_readSort(){_readSort1175,27181
+_readTemp(){_readTemp1196,27559
+_readIndexScan(){_readIndexScan1217,27939
+_readSeqScan(){_readSeqScan1236,28293
+_readScan(){_readScan1249,28478
+_readHashJoin(){_readHashJoin1262,28642
+_readMergeJoin(){_readMergeJoin1298,29428
+_readNestLoop(){_readNestLoop1318,29811
+_readJoin(){_readJoin1329,29960
+_readAppend(){_readAppend1340,30092
+_readExistential(){_readExistential1363,30541
+_readResult(){_readResult1371,30698
+_readPlan(){_readPlan1387,30957
+
+backend/nodes/list.c,162
 lcons(void *datum, List *list){lcons5,56
+makeString(char *str){makeString13,180
+makeInteger(long i){makeInteger21,303
+makeFloat(double d){makeFloat29,426
 
-backend/nodes/read.c,42
-StringToNode(char *str){StringToNode2,7
+backend/nodes/relation.h,4840
+#define RELATION_HRELATION_H2,19
+typedef List *Relid;Relid8,146
+typedef struct Iter{Iter10,168
+  NodeTag type;type11,189
+  Node    *iterexpr;iterexpr12,205
+  Oid     itertype;itertype13,226
+} Iter;Iter14,246
+typedef struct JoinMethod {JoinMethod16,255
+  NodeTag type;type17,283
+  List    *jmkeys;jmkeys18,299
+  List    *clauses;clauses19,318
+} JoinMethod;JoinMethod20,338
+typedef struct HInfo{HInfo22,353
+  JoinMethod jmethod;jmethod23,375
+  Oid        hashop;hashop24,397
+} HInfo;HInfo25,418
+typedef struct JInfo {JInfo27,428
+  NodeTag type;type28,451
+  List    *otherrels;otherrels29,467
+  List    *jinfoclauseinfo;jinfoclauseinfo30,489
+  bool    mergesortable;mergesortable31,517
+  bool    hashjoinable;hashjoinable32,542
+  bool    inactive;inactive33,566
+} JInfo;JInfo34,586
+typedef struct Rel {Rel36,596
+  NodeTag          type;type37,617
+  Relid            relids;relids38,642
+  bool             indexed;indexed39,669
+  int              pages;pages40,697
+  int              tuples;tuples41,723
+  int              size;size42,750
+  int              width;width43,775
+  List             *targetlist;targetlist45,802
+  List             *pathlist;pathlist46,834
+  struct Path      *unorderedpath;unorderedpath47,864
+  struct Path      *cheapestpath;cheapestpath48,899
+  bool             pruneable;pruneable49,933
+  Oid              *classlist;classlist50,963
+  int              *indexkeys;indexkeys51,994
+  Oid              relam;relam52,1025
+  Oid              indproc;indproc53,1051
+  List             *indpred;indpred54,1079
+  Oid              *ordering;ordering55,1108
+  List             *clauseinfo;clauseinfo56,1138
+  List             *joininfo;joininfo57,1170
+  List             *innerjoin;innerjoin58,1200
+  List             *superrels;superrels59,1231
+} Rel;Rel60,1262
+typedef struct Path {Path62,1270
+  NodeTag   type;type63,1292
+  Rel       *parent;parent64,1310
+  Cost      *path_cost;path_cost65,1331
+  NodeTag   pathtype;pathtype66,1355
+  PathOrder p_ordering;p_ordering67,1377
+  List      *keys;keys68,1401
+  Cost      outerjoincost;outerjoincost69,1420
+  Relid     joinid;joinid70,1447
+  List      *locclauseinfo;locclauseinfo71,1467
+} Path;Path72,1495
+typedef struct IndexPath {IndexPath74,1504
+  Path    path;path75,1531
+  List    *indexid;indexid76,1547
+  List    *indexqual;indexqual77,1567
+} IndexPath;IndexPath78,1589
+typedef struct JoinPath {JoinPath80,1603
+  Path      path;path81,1629
+  List      *pathclauseinfo;pathclauseinfo82,1647
+  Path      *outerjoinpath;outerjoinpath83,1676
+  Path      *innerjoinpath;innerjoinpath84,1704
+} JoinPath;JoinPath85,1732
+typedef struct MergePath {MergePath87,1745
+  JoinPath     jpath;jpath88,1772
+  List         *path_mergeclauses;path_mergeclauses89,1794
+  List         *outersortkeys;outersortkeys90,1829
+  List         *innersortkeys;innersortkeys91,1860
+} MergePath;MergePath92,1891
+typedef struct HashPath {HashPath94,1905
+  JoinPath      jpath;jpath95,1931
+  List          *path_hashclauses;path_hashclauses96,1954
+  List          *outerhashkeys;outerhashkeys97,1989
+  List          *innerhashkeys;innerhashkeys98,2021
+} HashPath;HashPath99,2053
+typedef struct OrderKey {OrderKey101,2066
+  NodeTag    type;type102,2092
+  int        attribute_number;attribute_number103,2111
+  Index      array_index;array_index104,2142
+} OrderKey;OrderKey105,2168
+typedef struct JoinKey {JoinKey107,2181
+  NodeTag    type;type108,2206
+  Var        *outer;outer109,2225
+  Var        *inner;inner110,2246
+} JoinKey;JoinKey111,2267
+typedef struct MergeOrder {MergeOrder113,2279
+  NodeTag   type;type114,2307
+  Oid       join_operator;join_operator115,2325
+  Oid       left_operator;left_operator116,2352
+  Oid       right_operator;right_operator117,2379
+  Oid       left_type;left_type118,2407
+  Oid       right_type;right_type119,2430
+} MergeOrder;MergeOrder120,2454
+typedef struct CInfo {CInfo122,2469
+  NodeTag    type;type123,2492
+  Expr       *clause;clause124,2511
+  Cost       selectivity;selectivity125,2533
+  bool       notclause;notclause126,2559
+  List       *indexids;indexids127,2583
+  MergeOrder *mergesortorder;mergesortorder128,2607
+  Oid        hashjoinoperator;hashjoinoperator129,2637
+  Relid      cinfojoinid;cinfojoinid130,2668
+} CInfo;CInfo131,2694
+typedef enum OrderType {OrderType133,2704
+  MERGE_ORDER, SORTOP_ORDERMERGE_ORDER134,2729
+  MERGE_ORDER, SORTOP_ORDERSORTOP_ORDER134,2729
+} OrderType;OrderType135,2757
+typedef struct PathOrder {PathOrder137,2771
+  OrderType      ordtype;ordtype138,2798
+    Oid         *sortop;sortop140,2834
+    MergeOrder  *merge;merge141,2859
+  } ord;ord142,2883
+} PathOrder;PathOrder144,2893
 
-backend/nodes/pg_list.h,237
+backend/nodes/read.c,375
+#define RIGHT_PAREN RIGHT_PAREN9,158
+#define LEFT_PAREN LEFT_PAREN10,192
+#define PLAN_SYM PLAN_SYM11,226
+#define AT_SYMBOL AT_SYMBOL12,260
+#define ATOM_TOKEN ATOM_TOKEN13,294
+StringToNode(char *str){StringToNode18,392
+lsptok(char *string,lsptok28,517
+nodeRead(bool read_car_only){nodeRead71,1477
+nodeTokenType(char *token, int length){nodeTokenType170,3723
+
+backend/nodes/params.h,452
+#define PARAMS_HPARAMS_H2,17
+typedef struct ParamListInfoData {ParamListInfoData6,77
+  int        kind;kind7,112
+  char       *name;name8,131
+  AttrNumber id;id9,151
+  Oid        type;type10,168
+  Size       length;length11,187
+  bool       isnull;isnull12,208
+  bool       byval;byval13,229
+  Datum      value;value14,249
+} ParamListInfoData;ParamListInfoData15,269
+typedef ParamListInfoData *ParamListInfo;ParamListInfo18,292
+
+backend/nodes/parsenodes.h,1944
+#define PARSENODES_HPARSENODES_H2,21
+typedef struct Query {Query7,124
+  NodeTag type;type8,147
+  CmdType commandType;commandType9,163
+  Node    *utilityStmt;utilityStmt10,186
+  int     resultRelation;resultRelation11,210
+  char    *into;into12,236
+  bool    isPortal;isPortal13,253
+  bool    isBinary;isBinary14,273
+  char    *uniqueFlag;uniqueFlag15,293
+  List    *sortClause;sortClause16,316
+  List    *rtable;rtable17,339
+  List    *targetList;targetList18,358
+  Node    *qual;qual19,381
+  List    *groupClause;groupClause20,398
+  Node    *havingQual;havingQual21,422
+  int     qry_numAgg;qry_numAgg22,445
+  Aggreg  **qry_aggs;qry_aggs23,467
+  List    *base_relation_list_;base_relation_list_24,489
+  List    *join_relation_list_;join_relation_list_25,521
+  bool    query_is_archival_;query_is_archival_26,553
+} Query;Query27,583
+typedef struct NotifyStmt {NotifyStmt29,593
+  NodeTag type;type30,621
+  char    *relname;relname31,637
+} NotifyStmt;NotifyStmt32,657
+typedef struct TimeRange {TimeRange34,672
+  NodeTag    type;type35,699
+  char       *startDate;startDate36,718
+  char       *endDate;endDate37,743
+} TimeRange;TimeRange38,766
+typedef struct RangeTblEntry {RangeTblEntry40,780
+  NodeTag             type;type41,811
+  char                *relname;relname42,839
+  TimeRange           *timeRange;timeRange43,871
+  char                *refname;refname44,905
+  Oid                 relid;relid46,938
+  bool                inh;inh47,967
+  bool                archive;archive48,994
+  bool                infromCl;infromCl49,1025
+  TimeQual            timeQual;timeQual50,1057
+} RangeTblEntry;RangeTblEntry51,1089
+typedef struct TargetEntry {TargetEntry53,1107
+  NodeTag         type;type54,1136
+  Resdom          *resdom;resdom55,1160
+  Fjoin           *fjoin;fjoin56,1187
+  Node            *expr;expr57,1213
+} TargetEntry;TargetEntry58,1238
+
+backend/nodes/plannodes.h,4207
+#define PLANNODES_HPLANNODES_H2,20
+typedef struct Plan {Plan7,124
+  NodeTag      type;type8,146
+  Cost         cost;cost9,167
+  int          plan_size;plan_size10,188
+  int          plan_width;plan_width11,214
+  int          plan_tupperpage;plan_tupperpage12,241
+  EState       *state;state13,273
+  List         *targetList;targetList15,297
+  List         *qual;qual16,325
+  struct Plan  *lefttree;lefttree17,347
+  struct Plan  *righttree;righttree18,373
+} Plan;Plan19,400
+typedef struct ResultState {ResultState21,409
+  CommonState   cstate;cstate22,438
+  int           rs_done;rs_done23,462
+} ResultState;ResultState24,487
+typedef struct Result {Result26,503
+  Plan        plan;plan27,527
+  Node        *resconstantqual;resconstantqual28,547
+  ResultState *resstate;resstate29,579
+} Result;Result30,604
+typedef Plan Existential;Existential32,615
+typedef struct Append {Append34,642
+  Plan        plan;plan35,666
+  List        *unionplans;unionplans36,686
+  Index       unionrelid;unionrelid37,713
+  List        *unionrtentries;unionrtentries38,739
+  AppendState *unionstate;unionstate39,770
+} Append;Append40,797
+typedef Plan Join;Join42,808
+typedef struct NestLoop {NestLoop44,828
+  Join          join;join45,854
+  NestLoopState *nlstate;nlstate46,876
+} NestLoop;NestLoop47,902
+typedef struct MergeJoin {MergeJoin49,915
+  Join           join;join50,942
+  List           *mergeclauses;mergeclauses51,965
+  Oid            mergesortop;mergesortop52,997
+  Oid            *mergerightorder;mergerightorder53,1027
+  Oid            *mergeleftorder;mergeleftorder54,1062
+  MergeJoinState *mergestate;mergestate55,1096
+} MergeJoin;MergeJoin56,1126
+typedef struct HashJoin {HashJoin58,1140
+  Join          join;join59,1166
+  List          *hashclauses;hashclauses60,1188
+  Oid           hashjoinop;hashjoinop61,1218
+  HashJoinState *hashjoinstate;hashjoinstate62,1246
+  HashJoinTable hashjointable;hashjointable63,1278
+  IpcMemoryKey  hashjointablekey;hashjointablekey64,1309
+  int           hashjointablesize;hashjointablesize65,1343
+  bool          hashdone;hashdone66,1378
+} HashJoin;HashJoin67,1404
+typedef struct Scan {Scan69,1417
+  Plan            plan;plan70,1439
+  Index           scanrelid;scanrelid71,1463
+  CommanScanState *scanstate;scanstate72,1492
+} Scan;Scan73,1522
+typedef Scan SeqScan;SeqScan75,1531
+typedef struct IndexScan {IndexScan77,1554
+  Scan            scan;scan78,1581
+  List            *indxid;indxid79,1605
+  List            *indxqual;indxqual80,1632
+  IndexScanState  *indxstate;indxstate81,1661
+} IndexScan;IndexScan82,1691
+typedef struct Temp {Temp84,1705
+  Plan       plan;plan85,1727
+  Oid        tempid;tempid86,1746
+  int        keycount;keycount87,1767
+} Temp;Temp88,1790
+typedef struct Sort {Sort90,1799
+  Plan      plan;plan91,1821
+  Oid       tempid;tempid92,1839
+  int       keycount;keycount93,1859
+  SortState *sortstate;sortstate94,1881
+} Sort;Sort95,1905
+typedef struct Agg {Agg97,1914
+  Plan     plan;plan98,1935
+  int      numAgg;numAgg99,1952
+  Aggreg   **aggs;aggs100,1971
+  AggState *aggstate;aggstate101,1990
+} Agg;Agg102,2012
+typedef struct Unique {Unique104,2020
+  Plan           plan;plan105,2044
+  Oid            tempid;tempid106,2067
+  int            keycount;keycount107,2092
+  char           *uniqueAttr;uniqueAttr108,2119
+  AttrNumber     uniqueAttrNum;uniqueAttrNum110,2150
+  UniqueState    *uniquestate;uniquestate112,2183
+} Unique;Unique113,2214
+typedef struct Var {Var115,2225
+  NodeTag    type;type116,2246
+  Index      varno;varno117,2265
+  AttrNumber varattno;varattno118,2285
+  Oid        vartype;vartype119,2308
+  Index      varnoold;varnoold120,2330
+  AttrNumber varoattno;varoattno121,2353
+} Var;Var122,2377
+typedef struct Hash {Hash124,2385
+  Plan           plan;plan125,2407
+  Var            *hashkey;hashkey126,2430
+  HashState      *hashstate;hashstate127,2457
+  HashJoinTable  hashtable;hashtable128,2486
+  IpcMemoryKey   hashtablekey;hashtablekey129,2514
+  int            hashtablesize;hashtablesize130,2545
+} Hash;Hash131,2577
+
+backend/nodes/pg_list.h,618
 #define PG_LIST_HPG_LIST_H2,18
 typedef struct List {List6,63
   NodeTag     type;type7,85
   void        *elem;elem8,105
   struct List *next;next9,126
 } List;List10,147
-#define lfirst(lfirst12,156
-#define lnext(lnext13,186
+#define NIL NIL12,156
+#define lfirst(lfirst14,184
+#define lnext(lnext15,214
+typedef struct Value {Value17,245
+  NodeTag type;type18,268
+  union ValueUnion {ValueUnion19,284
+    char   *str;str20,305
+    long   ival;ival21,322
+    double dval;dval22,339
+  } val;val23,356
+} Value;Value24,365
+#define intVal(intVal26,375
+#define floatVal(floatVal27,420
+#define strVal(strVal28,465
+#define foreach(foreach30,510
+
+backend/nodes/readfuncs.h,37
+#define READFUNCS_HREADFUNCS_H2,20
+
+backend/nodes/primnodes.h,3981
+#define PRIMNODES_HPRIMNODES_H2,20
+typedef enum OpType {OpType7,116
+  OP_EXPR, FUNC_EXPR, OR_EXPR, AND_EXPR, NOT_EXPROP_EXPR8,138
+  OP_EXPR, FUNC_EXPR, OR_EXPR, AND_EXPR, NOT_EXPRFUNC_EXPR8,138
+  OP_EXPR, FUNC_EXPR, OR_EXPR, AND_EXPR, NOT_EXPROR_EXPR8,138
+  OP_EXPR, FUNC_EXPR, OR_EXPR, AND_EXPR, NOT_EXPRAND_EXPR8,138
+  OP_EXPR, FUNC_EXPR, OR_EXPR, AND_EXPR, NOT_EXPRNOT_EXPR8,138
+} OpType;OpType9,188
+typedef struct Aggreg {Aggreg11,199
+  NodeTag type;type12,223
+  char    *aggname;aggname13,239
+  Oid     basetype;basetype14,259
+  Oid     aggtype;aggtype15,279
+  Node    *target;target16,298
+  int     aggno;aggno17,317
+} Aggreg;Aggreg18,334
+typedef struct Resdom {Resdom20,345
+  NodeTag      type;type21,369
+  AttrNumber   resno;resno22,390
+  Oid          restype;restype23,412
+  int          reslen;reslen24,436
+  char         *resname;resname25,459
+  Index        reskey;reskey26,484
+  Oid          reskeyop;reskeyop27,507
+  int          resjunk;resjunk28,532
+} Resdom;Resdom29,556
+typedef struct Expr {Expr31,567
+  NodeTag        type;type32,589
+  Oid            typeOid;typeOid33,612
+  OpType         opType;opType34,638
+  Node           *oper;oper35,663
+  List           *args;args36,687
+} Expr;Expr37,711
+typedef struct ArrayRef {ArrayRef39,720
+  NodeTag      type;type40,746
+  int          refattrlength;refattrlength41,767
+  int          refelemlength;refelemlength42,797
+  Oid          refelemtype;refelemtype43,827
+  bool         refelembyval;refelembyval44,855
+  List         *refupperindexpr;refupperindexpr45,884
+  List         *reflowerindexpr;reflowerindexpr46,917
+  Node         *refexpr;refexpr47,950
+  Node         *refassgnexpr;refassgnexpr48,975
+} ArrayRef;ArrayRef49,1005
+typedef struct Array {Array51,1018
+  NodeTag     type;type52,1041
+  Oid         arrayelemtype;arrayelemtype53,1061
+  int         arrayelemlength;arrayelemlength54,1090
+  bool        arrayelembyval;arrayelembyval55,1121
+  int         arrayndim;arrayndim56,1151
+  IntArray    arraylow;arraylow57,1176
+  IntArray    arrayhigh;arrayhigh58,1200
+  int         arraylen;arraylen59,1225
+} Array;Array60,1249
+typedef struct Const {Const62,1259
+  NodeTag   type;type63,1282
+  Oid       consttype;consttype64,1300
+  Size      constlen;constlen65,1323
+  Datum     constvalue;constvalue66,1345
+  bool      constisnull;constisnull67,1369
+  bool      constbyval;constbyval68,1394
+  bool      constisset;constisset69,1418
+} Const;Const70,1442
+typedef struct Func {Func72,1452
+  NodeTag          type;type73,1474
+  Oid              funcid;funcid74,1499
+  Oid              functype;functype75,1526
+  bool             funcisindex;funcisindex76,1555
+  int              funcsize;funcsize77,1587
+  FunctionCachePtr func_fcache;func_fcache78,1616
+  List             *func_tlist;func_tlist79,1648
+  List             *func_planlist;func_planlist80,1680
+} Func;Func81,1715
+typedef struct Oper {Oper83,1724
+  NodeTag          type;type84,1746
+  Oid              opno;opno85,1771
+  Oid              opid;opid86,1796
+  Oid              opresulttype;opresulttype87,1821
+  int              opsize;opsize88,1854
+  FunctionCachePtr op_fcache;op_fcache89,1881
+} Oper;Oper90,1911
+typedef struct Param {Param92,1920
+  NodeTag         type;type93,1943
+  int             paramkind;paramkind94,1967
+  AttrNumber      paramid;paramid95,1996
+  char            *paramname;paramname96,2023
+  Oid             paramtype;paramtype97,2053
+  List            *param_tlist;param_tlist98,2082
+} Param;Param99,2114
+typedef struct Fjoin {Fjoin101,2124
+  NodeTag     type;type102,2147
+  bool        fj_initialized;fj_initialized103,2167
+  int         fj_nNodes;fj_nNodes104,2197
+  List        *fj_innerNode;fj_innerNode105,2222
+  DatumPtr    fj_results;fj_results106,2251
+  BoolPtr     fj_alwaysDone;fj_alwaysDone107,2277
+} Fjoin;Fjoin108,2306
 
 backend/y.tab.h,1007
 # define YYTOKENTYPEYYTOKENTYPE36,1566
@@ -1535,9 +2366,14 @@ typedef struct ItemPointerData{ItemPointerData6,89
 } ItemPointerData;ItemPointerData9,171
 typedef ItemPointerData *ItemPointer;ItemPointer11,191
 
-backend/storage/lmgr/lmgr.c,161
-RelationSetLockForDescriptorOpen(Relation relation){RelationSetLockForDescriptorOpen8,131
-RelationInitLockInfo(Relation relation){RelationInitLockInfo17,285
+backend/storage/lmgr/lmgr.c,451
+#define LOCKDEBUGALL_30LOCKDEBUGALL_309,180
+#define LOCKDEBUG_40LOCKDEBUG_4010,204
+#define ReadRelationLock ReadRelationLock12,226
+RelationSetLockForDescriptorOpen(Relation relation){RelationSetLockForDescriptorOpen15,264
+RelationInitLockInfo(Relation relation){RelationInitLockInfo24,418
+RelationUnsetLockForRead(Relation relation){RelationUnsetLockForRead74,1995
+RelationSetLockForRead(Relation relation){RelationSetLockForRead88,2360
 
 backend/storage/file/fd.c,59
 FileSeek(File file, long offset, int whence){FileSeek2,5
@@ -1585,6 +2421,10 @@ typedef struct slock{slock10,106
 #define NOLOCK NOLOCK20,308
 #define SHAREDLOCK SHAREDLOCK21,332
 #define EXCLUSIVELOCK EXCLUSIVELOCK22,356
+
+backend/storage/multilev.h,69
+#define MULTILEV_HMULTILEV_H2,19
+#define READ_LOCK READ_LOCK4,39
 
 backend/storage/ipc/sinval.c,134
 SPINLOCK SInvalLock = (SPINLOCK)NULL;SInvalLock6,108
@@ -1693,25 +2533,26 @@ backend/storage/off.h,72
 #define OFF_HOFF_H2,14
 typedef uint16 OffsetNumber;OffsetNumber4,29
 
-backend/storage/lmgr.h,452
+backend/storage/lmgr.h,453
 #define LMGR_HLMGR_H2,15
-typedef struct LRelId {LRelId7,110
-  Oid relId;relId8,134
-  Oid dbId;dbId9,147
-} LRelId;LRelId10,159
-typedef struct LockInfoData {LockInfoData12,170
-  bool          initialized;initialized13,200
-  LRelId        lRelId;lRelId14,229
-  TransactionId transactionIdData;transactionIdData15,253
-  uint16        flags;flags16,288
-} LockInfoData;LockInfoData17,311
-typedef LockInfoData *LockInfo;LockInfo18,327
+typedef struct LRelId {LRelId8,133
+  Oid relId;relId9,157
+  Oid dbId;dbId10,170
+} LRelId;LRelId11,182
+typedef struct LockInfoData {LockInfoData13,193
+  bool          initialized;initialized14,223
+  LRelId        lRelId;lRelId15,252
+  TransactionId transactionIdData;transactionIdData16,276
+  uint16        flags;flags17,311
+} LockInfoData;LockInfoData18,334
+typedef LockInfoData *LockInfo;LockInfo19,350
 
-backend/storage/buf.h,142
+backend/storage/buf.h,185
 #define BUF_HBUF_H2,14
-#define InvalidBuffer InvalidBuffer4,29
-typedef long Buffer;Buffer6,56
-#define BufferIsLocal(BufferIsLocal8,78
+#define UnknownBuffer UnknownBuffer4,29
+#define InvalidBuffer InvalidBuffer5,60
+typedef long Buffer;Buffer7,87
+#define BufferIsLocal(BufferIsLocal9,109
 
 backend/storage/spin.h,63
 #define SPIN_HSPIN_H2,15

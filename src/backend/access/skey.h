@@ -18,6 +18,6 @@ extern void ScanKeyEntryInitialize(ScanKey      entry,
                                    bits16       flags,
                                    AttrNumber   attributeNumber,
                                    RegProcedure procedure,
-                                   Datum        argument);1
+                                   Datum        argument);
 
 #endif

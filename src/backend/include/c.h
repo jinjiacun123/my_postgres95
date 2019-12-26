@@ -19,6 +19,7 @@ typedef unsigned int Index;
 #endif
 
 typedef char bool;
+typedef bool *BoolPtr;
 
 typedef signed   short int16;
 typedef signed   int   int32;
@@ -54,5 +55,17 @@ typedef unsigned int Size;
 #define NameGetDatum(X) PointerGetDatum((Pointer) X)
 #define PointerGetDatum(X) ((Datum)X)
 #define ObjectIdGetDatum(X) ((Datum) SET_4_BYTES(X))
+
+#define MAXDIM 6
+typedef struct {
+  int indx[MAXDIM];
+} IntArray;
+
+typedef unsigned long Datum;
+typedef Datum         *DatumPtr;
+
+
+
+
 
 #endif

@@ -1,0 +1,13 @@
+#ifndef PRIMNODES_H
+#define PRIMNODES_H
+#include "postgres.h"
+typedef struct Aggreg {
+  NodeTag type;
+  char    *aggname;
+  Oid     basetype;
+  Oid     aggtype;
+  Node    *target;
+  int     aggno;
+} Aggreg;
+
+#endif

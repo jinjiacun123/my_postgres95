@@ -21,6 +21,9 @@ typedef struct slock{
 #define SHAREDLOCK    1
 #define EXCLUSIVELOCK 2
 
+typedef uint32  IpcMemoryKey;
+typedef int     IpcMemoryId;
+
 extern void ExclusiveLock(int lockid);
 extern void S_LOCK(slock_t *lock);
 

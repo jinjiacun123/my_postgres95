@@ -2,9 +2,12 @@
 #define RELSCAN_H
 
 #include "storage/buf.h"
+#include "storage/itemptr.h"
 #include "access/htup.h"
 #include "utils/rel.h"
 #include "utils/tqual.h"
+
+typedef ItemPointerData MarkData;
 
 typedef struct HeapScanDescData {
   Relation        rs_rd;
@@ -24,5 +27,26 @@ typedef struct HeapScanDescData {
   ScanKey         rs_key;
 } HeapScanDescData;
 
-typedef HeapScanDescData *HeapScanDesc;
+typedef struct IndexScanDescData {
+  Relation        relation;
+  void            *opaque;
+  ItemPointerData previousItemData;
+  ItemPointerData currentItemData;
+  ItemPointerData nextItemData;
+  MarkData        previousMarkData;
+  MarkData        currentMarkData;
+  MarkData        nextMarkData;
+  uint8           flags;
+  bool            scanFromEnd;
+  uint16          memberOfKeys;
+  ScanKey         keyData;
+} IndexScanDescData;
+
+typedef IndexScanDescData *IndexScanDesc;
+
+typedef HeapScanDescData  *HeapScanDesc;
+
+typedef IndexScanDesc     *IndexScanDescPtr;
+
+
 #endif

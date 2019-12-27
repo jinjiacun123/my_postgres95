@@ -1,1 +1,1 @@
-SUBSRCS+= lmgr.c
+SUBSRCS+= lmgr.c lock.c multi.c

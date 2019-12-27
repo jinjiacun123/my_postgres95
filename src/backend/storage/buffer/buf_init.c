@@ -5,8 +5,9 @@ long       *PrivateRefCount;
 BufferDesc *BufferDescriptors;
 long       *LastRefCount;
 SPINLOCK   BufMgrLock;
-int        lateWrite = TRUE;
+int        LateWrite = TRUE;
 int        NBuffers  = NDBUFS;
 
 int        ReadBufferCount;
 int        BufferHitCount;
+int        Free_List_Descriptor;

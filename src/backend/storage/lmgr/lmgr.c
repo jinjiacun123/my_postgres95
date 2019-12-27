@@ -104,3 +104,11 @@ RelationSetLockForRead(Relation relation){
 
   MultiLockReln(linfo, READ_LOCK);
 }
+
+void
+LRelIdAssign(LRelId  *lRelId,
+             Oid     dbId,
+             Oid     relId){
+  lRelId->dbId  = dbId;
+  lRelId->relId = relId;
+}

@@ -36,5 +36,9 @@ typedef Relation *RelationPtr;
 #define RelationGetRelationName(relation) (&(relation)->rd_rel->relname)
 #define RelationGetTupleDescriptor(relation) ((relation)->rd_att)
 
+#define RelationGetRelationId(relation) ((relation)->rd_id)
+
+#define RelationGetFile(relation) ((relation)->rd_fd)
+
 extern void RelationSetIndexSupport(Relation relation, IndexStrategy strategy, RegProcedure *support);
 #endif

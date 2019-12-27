@@ -75,5 +75,6 @@ extern void load_file(char *filename);
 
 #define F_BOOLIN 28
 #define F_BOOLOUT 29
+#define F_TEXTOUT 47
 
 #endif	/* FMGR_H */

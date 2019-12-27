@@ -10,6 +10,13 @@
 
 extern int smgrcreate(int16 which, Relation reln);
 extern int smgropen(int16 which, Relation reln);
+extern int smgrextend(int16    which,
+                      Relation reln,
+                      char     *buffer);
+extern int smgrread(int16       which,
+                    Relation    reln,
+                    BlockNumber blocknum,
+                    char        *buffer);
 
 /*in md.c*/
 extern int mdinit(void);

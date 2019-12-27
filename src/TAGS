@@ -993,6 +993,29 @@ typedef struct TupleTableData {TupleTableData18,374
 } TupleTableData;TupleTableData22,477
 typedef TupleTableData *TupleTable;TupleTable24,496
 
+backend/executor/hashjoin.h,1026
+#define HASHJOIN_HHASHJOIN_H2,19
+typedef struct HashTableData {HashTableData5,40
+  int                 nbuckets;nbuckets6,71
+  int                 totalbuckets;totalbuckets7,103
+  int                 bucketsize;bucketsize8,139
+  IpcMemoryId         shmid;shmid9,173
+  RelationAddr        top;top10,202
+  RelationAddr        bottom;bottom11,229
+  RelationAddr        overflownext;overflownext12,259
+  RelationAddr        batch;batch13,295
+  RelationAddr        readbuf;readbuf14,324
+  int                 nbatch;nbatch15,355
+  RelationAddr        outerbatchNames;outerbatchNames16,385
+  RelationAddr        outerbatchPos;outerbatchPos17,424
+  RelationAddr        innerbatchNames;innerbatchNames18,461
+  RelationAddr        innerbatchPos;innerbatchPos19,500
+  int                 curbatch;curbatch20,537
+  int                 mprocess;mprocess21,569
+  int                 pcount;pcount22,601
+} HashTableData;HashTableData23,631
+typedef HashTableData  *HashJoinTable;HashJoinTable25,649
+
 backend/parser/scansup.c,62
 serror(char *str)serror6,75
 scanstr(char *s)scanstr12,151
@@ -1597,92 +1620,141 @@ func_ptr fmgr_lookupByName(char *name)fmgr_lookupByName78,2040
 backend/nodes/nodes.c,46
 newNode(Size size, NodeTag tag){newNode5,55
 
-backend/nodes/execnodes.h,4398
+backend/nodes/execnodes.h,7079
 #define EXECNODES_HEXECNODES_H2,20
-typedef struct JunkFilter {JunkFilter9,176
-  NodeTag          type;type10,204
-  List             *jf_targetList;jf_targetList11,229
-  int              jf_length;jf_length12,264
-  TupleDesc        jf_tupType;jf_tupType13,294
-  List             *jf_cleanTargetList;jf_cleanTargetList14,325
-  int              jf_cleanLength;jf_cleanLength15,365
-  TupleDesc        jf_cleanTupType;jf_cleanTupType16,400
-  AttrNumber       *jf_cleanMap;jf_cleanMap17,436
-} JunkFilter;JunkFilter18,469
-typedef struct IndexInfo {IndexInfo20,484
-  NodeTag           type;type21,511
-  int               ii_NumKeyAttributes;ii_NumKeyAttributes22,537
-  AttrNumber        *ii_KeyAttributeNumbers;ii_KeyAttributeNumbers23,578
-  FuncIndexInfoPtr  ii_FuncIndexInfo;ii_FuncIndexInfo24,623
-  Node              *ii_Predicate;ii_Predicate25,661
-} IndexInfo;IndexInfo26,696
-typedef struct RelationInfo {RelationInfo28,710
-  NodeTag      type;type29,740
-  Index        ri_RangeTableIndex;ri_RangeTableIndex30,761
-  Relation     ri_RelationDesc;ri_RelationDesc31,796
-  int          ri_NumIndeces;ri_NumIndeces32,828
-  RelationPtr  ri_IndexRelationDescs;ri_IndexRelationDescs33,858
-  IndexInfo    **ri_IndexRelationInfo;ri_IndexRelationInfo34,896
-} RelationInfo;RelationInfo35,935
-typedef struct EState {EState37,952
-  NodeTag           type;type38,976
-  ScanDirection     es_direction;es_direction39,1002
-  List              *es_range_table;es_range_table40,1036
-  RelationInfo      *es_result_relation_info;es_result_relation_info41,1073
-  Relation          es_into_relation_descriptor;es_into_relation_descriptor42,1119
-  ParamListInfo     es_param_list_info;es_param_list_info43,1168
-  int               es_BaseId;es_BaseId44,1208
-  TupleTable        es_tupleTable;es_tupleTable45,1239
-  JunkFilter        *es_junkFilter;es_junkFilter46,1274
-  int               *es_refcount;es_refcount47,1310
-} EState;EState48,1344
-typedef struct ExprContext {ExprContext50,1355
-  NodeTag           type;type51,1384
-  TupleTableSlot    *ecxt_scantuple;ecxt_scantuple52,1410
-  TupleTableSlot    *ecxt_innertuple;ecxt_innertuple53,1447
-  TupleTableSlot    *ecxt_outertuple;ecxt_outertuple54,1485
-  Relation          ecxt_relation;ecxt_relation55,1523
-  Index             ecxt_relid;ecxt_relid56,1558
-  ParamListInfo     ecxt_param_list_info;ecxt_param_list_info57,1590
-  List              *ecxt_range_table;ecxt_range_table58,1632
-  Datum             *ecxt_values;ecxt_values59,1671
-  char              *ecxt_nulls;ecxt_nulls60,1705
-} ExprContext;ExprContext61,1738
-typedef struct ProjectionInfo {ProjectionInfo63,1754
-  NodeTag            type;type64,1786
-  List               *pi_targetlist;pi_targetlist65,1813
-  int                pl_len;pl_len66,1850
-  Datum              *pi_tupValue;pi_tupValue67,1879
-  ExprContext        *pi_exprContext;pi_exprContext68,1914
-  TupleTableSlog     *pi_slot;pi_slot69,1952
-} ProjectionInfo;ProjectionInfo70,1983
-typedef struct CommonState {CommonState72,2002
-  NodeTag        type;type73,2031
-  int            cs_base_id;cs_base_id74,2054
-  TupleTableSlot *cs_OuterTupleSlot;cs_OuterTupleSlot75,2083
-  TupleTableSlot *cs_ResultTupleSlot;cs_ResultTupleSlot76,2120
-  ExprContext    *cs_ExprContext;cs_ExprContext77,2158
-  ProjectionInfo *cs_ProjInfo;cs_ProjInfo78,2192
-  bool           cs_TupFromTlist;cs_TupFromTlist79,2223
-} CommonState;CommonState80,2257
-typedef struct AppendState {AppendState82,2273
-  CommonState cstate;cstate83,2302
-  int         as_whichplan;as_whichplan84,2324
-  int         as_nplans;as_nplans85,2352
-  bool        *as_initialized;as_initialized86,2377
-  List        *as_rentries;as_rentries87,2408
-  List        *as_result_relation_info_list;as_result_relation_info_list88,2436
-  List        *as_junkFilter_list;as_junkFilter_list89,2481
-} AppendState;AppendState90,2516
-typedef CommonState JoinState;JoinState92,2532
-typedef struct NestLoopState {NestLoopState94,2564
-  JoinState jstate;jstate95,2595
-  bool      nl_PortalFlag;nl_PortalFlag96,2615
-} NestLoopState;NestLoopState97,2642
-typedef struct HashJoinState {HashJoinState99,2660
-  JoinState             jstate;jstate100,2691
-  HashJoinTable         hj_HashTable;hj_HashTable101,2723
-} HashJoinState;HashJoinState108,2780
+typedef struct JunkFilter {JunkFilter10,207
+  NodeTag          type;type11,235
+  List             *jf_targetList;jf_targetList12,260
+  int              jf_length;jf_length13,295
+  TupleDesc        jf_tupType;jf_tupType14,325
+  List             *jf_cleanTargetList;jf_cleanTargetList15,356
+  int              jf_cleanLength;jf_cleanLength16,396
+  TupleDesc        jf_cleanTupType;jf_cleanTupType17,431
+  AttrNumber       *jf_cleanMap;jf_cleanMap18,467
+} JunkFilter;JunkFilter19,500
+typedef struct IndexInfo {IndexInfo21,515
+  NodeTag           type;type22,542
+  int               ii_NumKeyAttributes;ii_NumKeyAttributes23,568
+  AttrNumber        *ii_KeyAttributeNumbers;ii_KeyAttributeNumbers24,609
+  FuncIndexInfoPtr  ii_FuncIndexInfo;ii_FuncIndexInfo25,654
+  Node              *ii_Predicate;ii_Predicate26,692
+} IndexInfo;IndexInfo27,727
+typedef struct RelationInfo {RelationInfo29,741
+  NodeTag      type;type30,771
+  Index        ri_RangeTableIndex;ri_RangeTableIndex31,792
+  Relation     ri_RelationDesc;ri_RelationDesc32,827
+  int          ri_NumIndeces;ri_NumIndeces33,859
+  RelationPtr  ri_IndexRelationDescs;ri_IndexRelationDescs34,889
+  IndexInfo    **ri_IndexRelationInfo;ri_IndexRelationInfo35,927
+} RelationInfo;RelationInfo36,966
+typedef struct EState {EState38,983
+  NodeTag           type;type39,1007
+  ScanDirection     es_direction;es_direction40,1033
+  List              *es_range_table;es_range_table41,1067
+  RelationInfo      *es_result_relation_info;es_result_relation_info42,1104
+  Relation          es_into_relation_descriptor;es_into_relation_descriptor43,1150
+  ParamListInfo     es_param_list_info;es_param_list_info44,1199
+  int               es_BaseId;es_BaseId45,1239
+  TupleTable        es_tupleTable;es_tupleTable46,1270
+  JunkFilter        *es_junkFilter;es_junkFilter47,1305
+  int               *es_refcount;es_refcount48,1341
+} EState;EState49,1375
+typedef struct ExprContext {ExprContext51,1386
+  NodeTag           type;type52,1415
+  TupleTableSlot    *ecxt_scantuple;ecxt_scantuple53,1441
+  TupleTableSlot    *ecxt_innertuple;ecxt_innertuple54,1478
+  TupleTableSlot    *ecxt_outertuple;ecxt_outertuple55,1516
+  Relation          ecxt_relation;ecxt_relation56,1554
+  Index             ecxt_relid;ecxt_relid57,1589
+  ParamListInfo     ecxt_param_list_info;ecxt_param_list_info58,1621
+  List              *ecxt_range_table;ecxt_range_table59,1663
+  Datum             *ecxt_values;ecxt_values60,1702
+  char              *ecxt_nulls;ecxt_nulls61,1736
+} ExprContext;ExprContext62,1769
+typedef struct ProjectionInfo {ProjectionInfo64,1785
+  NodeTag            type;type65,1817
+  List               *pi_targetlist;pi_targetlist66,1844
+  int                pl_len;pl_len67,1881
+  Datum              *pi_tupValue;pi_tupValue68,1910
+  ExprContext        *pi_exprContext;pi_exprContext69,1945
+  TupleTableSlot     *pi_slot;pi_slot70,1983
+} ProjectionInfo;ProjectionInfo71,2014
+typedef struct CommonState {CommonState73,2033
+  NodeTag        type;type74,2062
+  int            cs_base_id;cs_base_id75,2085
+  TupleTableSlot *cs_OuterTupleSlot;cs_OuterTupleSlot76,2114
+  TupleTableSlot *cs_ResultTupleSlot;cs_ResultTupleSlot77,2151
+  ExprContext    *cs_ExprContext;cs_ExprContext78,2189
+  ProjectionInfo *cs_ProjInfo;cs_ProjInfo79,2223
+  bool           cs_TupFromTlist;cs_TupFromTlist80,2254
+} CommonState;CommonState81,2288
+typedef struct AppendState {AppendState83,2304
+  CommonState cstate;cstate84,2333
+  int         as_whichplan;as_whichplan85,2355
+  int         as_nplans;as_nplans86,2383
+  bool        *as_initialized;as_initialized87,2408
+  List        *as_rentries;as_rentries88,2439
+  List        *as_result_relation_info_list;as_result_relation_info_list89,2467
+  List        *as_junkFilter_list;as_junkFilter_list90,2512
+} AppendState;AppendState91,2547
+typedef CommonState JoinState;JoinState93,2563
+typedef struct NestLoopState {NestLoopState95,2595
+  JoinState jstate;jstate96,2626
+  bool      nl_PortalFlag;nl_PortalFlag97,2646
+} NestLoopState;NestLoopState98,2673
+typedef struct HashJoinState {HashJoinState100,2691
+  JoinState             jstate;jstate101,2722
+  HashJoinTable         hj_HashTable;hj_HashTable102,2754
+  IpcMemoryId           hj_HashTableShmId;hj_HashTableShmId103,2792
+  HashBucket            hj_CurBucket;hj_CurBucket104,2835
+  HeapTuple             hj_CurTuple;hj_CurTuple105,2873
+  OverflowTuple         hj_CurOTuple;hj_CurOTuple106,2910
+  Var                   *hj_InnerHashKey;hj_InnerHashKey107,2948
+  File                  *hj_OuterBatches;hj_OuterBatches108,2990
+  File                  *hj_InnerBatches;hj_InnerBatches109,3032
+  char                  *hj_OuterReadPos;hj_OuterReadPos110,3074
+  int                   hj_OuterReadBlk;hj_OuterReadBlk111,3116
+  TupleTableSlot        *hj_OuterTupleSlot;hj_OuterTupleSlot112,3157
+  TupleTableSlot        *hj_HashTupleSlot;hj_HashTupleSlot113,3201
+} HashJoinState;HashJoinState114,3244
+typedef struct MergeJoinState {MergeJoinState116,3262
+  JoinState      jstate;jstate117,3294
+  List           *mj_QSortopI;mj_QSortopI118,3319
+  List           *mj_ISortopO;mj_ISortopO119,3350
+  int            mj_JoinState;mj_JoinState120,3381
+  TupleTableSlot *mj_MarkedTupleSlot;mj_MarkedTupleSlot121,3412
+} MergeJoinState;MergeJoinState122,3450
+typedef struct CommonScanState {CommonScanState124,3469
+  CommonState         cstate;cstate125,3502
+  Relation            css_currentRelation;css_currentRelation126,3532
+  HeapScanDesc        css_currentScanDesc;css_currentScanDesc127,3575
+  TupleTableSlot      *css_ScanTupleSlot;css_ScanTupleSlot128,3618
+} CommonScanState;CommonScanState129,3660
+typedef struct IndexScanState {IndexScanState131,3680
+  CommonState       cstate;cstate132,3712
+  int               iss_NumIndices;iss_NumIndices133,3740
+  int               iss_IndexPtr;iss_IndexPtr134,3776
+  ScanKey           *iss_ScanKey;iss_ScanKey135,3810
+  int               *iss_NumScanKeys;iss_NumScanKeys136,3844
+  Pointer           iss_RuntimeKeyInfo;iss_RuntimeKeyInfo137,3882
+  RelationPtr       iss_RelationDescs;iss_RelationDescs138,3922
+  IndexScanDescPtr  iss_ScanDescs;iss_ScanDescs139,3961
+} IndexScanState;IndexScanState140,3996
+typedef struct SortState {SortState142,4015
+  CommonScanState csstate;csstate143,4042
+  bool            sort_Flag;sort_Flag144,4069
+  ScanKey         sort_keys;sort_keys145,4098
+  Relation        sort_TempRelation;sort_TempRelation146,4127
+} SortState;SortState147,4164
+typedef struct AggState {AggState149,4178
+  CommonScanState csstate;csstate150,4204
+  bool            agg_done;agg_done151,4231
+} AggState;AggState152,4259
+typedef CommonState UniqueState;UniqueState154,4272
+typedef struct HashState {HashState156,4306
+  CommonState cstate;cstate157,4333
+  File        *hashBatches;hashBatches158,4355
+} HashState;HashState159,4383
 
 backend/nodes/memnodes.h,827
 #define MEMNODES_HMEMNODES_H2,19
@@ -2093,113 +2165,113 @@ typedef struct TargetEntry {TargetEntry53,1107
   Node            *expr;expr57,1213
 } TargetEntry;TargetEntry58,1238
 
-backend/nodes/plannodes.h,4207
+backend/nodes/plannodes.h,4213
 #define PLANNODES_HPLANNODES_H2,20
-typedef struct Plan {Plan7,124
-  NodeTag      type;type8,146
-  Cost         cost;cost9,167
-  int          plan_size;plan_size10,188
-  int          plan_width;plan_width11,214
-  int          plan_tupperpage;plan_tupperpage12,241
-  EState       *state;state13,273
-  List         *targetList;targetList15,297
-  List         *qual;qual16,325
-  struct Plan  *lefttree;lefttree17,347
-  struct Plan  *righttree;righttree18,373
-} Plan;Plan19,400
-typedef struct ResultState {ResultState21,409
-  CommonState   cstate;cstate22,438
-  int           rs_done;rs_done23,462
-} ResultState;ResultState24,487
-typedef struct Result {Result26,503
-  Plan        plan;plan27,527
-  Node        *resconstantqual;resconstantqual28,547
-  ResultState *resstate;resstate29,579
-} Result;Result30,604
-typedef Plan Existential;Existential32,615
-typedef struct Append {Append34,642
-  Plan        plan;plan35,666
-  List        *unionplans;unionplans36,686
-  Index       unionrelid;unionrelid37,713
-  List        *unionrtentries;unionrtentries38,739
-  AppendState *unionstate;unionstate39,770
-} Append;Append40,797
-typedef Plan Join;Join42,808
-typedef struct NestLoop {NestLoop44,828
-  Join          join;join45,854
-  NestLoopState *nlstate;nlstate46,876
-} NestLoop;NestLoop47,902
-typedef struct MergeJoin {MergeJoin49,915
-  Join           join;join50,942
-  List           *mergeclauses;mergeclauses51,965
-  Oid            mergesortop;mergesortop52,997
-  Oid            *mergerightorder;mergerightorder53,1027
-  Oid            *mergeleftorder;mergeleftorder54,1062
-  MergeJoinState *mergestate;mergestate55,1096
-} MergeJoin;MergeJoin56,1126
-typedef struct HashJoin {HashJoin58,1140
-  Join          join;join59,1166
-  List          *hashclauses;hashclauses60,1188
-  Oid           hashjoinop;hashjoinop61,1218
-  HashJoinState *hashjoinstate;hashjoinstate62,1246
-  HashJoinTable hashjointable;hashjointable63,1278
-  IpcMemoryKey  hashjointablekey;hashjointablekey64,1309
-  int           hashjointablesize;hashjointablesize65,1343
-  bool          hashdone;hashdone66,1378
-} HashJoin;HashJoin67,1404
-typedef struct Scan {Scan69,1417
-  Plan            plan;plan70,1439
-  Index           scanrelid;scanrelid71,1463
-  CommanScanState *scanstate;scanstate72,1492
-} Scan;Scan73,1522
-typedef Scan SeqScan;SeqScan75,1531
-typedef struct IndexScan {IndexScan77,1554
-  Scan            scan;scan78,1581
-  List            *indxid;indxid79,1605
-  List            *indxqual;indxqual80,1632
-  IndexScanState  *indxstate;indxstate81,1661
-} IndexScan;IndexScan82,1691
-typedef struct Temp {Temp84,1705
-  Plan       plan;plan85,1727
-  Oid        tempid;tempid86,1746
-  int        keycount;keycount87,1767
-} Temp;Temp88,1790
-typedef struct Sort {Sort90,1799
-  Plan      plan;plan91,1821
-  Oid       tempid;tempid92,1839
-  int       keycount;keycount93,1859
-  SortState *sortstate;sortstate94,1881
-} Sort;Sort95,1905
-typedef struct Agg {Agg97,1914
-  Plan     plan;plan98,1935
-  int      numAgg;numAgg99,1952
-  Aggreg   **aggs;aggs100,1971
-  AggState *aggstate;aggstate101,1990
-} Agg;Agg102,2012
-typedef struct Unique {Unique104,2020
-  Plan           plan;plan105,2044
-  Oid            tempid;tempid106,2067
-  int            keycount;keycount107,2092
-  char           *uniqueAttr;uniqueAttr108,2119
-  AttrNumber     uniqueAttrNum;uniqueAttrNum110,2150
-  UniqueState    *uniquestate;uniquestate112,2183
-} Unique;Unique113,2214
-typedef struct Var {Var115,2225
-  NodeTag    type;type116,2246
-  Index      varno;varno117,2265
-  AttrNumber varattno;varattno118,2285
-  Oid        vartype;vartype119,2308
-  Index      varnoold;varnoold120,2330
-  AttrNumber varoattno;varoattno121,2353
-} Var;Var122,2377
-typedef struct Hash {Hash124,2385
-  Plan           plan;plan125,2407
-  Var            *hashkey;hashkey126,2430
-  HashState      *hashstate;hashstate127,2457
-  HashJoinTable  hashtable;hashtable128,2486
-  IpcMemoryKey   hashtablekey;hashtablekey129,2514
-  int            hashtablesize;hashtablesize130,2545
-} Hash;Hash131,2577
+typedef struct Plan {Plan9,180
+  NodeTag      type;type10,202
+  Cost         cost;cost11,223
+  int          plan_size;plan_size12,244
+  int          plan_width;plan_width13,270
+  int          plan_tupperpage;plan_tupperpage14,297
+  EState       *state;state15,329
+  List         *targetList;targetList17,353
+  List         *qual;qual18,381
+  struct Plan  *lefttree;lefttree19,403
+  struct Plan  *righttree;righttree20,429
+} Plan;Plan21,456
+typedef struct ResultState {ResultState23,465
+  CommonState   cstate;cstate24,494
+  int           rs_done;rs_done25,518
+} ResultState;ResultState26,543
+typedef struct Result {Result28,559
+  Plan        plan;plan29,583
+  Node        *resconstantqual;resconstantqual30,603
+  ResultState *resstate;resstate31,635
+} Result;Result32,660
+typedef Plan Existential;Existential34,671
+typedef struct Append {Append36,698
+  Plan        plan;plan37,722
+  List        *unionplans;unionplans38,742
+  Index       unionrelid;unionrelid39,769
+  List        *unionrtentries;unionrtentries40,795
+  AppendState *unionstate;unionstate41,826
+} Append;Append42,853
+typedef Plan Join;Join44,864
+typedef struct NestLoop {NestLoop46,884
+  Join          join;join47,910
+  NestLoopState *nlstate;nlstate48,932
+} NestLoop;NestLoop49,958
+typedef struct MergeJoin {MergeJoin51,971
+  Join           join;join52,998
+  List           *mergeclauses;mergeclauses53,1021
+  Oid            mergesortop;mergesortop54,1053
+  Oid            *mergerightorder;mergerightorder55,1083
+  Oid            *mergeleftorder;mergeleftorder56,1118
+  MergeJoinState *mergestate;mergestate57,1152
+} MergeJoin;MergeJoin58,1182
+typedef struct HashJoin {HashJoin60,1196
+  Join          join;join61,1222
+  List          *hashclauses;hashclauses62,1244
+  Oid           hashjoinop;hashjoinop63,1274
+  HashJoinState *hashjoinstate;hashjoinstate64,1302
+  HashJoinTable hashjointable;hashjointable65,1334
+  IpcMemoryKey  hashjointablekey;hashjointablekey66,1365
+  int           hashjointablesize;hashjointablesize67,1399
+  bool          hashdone;hashdone68,1434
+} HashJoin;HashJoin69,1460
+typedef struct Scan {Scan71,1473
+  Plan            plan;plan72,1495
+  Index           scanrelid;scanrelid73,1519
+  CommonScanState *scanstate;scanstate74,1548
+} Scan;Scan75,1578
+typedef Scan SeqScan;SeqScan77,1587
+typedef struct IndexScan {IndexScan79,1610
+  Scan            scan;scan80,1637
+  List            *indxid;indxid81,1661
+  List            *indxqual;indxqual82,1688
+  IndexScanState  *indxstate;indxstate83,1717
+} IndexScan;IndexScan84,1747
+typedef struct Temp {Temp86,1761
+  Plan       plan;plan87,1783
+  Oid        tempid;tempid88,1802
+  int        keycount;keycount89,1823
+} Temp;Temp90,1846
+typedef struct Sort {Sort92,1855
+  Plan      plan;plan93,1877
+  Oid       tempid;tempid94,1895
+  int       keycount;keycount95,1915
+  SortState *sortstate;sortstate96,1937
+} Sort;Sort97,1961
+typedef struct Agg {Agg99,1970
+  Plan     plan;plan100,1991
+  int      numAgg;numAgg101,2008
+  Aggreg   **aggs;aggs102,2027
+  AggState *aggstate;aggstate103,2046
+} Agg;Agg104,2068
+typedef struct Unique {Unique106,2076
+  Plan           plan;plan107,2100
+  Oid            tempid;tempid108,2123
+  int            keycount;keycount109,2148
+  char           *uniqueAttr;uniqueAttr110,2175
+  AttrNumber     uniqueAttrNum;uniqueAttrNum112,2206
+  UniqueState    *uniquestate;uniquestate114,2239
+} Unique;Unique115,2270
+typedef struct Var {Var117,2281
+  NodeTag    type;type118,2302
+  Index      varno;varno119,2321
+  AttrNumber varattno;varattno120,2341
+  Oid        vartype;vartype121,2364
+  Index      varnoold;varnoold122,2386
+  AttrNumber varoattno;varoattno123,2409
+} Var;Var124,2433
+typedef struct Hash {Hash126,2441
+  Plan           plan;plan127,2463
+  Var            *hashkey;hashkey128,2486
+  HashState      *hashstate;hashstate129,2513
+  HashJoinTable  hashtable;hashtable130,2542
+  IpcMemoryKey   hashtablekey;hashtablekey131,2570
+  int            hashtablesize;hashtablesize132,2601
+} Hash;Hash133,2633
 
 backend/nodes/pg_list.h,618
 #define PG_LIST_HPG_LIST_H2,18
@@ -2405,7 +2477,7 @@ backend/storage/bufmgr.h,91
 #define P_NEW P_NEW7,106
 typedef void *Block;Block9,140
 
-backend/storage/ipc.h,555
+backend/storage/ipc.h,653
 #define IPC_HIPC_H2,14
 typedef int IpcSemaphoreId;IpcSemaphoreId6,45
 typedef unsigned char slock_t;slock_t8,74
@@ -2421,6 +2493,8 @@ typedef struct slock{slock10,106
 #define NOLOCK NOLOCK20,308
 #define SHAREDLOCK SHAREDLOCK21,332
 #define EXCLUSIVELOCK EXCLUSIVELOCK22,356
+typedef uint32  IpcMemoryKey;IpcMemoryKey24,381
+typedef int     IpcMemoryId;IpcMemoryId25,411
 
 backend/storage/multilev.h,69
 #define MULTILEV_HMULTILEV_H2,19

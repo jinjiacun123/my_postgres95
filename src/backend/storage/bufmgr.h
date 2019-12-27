@@ -6,6 +6,8 @@
 
 #define P_NEW InvalidBlockNumber
 
+#define BufferDescriptorGetBuffer(bdesc) ((bdesc)->buf_id +1)
+
 typedef void *Block;
 extern bool BufferIsValid(Buffer bufnum);
 extern int WriteBuffer(Buffer buffer);

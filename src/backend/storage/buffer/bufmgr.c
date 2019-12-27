@@ -10,9 +10,14 @@ extern int LateWrite;
 extern int ReadBufferCount;
 extern int BufferHitCount;
 
-static Buffer ReadBufferWithBufferLock(Relation relation,
-                                       BlockNumber blockNum,
-                                       bool bufferLockHeld);
+static Buffer     ReadBufferWithBufferLock(Relation    relation,
+                                           BlockNumber blockNum,
+                                           bool        bufferLockHeld);
+static int        FlushBuffer(Buffer buffer);
+static BufferDesc *BufferAlloc(Relation     reln,
+                               BlockNumber  blockNum,
+                               bool         *foundPtr,
+                               bool         bufferLockHeld);
 
 Buffer
 ReadBuffer(Relation reln, BlockNumber blockNum){
@@ -60,7 +65,7 @@ ReleaseBuffer(Buffer buffer){
     SpinAcquire(BufMgrLock);
     bufHdr->refcount--;
     if(bufHdr->refcount == 0){
-       AddBufferToFreeList(bufHdr);
+       AddBufferToFreelist(bufHdr);
        bufHdr->flags |= BM_FREE;
     }
     SpinRelease(BufMgrLock);
@@ -158,4 +163,168 @@ ReadBufferWithBufferLock(Relation    reln,
     return (InvalidBuffer);
 
   return (BufferDescriptorGetBuffer(bufHdr));
+}
+
+static int
+FlushBuffer(Buffer buffer){
+  BufferDesc   *bufHdr;
+
+  if(BufferIsLocal(buffer))
+    return FlushLocalBuffer(buffer);
+
+  if(BAD_BUFFER_ID(buffer))
+    return (STATUS_ERROR);
+
+  bufHdr = &BufferDescriptors[buffer -1];
+
+  if(!BufferReplace(bufHdr, false)){
+    elog(WARN, "FlushBuffer: cannnot flush %d", bufHdr->tag.blockNum);
+    return (STATUS_ERROR);
+  }
+
+  SpinAcquire(BufMgrLock);
+  bufHdr->flags &= ~BM_DIRTY;
+  UnpinBuffer(bufHdr);
+  SpinRelease(BufMgrLock);
+
+  return(STATUS_OK);
+}
+
+static BufferDesc *
+BufferAlloc(Relation    reln,
+            BlockNumber blockNum,
+            bool        *foundPtr,
+            bool        bufferLockHeld){
+  BufferDesc         *buf, *buf2;
+  BufferTag          newTag;
+  bool               inProgress;
+  bool               newblock = FALSE;
+
+  if(blockNum == P_NEW){
+    newblock = TRUE;
+    blockNum = smgrnblocks(reln->rd_rel->relsmgr, reln);
+  }
+
+  INIT_BUFFERTAG(&newTag, reln, blockNum);
+
+  if(!bufferLockHeld)
+    SpinAcquire(BufMgrLock);
+
+  buf = BufTableLookup(&newTag);
+  if(buf != NULL){
+    PinBuffer(buf);
+    inProgress = (buf->flags & BM_IO_IN_PROGRESS);
+
+    *foundPtr = TRUE;
+    if(inProgress){
+      WaitIO(buf, BufMgrLock);
+      if(buf->flags & BM_IO_ERROR){
+        *foundPtr = FALSE;
+      }
+    }
+    SpinRelease(BufMgrLock);
+
+    return(buf);
+  }
+
+  *foundPtr = FALSE;
+  inProgress = FALSE;
+  for(buf = (BufferDesc *)NULL; buf == (BufferDesc *)NULL; ){
+    buf = GetFreeBuffer();
+
+    if( buf == NULL)
+      return (NULL);
+
+    Assert(buf->refcount == 0);
+    buf->refcount = 1;
+    PrivateRefCount[BufferDescriptorGetBuffer(buf) -1] = 1;
+
+    if(buf->flags & BM_DIRTY){
+      bool smok;
+      inProgress = TRUE;
+      buf->flags |= BM_IO_IN_PROGRESS;
+      smok = BufferReplace(buf, true);
+
+      if(smok == FALSE){
+        elog(NOTICE, "BufferAlloc: cannot write block %u for %s/%s",
+             buf->tag.blockNum,
+             buf->sb_dbname,
+             buf->sb_relname);
+        inProgress = FALSE;
+        buf->flags |= BM_IO_ERROR;
+        buf->flags |= ~BM_IO_IN_PROGRESS;
+        if(buf->refcount > 1)
+          SignalIO(buf);
+        PrivateRefCount[BufferDescriptorGetBuffer(buf) -1] = 0;
+        buf->refcount--;
+        if(buf->refcount == 0){
+          AddBufferToFreelist(buf);
+          buf->flags |= BM_FREE;
+        }
+        buf = (BufferDesc *)NULL;
+      } else {
+        BufferFlushCount++;
+        buf->flags &= ~BM_DIRTY;
+      }
+
+      if(buf && buf->refcount > 1){
+        inProgress = FALSE;
+        buf->flags &= ~BM_IO_IN_PROGRESS;
+        if(buf->refcount > 1)
+          _SignalIO(buf);
+        PrivateRefCount[BufferDescriptorGetBuffer(buf) -1] = 0;
+        buf->refcount--;
+        buf = (BufferDesc *)NULL;
+      }
+
+      buf2 = BufTableLookup(&newTag);
+      if(buf2 != NULL){
+        if(buf->refcount > 1)
+          SignalIO(buf);
+        buf->refcount--;
+        PrivateRefCount[BufferDescriptorGetBuffer(buf) -1] = 0;
+        AddBufferToFreelist(buf);
+        buf->flags |= BM_FREE;
+        buf->flags &= ~BM_IO_IN_PROGRESS;
+      }
+
+      PinBuffer(buf2);
+      inProgress = (buf2->flags & BM_IO_IN_PROGRESS);
+
+      *foundPtr = TRUE;
+      if(inProgress){
+        WaitIO(buf2, BufMgrLock);
+        if(buf2->flags & BM_IO_ERROR){
+          *foundPtr = FALSE;
+        }
+      }
+
+      SpinRelease(BufMgrLock);
+      return(buf2);
+    }
+  }
+
+  if(! BufTableDelete(buf)){
+    SpinRelease(BufMgrLock);
+    elog(FATAL, "buffer wasn't in the buffer table\n");
+  }
+
+  strcpy(buf->sb_relname, reln->rd_rel->relname.data);
+  strcpy(buf->sb_dbname, GetDatabaseName());
+
+  buf->bufsmgr = reln->rd_rel->relsmgr;
+
+  INIT_BUFFERTAG(&(buf->tag), reln, blockNum);
+  if(! BufTableInsert(buf)){
+    SpinRelease(BufMgrLock);
+    elog(FATAL, "Buffer in lookup table twice \n");
+  }
+
+  if(!inProgress){
+    buf->flags |= BM_IO_IN_PROGRESS;
+  }
+
+  SpinRelease(BufMgrLock);
+
+  return(buf);
 }

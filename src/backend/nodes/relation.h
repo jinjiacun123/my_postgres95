@@ -59,45 +59,6 @@ typedef struct Rel {
   List             *superrels;
 } Rel;
 
-typedef struct Path {
-  NodeTag   type;
-  Rel       *parent;
-  Cost      *path_cost;
-  NodeTag   pathtype;
-  PathOrder p_ordering;
-  List      *keys;
-  Cost      outerjoincost;
-  Relid     joinid;
-  List      *locclauseinfo;
-} Path;
-
-typedef struct IndexPath {
-  Path    path;
-  List    *indexid;
-  List    *indexqual;
-} IndexPath;
-
-typedef struct JoinPath {
-  Path      path;
-  List      *pathclauseinfo;
-  Path      *outerjoinpath;
-  Path      *innerjoinpath;
-} JoinPath;
-
-typedef struct MergePath {
-  JoinPath     jpath;
-  List         *path_mergeclauses;
-  List         *outersortkeys;
-  List         *innersortkeys;
-} MergePath;
-
-typedef struct HashPath {
-  JoinPath      jpath;
-  List          *path_hashclauses;
-  List          *outerhashkeys;
-  List          *innerhashkeys;
-} HashPath;
-
 typedef struct OrderKey {
   NodeTag    type;
   int        attribute_number;
@@ -119,17 +80,6 @@ typedef struct MergeOrder {
   Oid       right_type;
 } MergeOrder;
 
-typedef struct CInfo {
-  NodeTag    type;
-  Expr       *clause;
-  Cost       selectivity;
-  bool       notclause;
-  List       *indexids;
-  MergeOrder *mergesortorder;
-  Oid        hashjoinoperator;
-  Relid      cinfojoinid;
-} CInfo;
-
 typedef enum OrderType {
   MERGE_ORDER, SORTOP_ORDER
 } OrderType;
@@ -142,5 +92,59 @@ typedef struct PathOrder {
   } ord;
 
 } PathOrder;
+
+typedef struct Path {
+  NodeTag   type;
+  Rel       *parent;
+  Cost      path_cost;
+  NodeTag   pathtype;
+  PathOrder p_ordering;
+  List      *keys;
+  Cost      outerjoincost;
+  Relid     joinid;
+  List      *locclauseinfo;
+} Path;
+
+typedef struct JoinPath {
+  Path      path;
+  List      *pathclauseinfo;
+  Path      *outerjoinpath;
+  Path      *innerjoinpath;
+} JoinPath;
+
+typedef struct HashPath {
+  JoinPath      jpath;
+  List          *path_hashclauses;
+  List          *outerhashkeys;
+  List          *innerhashkeys;
+} HashPath;
+
+typedef struct IndexPath {
+  Path    path;
+  List    *indexid;
+  List    *indexqual;
+} IndexPath;
+
+
+
+typedef struct MergePath {
+  JoinPath     jpath;
+  List         *path_mergeclauses;
+  List         *outersortkeys;
+  List         *innersortkeys;
+} MergePath;
+
+typedef struct CInfo {
+  NodeTag    type;
+  Expr       *clause;
+  Cost       selectivity;
+  bool       notclause;
+  List       *indexids;
+  MergeOrder *mergesortorder;
+  Oid        hashjoinoperator;
+  Relid      cinfojoinid;
+} CInfo;
+
+
 
 #endif

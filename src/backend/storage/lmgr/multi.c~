@@ -1,0 +1,7 @@
+bool
+MultiReleaseReln(LockInfo linfo,
+                 LOCKT    lockt){
+
+
+
+}

@@ -44,3 +44,37 @@ smgropen(int16 which, Relation reln){
 
   return (fd);
 }
+
+int
+smgrextend(int16    which,
+           Relation reln,
+           char     *buffer){
+  int status;
+
+  status = (*(smgrsw[which].smgr_extend))(reln, buffer);
+
+  if(status == SM_FAIL)
+    elog(WARN, "%.*s: cannot extend",
+         NAMEDATALEN,
+         &(reln->rd_rel->relname.data[0]));
+
+  return(status);
+}
+
+int
+smgrread(int16       which,
+         Relation    reln,
+         BlockNumber blocknum,
+         char        *buffer){
+  int status;
+
+  status = (*(smgrsw[which].smgr_read))(reln, blocknum, buffer);
+
+  if(status == SM_FAIL)
+    elog(WARN, "cannot read block %d of %.*s",
+         blocknum,
+         NAMEDATALEN,
+         &(reln->rd_rel->relname.data[0]));
+
+  return status;
+}

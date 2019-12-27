@@ -20,7 +20,7 @@ static OrderKey   *_readOrderKey();
 static HashPath   *_readhashPath();
 static MergePath  *_readMergePath();
 static JoinPath   *_readJoinPath();
-static Indexpath  *_readIndexPath();
+static IndexPath  *_readIndexPath();
 static Path       *_readPath();
 static RangeTblEntry *_readRangeTblEntry();
 static TargetEntry *_readTargetEntry();
@@ -51,6 +51,13 @@ static Append      *_readAppend();
 static Existential *_readExistential();
 static Result      *_readResult();
 static Plan        *_readPlan();
+static HashPath    *_readHashPath();
+
+static void _getJoin(Join *node);
+static void _getPlan(Plan *node);
+static void _getScan(Scan *node);
+
+static Datum readDatum(Oid type);
 
 Node *
 parsePlanString(){
@@ -71,7 +78,7 @@ parsePlanString(){
   } else if(!strncmp(token, "JOIN", 4)){
     return_value = _readJoin();
   } else if(!strncmp(token, "NESTLOOP", 8)){
-    return_value = _readnestLoop();
+    return_value = _readNestLoop();
   } else if(!strncmp(token, "MERGEJOIN", 9)){
     return_value = _readMergeJoin();
   } else if(!strcmp(token, "HASHJOIN", 8)){
@@ -304,7 +311,7 @@ _readCInfo(){
   char  *token;
   int   length;
 
-  local_node = makeNode(Info);
+  local_node = makeNode(CInfo);
 
   token = lsptok(NULL, &length);
   local_node->clause = nodeRead(true);
@@ -481,13 +488,13 @@ _readMergePath(){
   token = lsptok(NULL, &length);
   token = lsptok(NULL, &length);
 
-  local_node->jpath.path.path_cost = (Cose)atof(token);
+  local_node->jpath.path.path_cost = (Cost)atof(token);
 
   token = lsptok(NULL, &length);
-  local_node->japth.path.keys = nodeRead(true);
+  local_node->jpath.path.keys = nodeRead(true);
 
   token = lsptok(NULL, &length);
-  local_node->japth.pathclauseinfo = nodeRead(true);
+  local_node->jpath.pathclauseinfo = nodeRead(true);
 
   token = lsptok(NULL, &length);
   token = lsptok(NULL, &length);
@@ -740,7 +747,7 @@ _readRel(){
   token = lsptok(NULL, &length);
   local_node->innerjoin = nodeRead(true);
 
-  reutrn(local_node);
+  return(local_node);
 }
 
 static EState *
@@ -1389,4 +1396,107 @@ _readPlan(){
   local_node = makeNode(Plan);
   _getPlan(local_node);
   return(local_node);
+}
+
+static void
+_getPlan(Plan *node){
+  char *token;
+  int  length;
+
+  token = lsptok(NULL, &length);
+  token = lsptok(NULL, &length);
+  node->cost = (Cost) atof(token);
+
+  token = lsptok(NULL, &length);
+  token = lsptok(NULL, &length);
+  node->plan_size = atoi(token);
+
+  token = lsptok(NULL, &length);
+  token = lsptok(NULL, &length);
+  node->plan_width = atoi(token);
+
+  token = lsptok(NULL, &length);
+  token = lsptok(NULL, &length);
+
+  if(!strncmp(token, "nil", 3)){
+    node->state = (EState*)NULL;
+  } else {
+    node->state = (EState*)!NULL;
+  }
+
+  token = lsptok(NULL, &length);
+  node->targetlist = nodeRead(true);
+
+  token = lsptok(NULL, &length);
+  node->qual = nodeRead(true);
+
+  token = lsptok(NULL, &length);
+  node->lefttree = (Plan*)nodeRead(true);
+
+  token = lsptok(NULL, &length);
+  node->righttree = (Plan*)nodeRead(true);
+
+  return;
+}
+
+static void
+_getJoin(Join *node){
+  _getPlan((Plan*)node);
+}
+
+static Datum
+readDatum(Oid type){
+  int         length;
+  int         tokenLength;
+  char        *token;
+  bool        byValue;
+  Datum       res;
+  char        *s;
+  int         i;
+
+  byValue = get_typbyval(type);
+
+  token  = lsptok(NULL, &tokenLength);
+  length = atoi(token);
+  token  = lsptok(NULL, &tokenLength);
+
+  if(byValue){
+    if(length > sizeof(Datum)){
+      elog(WARN, "readValue: byval & length = %d", length);
+    }
+    s = (char *)(&res);
+    for(i = 0; i < sizeof(Datum); i++){
+      token = lsptok(NULL, &tokenLength);
+      s[i] = (char) atoi(token);
+    }
+  } else if(length <= 0){
+    s = NULL;
+  } else if(length >= 1){
+    s = (char *)palloc(length);
+    Assert(s != NULL);
+    for(i = 0; i < length; i++){
+      token = lsptok(NULL, &tokenLength);
+      s[i]  = (char) atoi(token);
+    }
+    res = PointerGetDatum(s);
+  }
+
+  token = lsptok(NULL, &tokenLength);
+  if(token[0] != ']'){
+    elog(WARN, "readValue: ']' expected, length =%d", length);
+  }
+
+  return(res);
+}
+
+static void
+_getScan(Scan *node){
+  char *token;
+  int  length;
+
+  _getPlan((Plan*)node);
+
+  token = lsptok(NULL, &length);
+  token = lsptok(NULL, &length);
+  node->scanrelid = atoi(token);
 }

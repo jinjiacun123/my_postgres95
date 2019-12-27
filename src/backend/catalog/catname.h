@@ -13,4 +13,6 @@
 #define AccessMethodProcedureRelationName "pg_amproc"
 #define IndexRelationName                 "pg_index"
 
+extern char *SharedSystemRelationNames[];
+
 #endif

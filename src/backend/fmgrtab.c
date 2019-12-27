@@ -39,10 +39,12 @@
 
 extern char *boolin();
 extern char *boolout();
+extern char *textout();
 
 static FmgrCall fmgr_builtins[] = {
   {28 , 1 , boolin, "boolin" },
   {29 , 1 , boolout, "boolout" },
+  {47 , 1 , textout, "textout" },
 	/* guardian value */
 #ifndef WIN32
       { MAXINT, 0, (func_ptr) NULL }

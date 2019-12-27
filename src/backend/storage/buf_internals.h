@@ -3,14 +3,13 @@
 #include "postgres.h"
 #include "storage/shmem.h"
 #include "storage/lmgr.h"
+#include "storage/buf.h"
+
+#define NDBUFS 64
+
+int    BufferFlushCount;
 
 typedef bits16          BufFlags;
-struct sbufdesc {
-  SHMEM_OFFSET data;
-  BufFlags     flags;
-  unsigned     refcount;
-  int16        bufsmgr;
-} ;
 
 #define BM_DIRTY          (1 << 0)
 #define BM_FREE           (1 << 4)
@@ -29,6 +28,19 @@ struct buftag {
   BlockNumber blockNum;
 };
 
+struct sbufdesc {
+  Buffer       freeNext;
+  Buffer       freePrev;
+  SHMEM_OFFSET data;
+  BufferTag    tag;
+  BufFlags     flags;
+  unsigned     refcount;
+  int16        bufsmgr;
+  int          buf_id;
+  char         sb_dbname[NAMEDATALEN + 1];
+  char         sb_relname[NAMEDATALEN + 1];
+} ;
+
 extern long       *PrivateRefCount;
 extern long       *LocalRefCount;
 extern BufferDesc *LocalBufferDescriptors;
@@ -36,4 +48,13 @@ extern  int       NLocBuffer;
 extern BufferDesc *BufferDescriptors;
 extern long       *LastRefCount;
 extern SPINLOCK   BufMgrLock;
+extern int        Free_List_Descriptor;
+
+extern int        WriteLocalBuffer(Buffer buffer, bool release);
+extern void       unpinBuffer(BufferDesc *buf);
+extern BufferDesc *LocalBufferAlloc(Relation    reln,
+                                    BlockNumber blockNum,
+                                    bool        *foundPtr);
+
+
 #endif

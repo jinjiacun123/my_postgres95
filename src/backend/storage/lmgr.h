@@ -18,8 +18,14 @@ typedef struct LockInfoData {
 } LockInfoData;
 typedef LockInfoData *LockInfo;
 
+#define LockInfoIsValid(linfo) \
+  ((PointerIsValid(linfo)) && ((LockInfo)linfo)->initialized)
+
 extern void RelationSetLockForDescriptorOpen(Relation relation);
 extern void RelationUnsetLockForRead(Relation relation);
 extern void RelationSetLockForRead(Relation relation);
+extern void LRelIdAssign(LRelId  *lRelId,
+                         Oid     dbId,
+                         Oid     relId);
 
 #endif

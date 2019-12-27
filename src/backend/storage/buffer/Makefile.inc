@@ -1,1 +1,1 @@
-SUBSRCS += bufmgr.c localbuf.c buf_init.c
+SUBSRCS += bufmgr.c localbuf.c buf_init.c freelist.c

@@ -68,3 +68,19 @@ GetCurrentTransactionId(){
     return (TransactionId)DisabledTransactionId;
   return (TransactionId)s->transactionIdData;
 }
+
+bool
+IsTransactionState(){
+  TransactionState s = CurrentTransactionState;
+
+  switch(s->state){
+  case TRANS_DEFAULT:    return false;
+  case TRANS_START:      return true;
+  case TRANS_INPROGRESS: return true;
+  case TRANS_COMMIT:     return true;
+  case TRANS_ABORT:      return true;
+  case TRANS_DISABLED:   return false;
+  }
+
+  return(false);
+}

@@ -14,7 +14,7 @@ typedef struct Plan {
   int          plan_tupperpage;
   EState       *state;
 
-  List         *targetList;
+  List         *targetlist;
   List         *qual;
   struct Plan  *lefttree;
   struct Plan  *righttree;
@@ -35,7 +35,7 @@ typedef Plan Existential;
 
 typedef struct Append {
   Plan        plan;
-  List        *unionplans;
+ List        *unionplans;
   Index       unionrelid;
   List        *unionrtentries;
   AppendState *unionstate;

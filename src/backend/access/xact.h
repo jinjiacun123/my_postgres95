@@ -14,6 +14,8 @@ typedef struct TransactionStateData{
 #define TRANS_DEFAULT    0
 #define TRANS_START      1
 #define TRANS_INPROGRESS 2
+#define TRANS_COMMIT     3
+#define TRANS_ABORT      4
 #define TRANS_DISABLED   5
 
 #define TBLOCK_DEFAULT 0

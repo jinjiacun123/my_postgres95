@@ -2,9 +2,15 @@
 #define EXECNODES_H
 #include "access/sdir.h"
 #include "access/funcindex.h"
+#include "access/relscan.h"
 #include "utils/rel.h"
 #include "nodes/params.h"
+#include "nodes/plannodes.h"
 #include "executor/tuptable.h"
+#include "executor/hashjoin.h"
+#include "storage/ipc.h"
+
+typedef struct Var Var;
 
 typedef struct JunkFilter {
   NodeTag          type;

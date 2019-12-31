@@ -3,6 +3,8 @@
 #include "postgres.h"
 #include "access/skey.h"
 
+#define AMStrategies(foo) 12
+
 typedef struct StrategyMapData {
   ScanKeyData entry[1];
 } StrategyMapData;

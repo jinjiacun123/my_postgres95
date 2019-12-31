@@ -21,12 +21,16 @@ SRCS:=${SRCS_ACCESS} ${SRCS_BOOTSTRAP} ${SRCS_CATALOG} ${SRCS_LIB} \
       ${SRCS_STORAGE} ${SRCS_UTILS} ${SRCS_NODES}
 
 ifeq ($(BIGOBJS), true)
-OBJS= ACCESS.o BOOTSTRAP.o CATALOG.o MAIN.o NODES.o PARSER.o STORAGE.o UTILS.o NODES.o
+OBJS= ACCESS.o BOOTSTRAP.o CATALOG.o MAIN.o NODES.o PARSER.o STORAGE.o UTILS.o
 CLEANFILES += $(subst .s,.o,$(SRCS:.c=.o)) $(OBJS)
 endif
 
+DEP=(OBJS:%.o=%.d)
+
 postgres:$(POSTGRES_DEPEND) $(OBJS) $(EXPORTS)
 	$(CC) $(LDFLAGS) -o $(objdir)/$(@F) $(addprefix $(objdir)/, $(notdir $(OBJS))) $(LDADD)
+
+-include $(DEP)
 
 CFLAGS += -DPOSTGRESDIR='"$(POSTGRESDIR)"' \
 	-DPGDATADIR='"$(DATADIR)"' \

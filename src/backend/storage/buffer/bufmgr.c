@@ -328,3 +328,50 @@ BufferAlloc(Relation    reln,
 
   return(buf);
 }
+
+void
+IncrBufferRefCount(Buffer buffer){
+  if(BufferIsLocal(buffer)){
+    Assert(LocalRefCount[-buffer -1] >= 0);
+    LocalRefCount[-buffer -1]++;
+  } else {
+    Assert(!BAD_BUFFER_ID(buffer));
+    Assert(PrivateRefCount[buffer -1] >= 0);
+    PrivateRefCount[buffer -1]++;
+  }
+}
+
+BlockNumber
+RelationGetNumberOfBlocks(Relation relation){
+  return ((relation->rd_islocal) ? relation->rd_nblocks:smgrnblocks(relation->rd_rel->relsmgr, relation));
+}
+
+Buffer
+RelationGetBufferWithBuffer(Relation    relation,
+                            BlockNumber blockNumber,
+                            Buffer      buffer){
+  BufferDesc   *bufHdr;
+  LRelId       lrelId;
+
+  if(BufferIsValid(buffer)){
+    if( !BufferIsLocal(buffer)){
+      bufHdr = &BufferDescriptors[buffer -1];
+      lrelId = RelationGetLRelId(relation);
+      SpinAcquire(BufMgrLock);
+      if(bufHdr->tag.blockNum == blockNumber
+         && bufHdr->tag.relId.relId == lrelId.relId
+         && bufHdr->tag.relId.dbId == lrelId.dbId){
+        SpinRelease(BufMgrLock);
+        return(buffer);
+      }
+      return(ReadBufferWithBufferLock(relation, blockNumber, true));
+    } else {
+      bufHdr = &LocalBufferDescriptors[-buffer-1];
+      if(bufHdr->tag.relId.relId == relation->rd_id
+         && bufHdr->tag.blockNum == blockNumber){
+        return(buffer);
+      }
+    }
+  }
+  return(ReadBuffer(relation, blockNumber));
+}

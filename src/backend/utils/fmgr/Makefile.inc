@@ -1,0 +1,1 @@
+SUBSRCS += fmgr.c

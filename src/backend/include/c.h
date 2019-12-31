@@ -39,6 +39,7 @@ typedef unsigned long Datum;
 #define CppConcat(x,y) x##y
 
 #define Assert(condition)
+#define AssertMacro(condition) true
 #define AssertArg(condition)
 #define AssertState(condition)
 

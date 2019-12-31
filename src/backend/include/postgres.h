@@ -36,6 +36,9 @@ struct varlena {
   char  vl_dat[1];
 };
 
+#define VARSIZE(PTR) (((struct varlena *)(PTR))->vl_len)
+
+typedef struct varlena bytea;
 typedef struct varlena text;
 
 typedef Oid regproc;

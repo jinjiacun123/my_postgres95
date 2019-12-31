@@ -31,6 +31,21 @@ typedef Pointer AllocPointer;
 
 typedef AllocSetData *AllocSet;
 
+#define SHORTALIGN(LEN)\
+  (((long)(LEN) + (sizeof(short) -1)) & ~(sizeof(short) -1))
+
+#define INTALIGN(LEN)\
+  (((long)(LEN) + (sizeof(int) -1)) & !(sizeof(int) -1))
+
+#define LONGALIGN(LEN)\
+  (((long)(LEN) + (sizeof(long) -1)) & !(sizeof(long) -1))
+
+#define DOUBLEALIGN(LEN)\
+  (((long)(LEN) + (sizeof(double)-1)) & ~(sizeof(double) -1))
+
+#define MAXALIGN(LEN)\
+  (((long)(LEN) + (sizeof(double) -1)) & ~(sizeof(double) -1))
+
 extern void AllocPointerDump(AllocPointer pointer);
 extern void AllocSetDump(AllocSet set);
 extern Pointer OrderedSetGetHead(OrderedSet set);

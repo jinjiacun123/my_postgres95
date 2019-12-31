@@ -1,0 +1,18 @@
+#ifndef BUFPAGE_H
+#define BUFPAGE_H
+#include "c.h"
+
+typedef Pointer Page;
+
+typedef struct PageHeaderData {
+  LocationIndex    pd_lower;
+  LocationIndex    pd_upper;
+  LocationIndex    pd_special;
+  OpaqueData       pd_opaque;
+  ItemIdData       pd_linp[1];
+} PageHeaderData;
+
+typedef PageHeaderData *PageHeader;
+
+
+#endif

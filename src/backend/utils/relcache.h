@@ -4,4 +4,5 @@
 
 extern void     RelationRegisterRelation(Relation relation);
 extern Relation RelationNameCacheGetRelation(char *relationName);
+extern void     RelationClose(Relation relation);
 #endif

@@ -1,5 +1,6 @@
 #include "storage/sinval.h"
 #include "storage/sinvaladt.h"
+#include "catalog/catname.h"
 
 BackendId MyBackendId;
 
@@ -9,7 +10,7 @@ Oid       MyDatabaseId = InvalidOid;
 
 char *SharedSystemRelationNames[] = {
   DatabaseRelationName,
-  DefaultsRelationname,
+  DefaultsRelationName,
   DemonRelationName,
   GroupRelationName,
   HostsRelationName,

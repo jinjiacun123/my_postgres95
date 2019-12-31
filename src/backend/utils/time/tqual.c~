@@ -1,0 +1,15 @@
+#include "postgres.h"
+#include "utils/nabstime.h"
+#include "utils/tqual.h"
+
+typedef uint16  TimeQualMode;
+
+typedef struct TimeQualData {
+  AbsoluteTime     start;
+  AbsoluteTime     end;
+  TimeQualMode     mode;
+} TimeQualData;
+
+
+static TimeQualData   SelfTimeQualData;
+TimeQual              SelfTimeQual = (Pointer)&SelfTimeQualData;

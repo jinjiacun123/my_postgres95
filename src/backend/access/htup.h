@@ -38,4 +38,26 @@ typedef HeapTupleData *HeapTuple;
 
 #define HeapTupleIsValid(tuple) PointerIsValid(tuple)
 
+#define SelfItemPointerAttributeNumber     (-1)
+#define ObjectIdAttributeNumber            (-2)
+#define MinTransactionIdAttributeNumber    (-3)
+#define MinCommandIdAttributeNumber        (-4)
+#define MaxTransactionIdAttributeNumber    (-5)
+#define MaxCommandIdAttributeNumber        (-6)
+#define ChainItemPointerAttributeNumber    (-7)
+#define AnchorItemPointerAttributeNumber   (-8)
+#define MinAbsoluteTimeAttributeNumber     (-9)
+#define MaxAbsoluteTimeAttributeNumber     (-10)
+#define VersionTypeAttributeNumber         (-11)
+#define FirstLowInvalidHeapAttributeNumber (-12)
+
+#define HEAP_HASNULL            0x01
+#define HEAP_HASVARLENA         0x02
+
+#define HeapTupleNoNulls(tuple)\
+  (!(((HeapTuple)(tuple))->t_infomask & HEAP_HASNULL))
+
+#define HeapTupleAllFixed(tuple)\
+  (!(((HeapTuple) (tuple))->t_infomask & HEAP_HASVARLENA ))
+
 #endif

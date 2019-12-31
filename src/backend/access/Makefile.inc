@@ -11,4 +11,4 @@ include $(accdir)/index/Makefile.inc
 
 SRCS_ACCESS:=$(SUBSRCS)
 
-HEADERS+= xact.h tupdesc.h transam.h heapam.h strat.h
+HEADERS+= xact.h tupdesc.h transam.h heapam.h strat.h valid.h

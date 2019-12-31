@@ -3,6 +3,11 @@
 #include "postgres.h"
 #include "access/attnum.h"
 
+#define SK_ISNULL    0x1
+#define SK_UNARY     0x2
+#define SK_NEGATE    0x4
+#define SK_COMMUTE   0x8
+
 typedef struct ScanKeyData {
   bits16       sk_flags;
   AttrNumber   sk_attno;
@@ -19,5 +24,6 @@ extern void ScanKeyEntryInitialize(ScanKey      entry,
                                    AttrNumber   attributeNumber,
                                    RegProcedure procedure,
                                    Datum        argument);
+extern void ScanKeyEntrySetIllegal(ScanKey entry);
 
 #endif

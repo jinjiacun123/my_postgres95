@@ -78,3 +78,16 @@ smgrread(int16       which,
 
   return status;
 }
+
+int
+smgrnblocks(int16    which,
+            Relation reln){
+  int nblocks;
+
+  if( (nblocks = (*(smgrsw[which].smgr_nblocks))(reln)) < 0)
+    elog(WARN, "cannot count blocks for %.*s",
+         NAMEDATALEN,
+         &(reln->rd_rel->relname.data[0]));
+
+  return (nblocks);
+}

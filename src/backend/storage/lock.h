@@ -13,10 +13,9 @@ typedef struct ltag {
 } LOCKTAG;
 
 
-
-
-
-
-
+#define BlockIdSet(blockId, blockNumber) \
+  Assert(PointerIsValid(blockId));              \
+  (blockId)->bi_hi = (blockNumber) >> 16; \
+  (blockId)->bi_lo = (blockNumber) & 0xffff
 
 #endif

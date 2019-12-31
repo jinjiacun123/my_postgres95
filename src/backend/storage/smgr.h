@@ -17,6 +17,8 @@ extern int smgrread(int16       which,
                     Relation    reln,
                     BlockNumber blocknum,
                     char        *buffer);
+extern int smgrnblocks(int16    which,
+                       Relation reln);
 
 /*in md.c*/
 extern int mdinit(void);

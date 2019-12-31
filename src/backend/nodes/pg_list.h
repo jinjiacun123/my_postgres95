@@ -33,5 +33,6 @@ typedef struct Value {
 extern Value *makeString(char *str);
 extern Value *makeFloat(double d);
 extern Value *makeInteger(long i);
+extern List  *lcons(void *datum, List *list);
 
 #endif

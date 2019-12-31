@@ -17,6 +17,7 @@ typedef struct HeapScanDescData {
   Buffer          rs_pbuf;
   Buffer          rs_cbuf;
   Buffer          rs_nbuf;
+  ItemPointerData rs_mptid;
   ItemPointerData rs_mctid;
   ItemPointerData rs_mntid;
   ItemPointerData rs_mcd;

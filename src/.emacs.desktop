@@ -1,0 +1,29 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Mon Dec 30 10:07:07 2019
+;; Desktop file format version 206
+;; Emacs version 24.3.2
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("/home/jim/source_code/my_postgres95/src/"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/jim/source_code/my_postgres95/src/Makefile"
+  "Makefile"
+  'makefile-gmake-mode
+  '(override-global-mode company-mode projectile-mode ivy-mode volatile-highlights-mode undo-tree-mode ws-butler-mode yas-minor-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((show-trailing-whitespace . 1) (indent-tabs-mode . t) (buffer-file-coding-system . undecided-unix)))
+

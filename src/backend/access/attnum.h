@@ -4,4 +4,6 @@
 
 typedef int16 AttrNumber;
 
+#define InvalidAttrNumber 0
+
 #endif

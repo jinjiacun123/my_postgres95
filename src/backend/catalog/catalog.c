@@ -42,3 +42,16 @@ relpath(char *relname[]){
 
   return(relname);
 }
+
+
+bool
+IsSystemRelationName(char *relname){
+  if(relname[0]
+     && relname[1]
+     && relname[2])
+    return (relname[0] == 'p'
+            && relname[1] == 'g'
+            && relname[2] == '_');
+  else
+    return FALSE;
+}

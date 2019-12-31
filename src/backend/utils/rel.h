@@ -32,6 +32,7 @@ typedef Relation *RelationPtr;
 
 #define RelationSetReferenceCount(relation,count) ((relation)->rd_refcnt == count)
 #define RelationIncrementReferenceCount(relation) ((relation)->rd_refcnt += 1);
+#define RelationDecrementReferenceCount(relation) ((relation)->rd_refcnt -= 1);
 
 #define RelationGetRelationName(relation) (&(relation)->rd_rel->relname)
 #define RelationGetTupleDescriptor(relation) ((relation)->rd_att)

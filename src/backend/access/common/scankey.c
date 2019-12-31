@@ -18,3 +18,12 @@ ScanKeyEntryInitialize(ScanKey      entry,
 
   Assert(ScanKeyEntryIsLegal(entry));
 }
+
+void
+ScanKeyEntrySetIllegal(ScanKey entry){
+  Assert(PointerIsValid(entry));
+
+  entry->sk_flags     = 0;
+  entry->sk_attno     = InvalidAttrNumber;
+  entry->sk_procedure = 0;
+}

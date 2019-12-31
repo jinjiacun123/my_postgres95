@@ -5,6 +5,7 @@
 #include "catalog/catname.h"
 #include "catalog/pg_amproc.h"
 #include "catalog/pg_index.h"
+#include "catalog/pg_operator.h"
 #include "utils/elog.h"
 #include "utils/tqual.h"
 #include "catalog/pg_proc.h"
@@ -13,6 +14,12 @@
 #include "utils/rel.h"
 #include "access/relscan.h"
 #include "access/istrat.h"
+#include "access/skey.h"
+
+static void
+OperatorRelationFillScanKeyEntry(Relation operatorRelation,
+                                 Oid      operatorObjectId,
+                                 ScanKey  entry);
 
 void
 IndexSupportInitialize(IndexStrategy  indexStrategy,
@@ -32,7 +39,7 @@ IndexSupportInitialize(IndexStrategy  indexStrategy,
 
   Oid         operatorClassObjectId[MaxIndexAttributeNumber];
   int         attributeIndex;
-  maxStrategyNumber = AMStragegies(maxStrategyNumber);
+  maxStrategyNumber = AMStrategies(maxStrategyNumber);
 
   ScanKeyEntryInitialize(&entry[0],
                          0,
@@ -75,7 +82,7 @@ IndexSupportInitialize(IndexStrategy  indexStrategy,
                            0,
                            Anum_pg_amproc_amid,
                            ObjectIdEqualRegProcedure,
-                           ObjectGetDatum(accessMethodObjectId));
+                           ObjectIdGetDatum(accessMethodObjectId));
     ScanKeyEntryInitialize(&entry[1],
                            0,
                            Anum_pg_amproc_amopclaid,
@@ -128,7 +135,7 @@ IndexSupportInitialize(IndexStrategy  indexStrategy,
         attributeNumber--){
       StrategyNumber strategy;
       entry[1].sk_argument = ObjectIdGetDatum(operatorClassObjectId[attributeNumber -1]);
-      map = IndexstrategyGetStrategyMap(indexStrategy,
+      map = IndexStrategyGetStrategyMap(indexStrategy,
                                         maxStrategyNumber,
                                         attributeNumber);
       for(strategy = 1;
@@ -141,7 +148,7 @@ IndexSupportInitialize(IndexStrategy  indexStrategy,
             HeapTupleIsValid(tuple)){
         Form_pg_amop form;
         form = (Form_pg_amop)GETSTRUCT(tuple);
-        OperatorRelationFileScanKeyEntry(operatorRelation,
+        OperatorRelationFillScanKeyEntry(operatorRelation,
                                          form->amopopr,
                                          StrategyMapGetScanKeyEntry(map, form->amopstrategy));
       }
@@ -157,4 +164,63 @@ AttributeNumberGetIndexStrategySize(AttrNumber     maxAttributeNumber,
                                     StrategyNumber maxStrategyNumber){
   maxStrategyNumber = AMStrategies(maxStrategyNumber);
   return maxAttributeNumber * maxStrategyNumber * sizeof(ScanKeyData);
+}
+
+StrategyMap
+IndexStrategyGetStrategyMap(IndexStrategy  indexStrategy,
+                            StrategyNumber maxStrategyNum,
+                            AttrNumber     attrNum){
+  Assert(IndexStragegyIsValid(indexStrgegy));
+  Assert(StragegyNumberIsValid(maxStrategyNum));
+  Assert(AttributeNumberIsValid(attrNum));
+
+  maxStrategyNum = AMStrategies(maxStrategyNum);
+  return &indexStrategy->strategyMapData[maxStrategyNum * (attrNum -1)];
+}
+
+ScanKey
+StrategyMapGetScanKeyEntry(StrategyMap     map,
+                           StrategyNumber  strategyNumber){
+  Assert(StrategyMapIsValid(map));
+  Assert(StrategyNumberIsValid(strategyNumber));
+  return (&map->entry[strategyNumber -1]);
+}
+
+static void
+OperatorRelationFillScanKeyEntry(Relation operatorRelation,
+                                 Oid      operatorObjectId,
+                                 ScanKey  entry){
+  HeapScanDesc    scan;
+  ScanKeyData     scanKeyData;
+  HeapTuple       tuple;
+
+  ScanKeyEntryInitialize(&scanKeyData,
+                         0,
+                         ObjectIdAttributeNumber,
+                         ObjectIdEqualRegProcedure,
+                         ObjectIdGetDatum(operatorObjectId));
+  scan = heap_beginscan(operatorRelation,
+                        false,
+                        NowTimeQual,
+                        1,
+                        &scanKeyData);
+  tuple = heap_getnext(scan,
+                       false,
+                       (Buffer *)NULL);
+  if(! HeapTupleIsValid(tuple)){
+    elog(WARN, "OperatorObjectIdFillScanKeyEntry: unknown operator %lu",
+         (uint32)operatorObjectId);
+  }
+
+  entry->sk_flags     = 0;
+  entry->sk_procedure = ((OperatorTupleForm)GETSTRUCT(tuple))->oprcode;
+  fmgr_info(entry->sk_procedure,
+            &entry->sk_func,
+            &entry->sk_nargs);
+
+  if(! RegProcedureIsValid(entry->sk_procedure)){
+    elog(WARN, "OperatorObjectIdFillScanKeyEntry: no procedure for operator %lu",
+         (uint32) operatorObjectId);
+  }
+  heap_endscan(scan);
 }

@@ -3,7 +3,7 @@
 
 List*
 lcons(void *datum, List *list){
-  List *l = makeNode(List);
+  List *l   = makeNode(List);
   lfirst(l) = datum;
   lnext(l)  = list;
   return l;

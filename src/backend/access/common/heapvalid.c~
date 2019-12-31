@@ -1,0 +1,29 @@
+HeapTuple
+heap_tuple_satisfies(ItemId        itemId,
+                     Relation      relation,
+                     PageHeader    disk_page,
+                     TimeQual      qual,
+                     int           nKeys,
+                     ScanKey       key){
+  HeapTuple tuple;
+  bool      res;
+
+  if(! ItemIdIsUsed(itemId))
+    return NULL;
+
+  tuple = (HeapTuple) PageGetItem((Page) disk_page, itemId);
+
+  if(key != NULL)
+    res = heap_keytest(tuple,
+                       RelationGetTupleDescriptor(relation),
+                       nKeys,
+                       key);
+  else
+    res = TRUE;
+
+  if( res && (relation->rd_rel->relkind == RELKIND_UNCATALOGED
+              || HeapTupleSatisfiesTimeQual(tuple, qual)))
+    return tuple;
+
+  return (HeapTuple)NULL;
+}

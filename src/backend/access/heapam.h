@@ -69,5 +69,12 @@ extern HeapScanDesc heap_beginscan(Relation relation,
 extern void      heap_endscan(HeapScanDesc sdesc);
 extern HeapTuple heap_getnext(HeapScanDesc scandesc, int backw, Buffer *b);
 extern char*     heap_getattr(HeapTuple tup, Buffer b, int attnum,TupleDesc att, bool *isnull);
+extern char      *fastgetattr(HeapTuple tup,
+                              int        attnum,
+                              TupleDesc  att,
+                              bool       *isnull);
+extern char      *heap_getsysattr(HeapTuple tup,
+                                  Buffer      b,
+                                  int         attnum);
 
 #endif

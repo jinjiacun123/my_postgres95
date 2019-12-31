@@ -472,3 +472,8 @@ build_tupdesc_seq(RelationBuildDescInfo buildinfo,
   heap_endscan(pg_attribute_scan);
   heap_close(pg_attribute_desc);
 }
+
+void
+RelationClose(Relation relation){
+  RelationDecrementReferenceCount(relation);
+}

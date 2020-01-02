@@ -375,3 +375,35 @@ RelationGetBufferWithBuffer(Relation    relation,
   }
   return(ReadBuffer(relation, blockNumber));
 }
+
+Buffer
+ReleaseAndReadBuffer(Buffer      buffer,
+                     Relation    relation,
+                     BlockNumber blockNum){
+  BufferDesc     *bufHdr;
+  Buffer         retbuf;
+
+  if(BufferIsLocal(buffer)){
+    Assert(LocalRefCount[-buffer -1] > 0);
+    LocalRefCount[-buffer -1] --;
+  } else {
+    if(BufferIsValid(buffer)){
+      bufHdr = &BufferDescriptors[buffer -1];
+      Assert(PrivateRefCount[buffer -1] > 0);
+      PrivateRefCount[buffer -1] --;
+      if(PrivateRefCount[buffer -1] == 0
+         && LastRefCount[buffer -1] == 0){
+        SpinAcquire(BufMgrLock);
+        bufHdr->refcount--;
+        if(bufHdr->refcount == 0){
+          AddBufferToFreelist(bufHdr);
+          bufHdr->flags |= BM_FREE;
+        }
+        retbuf = ReadBufferWithBufferLock(relation, blockNum, true);
+        return retbuf;
+      }
+    }
+  }
+
+  return (ReadBuffer(relation, blockNum));
+}

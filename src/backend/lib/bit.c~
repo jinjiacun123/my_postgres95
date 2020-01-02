@@ -1,0 +1,8 @@
+bool
+BitArrayBitIsSet(BitArray  bitArray,
+                 BitIndex  bitIndex){
+
+
+
+
+}

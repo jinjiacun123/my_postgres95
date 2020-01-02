@@ -18,10 +18,10 @@ include $(CURDIR)/utils/Makefile.inc
 
 SRCS:=${SRCS_ACCESS} ${SRCS_BOOTSTRAP} ${SRCS_CATALOG} ${SRCS_LIB} \
       ${SRCS_MAIN} ${SRCS_REWRITE} ${SRCS_PARSER} ${SRCS_REWRITE} \
-      ${SRCS_STORAGE} ${SRCS_UTILS} ${SRCS_NODES}
+      ${SRCS_STORAGE} ${SRCS_UTILS} ${SRCS_NODES} ${SRCS_LIB}
 
 ifeq ($(BIGOBJS), true)
-OBJS= ACCESS.o BOOTSTRAP.o CATALOG.o MAIN.o NODES.o PARSER.o STORAGE.o UTILS.o
+OBJS= ACCESS.o BOOTSTRAP.o CATALOG.o MAIN.o NODES.o PARSER.o STORAGE.o UTILS.o LIB.o
 CLEANFILES += $(subst .s,.o,$(SRCS:.c=.o)) $(OBJS)
 endif
 
@@ -42,7 +42,7 @@ ifeq ($(BIGOBJS), true)
 OBJS_ACCESS:= $(SRCS_ACCESS:%.c=$(objdir)/%.o)
 OBJS_BOOTSTRAP:= $(SRCS_BOOTSTRAP:%.c=$(objdir)/%.o)
 OBJS_CATALOG:=$(SRCS_CATALOG:%.c=$(objdir)/%.o)
-#OBJS_LIB:=$(SRCS_LIB:%.c=$(objdir)/%.o)
+OBJS_LIB:=$(SRCS_LIB:%.c=$(objdir)/%.o)
 OBJS_MAIN:=$(SRCS_MAIN:%.c=$(objdir)/%.o)
 OBJS_NODES:=$(SRCS_NODES:%.c=$(objdir)/%.o)
 OBJS_PARSER:=$(SRCS_PARSER:%.c=$(objdir)/%.o)
@@ -56,8 +56,8 @@ BOOTSTRAP.o:$(OBJS_BOOTSTRAP)
 	$(make_partial)
 CATALOG.o:$(OBJS_CATALOG)
 	$(make_partial)
-#LIB.o:$(OBJS_LIB)
-#	$(make_partial)
+LIB.o:$(OBJS_LIB)
+	$(make_partial)
 MAIN.o:$(OBJS_MAIN)
 	$(make_partial)
 NODES.o:$(OBJS_NODES)

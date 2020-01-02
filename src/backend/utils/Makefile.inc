@@ -28,4 +28,4 @@ POSTGRES_DEPEND+= ${GENFMGRTABFILES}
 
 
 
-HEADERS+=elog.h mcxt.h builtins.h relcache.h hsearch.h tqual.h fmgrtab.h syscache.h
+HEADERS+=elog.h mcxt.h builtins.h relcache.h hsearch.h tqual.h fmgrtab.h syscache.h bit.h

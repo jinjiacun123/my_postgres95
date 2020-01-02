@@ -1,1 +1,1 @@
-SUBSRCS+=xact.c xid.c xact.c varsup.c transam.c
+SUBSRCS+=xact.c xid.c xact.c varsup.c transam.c transsup.c

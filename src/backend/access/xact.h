@@ -25,4 +25,7 @@ typedef TransactionStateData *TransactionState;
 extern void          StartTransaction();
 extern void          StorageInvalidTransactionId(TransactionId *destination);
 extern TransactionId GetCurrentTransactionId(void);
+extern bool          TransactionIdEquals(TransactionId id1,
+                                         TransactionId id2);
+
 #endif

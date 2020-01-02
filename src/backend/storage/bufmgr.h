@@ -24,4 +24,7 @@ extern BlockNumber RelationGetNumberOfBlocks(Relation relation);
 extern Buffer      RelationGetBufferWithBuffer(Relation    relation,
                                                BlockNumber blockNumber,
                                                Buffer      buffer);
+extern Buffer      ReleaseAndReadBuffer(Buffer      buffer,
+                                        Relation    relation,
+                                        BlockNumber blockNum);
 #endif

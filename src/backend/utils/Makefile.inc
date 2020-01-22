@@ -15,7 +15,7 @@ include $(utilsdir)/init/Makefile.inc
 include $(utilsdir)/fmgr/Makefile.inc
 include $(utilsdir)/time/Makefile.inc
 
-SRCS_UTILS:= $(SUBSRCS)
+SRCS_UTILS:= $(SUBSRCS) fmgrtab.c
 
 GENFMGRTAB= $(utilsdir)/Gen_fmgrtab.sh
 GENFMGRTABFILES= fmgrtab.c

@@ -193,3 +193,10 @@ nodeTokenType(char *token, int length){
 
      return (retval);
 }
+
+void *
+stringToNode(char *str){
+  void *retval;
+
+  return retval;
+}

@@ -28,5 +28,5 @@ extern void   RelationSetLockForRead(Relation relation);
 extern void   LRelIdAssign(LRelId  *lRelId,
                            Oid     dbId,
                            Oid     relId);
-
+extern LRelId RelationGetLRelId(Relation relation);
 #endif

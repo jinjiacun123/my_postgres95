@@ -84,3 +84,13 @@ LocalBufferAlloc(Relation    reln,
   *foundPtr = FALSE;
   return bufHdr;
 }
+
+int
+FlushLocalBuffer(Buffer buffer){
+  int        bufid;
+  Relation   bufrel;
+  BufferDesc *bufHdr;
+
+  Assert(BufferIsLocal(buffer));
+
+}

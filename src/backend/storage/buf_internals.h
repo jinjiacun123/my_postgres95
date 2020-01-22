@@ -13,6 +13,8 @@ typedef bits16          BufFlags;
 
 #define BM_DIRTY          (1 << 0)
 #define BM_FREE           (1 << 4)
+#define BM_DELETED        (1 << 3)
+#define BM_FREE           (1 << 4)
 #define BM_IO_IN_PROGRESS (1 << 5)
 #define BM_IO_ERROR       (1 << 6)
 
@@ -27,6 +29,11 @@ struct buftag {
   LRelId      relId;
   BlockNumber blockNum;
 };
+
+#define INIT_BUFFERTAG(a, xx_reln, xx_blockNum) {   \
+    (a)->blockNum = xx_blockNum;                    \
+    (a)->relId    = RelationGetLRelId(xx_reln);     \
+  }
 
 struct sbufdesc {
   Buffer       freeNext;
@@ -55,6 +62,10 @@ extern void       unpinBuffer(BufferDesc *buf);
 extern BufferDesc *LocalBufferAlloc(Relation    reln,
                                     BlockNumber blockNum,
                                     bool        *foundPtr);
-
-
+extern bool       BufTableDelete(BufferDesc *buf);
+extern int        FlushLocalBuffer(Buffer buffer);
+extern BufferDesc *BufTableLookup(BufferTag *tagPtr);
+extern void       PinBuffer(BufferDesc *buf);
+extern BufferDesc *GetFreeBuffer(void);
+extern bool       BufTableInsert(BufferDesc *buf);
 #endif

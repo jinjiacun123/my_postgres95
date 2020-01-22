@@ -52,7 +52,10 @@ static void      build_tupdesc_seq(RelationBuildDescInfo buildinfo,
                                    Relation              relation,
                                    AttributeTupleForm    attp,
                                    u_int                 natts);
-
+static void      RelationBuildTupleDesc(RelationBuildDescInfo    buildinfo,
+                                        Relation                 relation,
+                                        AttributeTupleForm       attp,
+                                        u_int                    natts);
  typedef struct relidcacheent {
    Oid      reloid;
    Relation reldesc;
@@ -176,7 +179,7 @@ static void      build_tupdesc_seq(RelationBuildDescInfo buildinfo,
    relam    = relation->rd_rel->relam;
 
    relation->rd_id = relid;
-   RelationGetReferenceCount(relation, 1);
+   RelationSetReferenceCount(relation, 1);
    relation->rd_isnailed = false;
    if(OidIsValid(relam)){
      relation->rd_am = (Form_pg_am)AccessMethodObjectIdGetAccessMethodTupleForm(relam);
@@ -190,7 +193,7 @@ static void      build_tupdesc_seq(RelationBuildDescInfo buildinfo,
    }
 
    if(OidIsValid(relam)){
-     IndexedAccessMethodInitalize(relation);
+     IndexedAccessMethodInitialize(relation);
    }
 
    RelationInitLockInfo(relation);
@@ -476,4 +479,20 @@ build_tupdesc_seq(RelationBuildDescInfo buildinfo,
 void
 RelationClose(Relation relation){
   RelationDecrementReferenceCount(relation);
+}
+
+
+Relation
+RelationIdCacheGetRelation(Oid relaionId){
+  Relation rd;
+
+  return(rd);
+}
+
+static void
+RelationBuildTupleDesc(RelationBuildDescInfo   buildinfo,
+                       Relation                relation,
+                       AttributeTupleForm      attp,
+                       u_int                   natts){
+
 }

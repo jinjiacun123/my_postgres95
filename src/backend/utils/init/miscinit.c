@@ -2,6 +2,7 @@
 #include "miscadmin.h"
 
 static ProcessingMode Mode = NoProcessing;
+extern char *DatabaseName;
 
 bool
 IsBootstrapProcessingMode(){
@@ -11,4 +12,9 @@ IsBootstrapProcessingMode(){
 bool
 IsInitProcessingMode(){
   return ((bool)(Mode == InitProcessing));
+}
+
+char *
+GetDatabaseName(){
+  return DatabaseName;
 }

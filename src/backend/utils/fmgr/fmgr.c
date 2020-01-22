@@ -20,7 +20,7 @@ fmgr_info(Oid          procedureId,
 
   if(!(fcp = fmgr_isbuiltin(procedureId))){
     procedureTuple = SearchSysCacheTuple(PROOID,
-                                         ObjectIdsetDatum(procedureId),
+                                         ObjectIdGetDatum(procedureId),
                                          0,
                                          0,
                                          0);
@@ -88,4 +88,15 @@ fmgr(Oid procedureId, ... ){
                 pronargs,
                 &values,
                 &isNull));
+}
+
+char *
+fmgr_c(func_ptr   user_fn,
+       Oid        func_id,
+       int        n_arguments,
+       FmgrValues *values,
+       bool       *isNull){
+  char *returnValue = (char *)NULL;
+
+  return(returnValue);
 }

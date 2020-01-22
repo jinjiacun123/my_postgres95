@@ -6,7 +6,8 @@ BackendId MyBackendId;
 
 int       Quiet = 1;
 char *    DataDir;
-Oid       MyDatabaseId = InvalidOid;
+Oid       MyDatabaseId  = InvalidOid;
+char      *DatabaseName = NULL;
 
 char *SharedSystemRelationNames[] = {
   DatabaseRelationName,

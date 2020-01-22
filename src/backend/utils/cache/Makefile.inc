@@ -1,1 +1,1 @@
-SUBSRCS+= inval.c catcache.c relcache.c rel.c
+SUBSRCS+= inval.c catcache.c relcache.c rel.c syscache.c lsyscache.c

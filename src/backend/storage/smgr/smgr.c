@@ -91,3 +91,13 @@ smgrnblocks(int16    which,
 
   return (nblocks);
 }
+
+int
+smgrwrite(int16       which,
+          Relation    reln,
+          BlockNumber blocknum,
+          char        *buffer){
+  int status;
+
+  return (status);
+}

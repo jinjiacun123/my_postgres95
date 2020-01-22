@@ -862,7 +862,7 @@ _readFunc(){
 
   token = lsptok(NULL, &length);
   token = lsptok(NULL, &length);
-  local_node->funcsize = stol(token);
+  local_node->funcsize = atol(token);
 
   token = lsptok(NULL, &length);
   token = lsptok(NULL, &length);

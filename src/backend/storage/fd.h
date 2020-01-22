@@ -21,8 +21,13 @@ extern int  FileNameUnlink(char *filename);
 extern long FileSeek(File  file,
                      long  offset,
                      int   whence);
-
-
+extern File FileNameOpenFile(FileName fileName,
+                             int      fileFlags,
+                             int      fileMode);
+extern int  FileSync(File file);
+extern File PathNameOpenFile(FileName fileName,
+                             int      fileFlags,
+                             int      fileMOde);
 
 
 

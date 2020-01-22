@@ -34,3 +34,21 @@ MultiLockReln(LockInfo linfo,
                       lockt,
                       RELN_LEVEL));
 }
+
+bool
+MultiRelease(LockTableId tableId,
+             LOCKTAG     *tag,
+             LOCKT       lockt,
+             LOCK_LEVEL  level){
+  return false;
+}
+
+bool
+MultiAcquire(LockTableId tableId,
+             LOCKTAG     *tag,
+             LOCKT       lockt,
+             LOCK_LEVEL  level){
+  int retStatus = TRUE;
+
+  return(retStatus);
+}

@@ -1,3 +1,5 @@
+#include "postgres.h"
+
 char *
 textout(struct varlena *vlena){
   int  len;

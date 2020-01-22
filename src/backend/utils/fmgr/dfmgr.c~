@@ -1,0 +1,6 @@
+
+func_ptr
+fmgr_dynamic(Oid procedureId,
+             int *pronargs){
+
+}

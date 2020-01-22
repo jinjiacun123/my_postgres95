@@ -1,1 +1,1 @@
-SUBSRCS += fmgr.c
+SUBSRCS += fmgr.c dfmgr.c

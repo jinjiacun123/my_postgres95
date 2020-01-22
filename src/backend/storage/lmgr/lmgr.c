@@ -112,3 +112,10 @@ LRelIdAssign(LRelId  *lRelId,
   lRelId->dbId  = dbId;
   lRelId->relId = relId;
 }
+
+LRelId
+RelationGetLRelId(Relation relation){
+  LockInfo  linfo;
+
+  return(linfo->lRelId);
+}

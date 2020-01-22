@@ -153,5 +153,4 @@ typedef enum CmdType {
 
 extern void *stringToNode(char *str);
 
-
 #endif

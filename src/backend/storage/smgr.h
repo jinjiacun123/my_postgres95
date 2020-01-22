@@ -34,4 +34,8 @@ extern int mdblindwrt(char *dbstr, char *relstr, Oid dbid, Oid relid, BlockNumbe
 extern int mdnblocks(Relation reln);
 extern int mdcommit(void);
 extern int mdabort(void);
+extern int smgrwrite(int16       which,
+                     Relation    reln,
+                     BlockNumber blocknum,
+                     char        *buffer);
 #endif

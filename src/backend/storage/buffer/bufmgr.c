@@ -18,6 +18,11 @@ static BufferDesc *BufferAlloc(Relation     reln,
                                BlockNumber  blockNum,
                                bool         *foundPtr,
                                bool         bufferLockHeld);
+static int        BufferReplace(BufferDesc *bufHdr,
+                                bool       bufferLockHeld);
+static void       WaitIO(BufferDesc *buf,
+                         SPINLOCK   spinlock);
+static void       SignalIO(BufferDesc *buf);
 
 Buffer
 ReadBuffer(Relation reln, BlockNumber blockNum){
@@ -271,7 +276,7 @@ BufferAlloc(Relation    reln,
         inProgress = FALSE;
         buf->flags &= ~BM_IO_IN_PROGRESS;
         if(buf->refcount > 1)
-          _SignalIO(buf);
+          SignalIO(buf);
         PrivateRefCount[BufferDescriptorGetBuffer(buf) -1] = 0;
         buf->refcount--;
         buf = (BufferDesc *)NULL;
@@ -406,4 +411,24 @@ ReleaseAndReadBuffer(Buffer      buffer,
   }
 
   return (ReadBuffer(relation, blockNum));
+}
+
+static int
+BufferReplace(BufferDesc  *bufHdr,
+              bool        buferLockHeld){
+  Relation  reln;
+  Oid       bufdb, bufrel;
+  int       status;
+
+  return (TRUE);
+}
+
+static void
+WaitIO(BufferDesc *buf, SPINLOCK spinlock){
+
+}
+
+static void
+SignalIO(BufferDesc *buf){
+
 }

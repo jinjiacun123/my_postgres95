@@ -18,5 +18,5 @@ extern char *DataDir;
 
 extern bool IsBootstrapProcessingMode(void);
 extern bool IsInitProcessingMode(void);
-
+extern char *GetDatabaseName(void);
 #endif

@@ -4,6 +4,7 @@
 #include "storage/block.h"
 #include "utils/rel.h"
 #include "storage/smgr.h"
+#include "storage/fd.h"
 #include "utils/elog.h"
 #include "machine.h"
 #include "nodes/memnodes.h"
@@ -328,7 +329,7 @@ mdnblocks(Relation reln){
   segno = 0;
   for(;;){
     if(v->mdfd_lstbcnt == RELSEG_SIZE
-       || (nblocks = _mdnblock(v->mdfd_vfd, BLCKSZ)) == RELSEG_SIZE){
+       || (nblocks = _mdnblocks(v->mdfd_vfd, BLCKSZ)) == RELSEG_SIZE){
       v->mdfd_lstbcnt = RELSEG_SIZE;
       v->mdfd_lstbcnt = RELSEG_SIZE;
       segno++;

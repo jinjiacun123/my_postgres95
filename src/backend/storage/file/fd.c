@@ -1,3 +1,35 @@
+#include<stdio.h>
+#include "storage/fd.h"
+#include "utils/elog.h"
+
+
+#define DO_DB(A) /* A */
+#define FileIsNotOpen(file) (VfdCache[file].fd == VFD_CLOSED)
+#define FD_DIRTY  (1 << 0)
+#define VFD_CLOSED -1
+typedef struct vfd {
+  signed   short fd;
+  unsigned short fdstate;
+  File           nextFree;
+  File           lruMoreRecently;
+  long           seekPos;
+  char           *fileName;
+  int            fileFlags;
+  int            fileMode;
+} Vfd;
+
+static Vfd    *VfdCache;
+static int    FreeFd = 0;
+static int    nfile = 0;
+
+static int FileAccess(File file);
+static char * filepath(char *filename);
+static File fileNameOpenFile(FileName  fileName,
+                             int       fileFlags,
+                             int       fileMode);
+static void Delete(File file);
+static void FreeVfd(File file);
+
 long
 FileSeek(File file, long offset, int whence){
   int returnCode;
@@ -37,7 +69,7 @@ FileNameOpenFile(FileName fileName,
   File   fd;
   char   *fname;
 
-  fname  = filepath(filename);
+  fname  = filepath(fileName);
   fd     = fileNameOpenFile(fname, fileFlags, fileMode);
   pfree(fname);
   return(fd);
@@ -117,8 +149,56 @@ FileNameUnlink(char *filename){
   int  retval;
   char *fname;
 
-  fname  = filepath(flename);
+  fname  = filepath(filename);
   retval = unlink(fname);
   pfree(fname);
   return(retval);
+}
+
+int
+FileSync(File file){
+  int returnCode;
+
+  return(returnCode);
+}
+
+File
+PathNameOpenFile(FileName fileName,
+                 int      fileFlags,
+                 int      fileMode){
+  return(fileNameOpenFile(fileName, fileFlags, fileMode));
+}
+
+
+static int
+FileAccess(File file){
+  int returnValue;
+
+  return(0);
+}
+
+static char *
+filepath(char *filename){
+  char *buf;
+
+  return(buf);
+}
+
+static File
+fileNameOpenFile(FileName  fileName,
+                 int       fileFlags,
+                 int       fileMode){
+  File file;
+
+  return(file);
+}
+
+static void
+Delete(File file){
+
+}
+
+static void
+FreeVfd(File file){
+
 }

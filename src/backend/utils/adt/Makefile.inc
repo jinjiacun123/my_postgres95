@@ -1,1 +1,1 @@
-SUBSRCS+= name.c
+SUBSRCS+= name.c varlena.c bool.c

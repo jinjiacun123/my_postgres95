@@ -12,7 +12,7 @@ typedef struct {
 
 
 
-
+extern FmgrCall *fmgr_isbuiltin(Oid id);
 
 
 #endif

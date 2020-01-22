@@ -1,4 +1,10 @@
 #include "storage/buf_internals.h"
+#include "storage/bufmgr.h"
+
+#define NotInQueue(bf)\
+  Assert((bf->freeNext == INVALID_DESCRIPTOR)); \
+  Assert((bf->freePrev == INVALID_DESCRIPTOR)); \
+  Assert((bf->flags & BM_FREE))
 
 static BufferDesc *SharedFreeList;
 
@@ -31,4 +37,16 @@ UnpinBuffer(BufferDesc *buf){
   } else {
 
   }
+}
+
+void
+PinBuffer(BufferDesc *buf){
+
+}
+
+BufferDesc *
+GetFreeBuffer(){
+  BufferDesc *buf;
+
+  return(buf);
 }

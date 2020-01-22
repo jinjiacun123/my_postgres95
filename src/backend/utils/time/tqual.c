@@ -19,6 +19,15 @@ typedef TimeQualData  *InternalTimeQual;
 static TimeQualData   SelfTimeQualData;
 TimeQual              SelfTimeQual = (Pointer)&SelfTimeQualData;
 
+static bool HeapTupleSatisfiesItself(HeapTuple tuple);
+static bool HeapTupleSatisfiesNow(HeapTuple tuple);
+static bool HeapTupleSatisfiesSnapshotInternalTimeQual(HeapTuple        tuple,
+                                                       InternalTimeQual qual);
+static bool HeapTupleSatisfiesUpperUnboundedInternalTimeQual(HeapTuple        tuple,
+                                                             InternalTimeQual qual);
+static bool HeapTupleSatisfiesUpperBoundedInternalTimeQual(HeapTuple        tuple,
+                                                           InternalTimeQual qual);
+
 bool
 HeapTupleSatisfiesTimeQual(HeapTuple  tuple,
                            TimeQual      qual){
@@ -42,7 +51,7 @@ HeapTupleSatisfiesTimeQual(HeapTuple  tuple,
     elog(WARN, "HeapTupleSatisfiesTimeQual: illegal time qual");
   }
 
-  if(TimeQualIndicateDisableValidityChecking(qual)){
+  if(TimeQualIndicatesDisableValidityChecking(qual)){
     elog(WARN, "HeapTupleSatisfiesTimeQual: no disabled validity checking (yet)");
   }
 
@@ -57,4 +66,57 @@ HeapTupleSatisfiesTimeQual(HeapTuple  tuple,
   }
   return (HeapTupleSatisfiesUpperBoundedInternalTimeQual(tuple,
                                                          (InternalTimeQual)qual));
+}
+
+bool
+heapisoverride(){
+  return(true);
+}
+
+static bool
+HeapTupleSatisfiesItself(HeapTuple tuple){
+  return(false);
+}
+
+static bool
+HeapTupleSatisfiesNow(HeapTuple tuple){
+  return(false);
+}
+
+bool
+TimeQualIsLegal(TimeQual qual){
+  return(true);
+}
+
+bool
+TimeQualIndicatesDisableValidityChecking(TimeQual qual){
+  return(false);
+}
+
+bool
+TimeQualIsSnapshot(TimeQual qual){
+  return(false);
+}
+
+static bool
+HeapTupleSatisfiesSnapshotInternalTimeQual(HeapTuple        tuple,
+                                           InternalTimeQual qual){
+  return true;
+}
+
+bool
+TimeQualIncludesNow(TimeQual qual){
+  return (true);
+}
+
+static bool
+HeapTupleSatisfiesUpperUnboundedInternalTimeQual(HeapTuple        tuple,
+                                                 InternalTimeQual qual){
+  return(true);
+}
+
+static bool
+HeapTupleSatisfiesUpperBoundedInternalTimeQual(HeapTuple        tuple,
+                                               InternalTimeQual qual){
+  return(true);
 }

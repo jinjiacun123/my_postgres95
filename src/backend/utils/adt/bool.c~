@@ -1,0 +1,8 @@
+
+
+int32
+boolin(char *b){
+  if(b == NULL)
+    elog(WARN, "Bad input string for type bool");
+  return((int32) (*b == 't') || (*b == 'T'));
+}
